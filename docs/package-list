@@ -1,0 +1,8 @@
+
+org.aiwolf.client.base.player
+org.aiwolf.client.base.smpl
+org.aiwolf.client.lib
+org.aiwolf.common
+org.aiwolf.common.data
+org.aiwolf.common.net
+org.aiwolf.common.util

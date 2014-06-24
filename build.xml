@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="aiwolf" default="jar" basedir=".">
+
+	<!-- ****プロパティ**** -->
+	<!-- ソースファイルがあるディレクトリ -->
+	<property name="server.src.dir" value="../AiWolfServer/src"/>
+	<property name="common.src.dir" value="../AiWolfCommon/src"/>
+	<property name="client.src.dir" value="../AiWolfClient/src"/>
+	
+	<!-- クラスファイルを出力するディレクトリ -->
+	<property name="server.bin.dir" value="../AiWolfServer/bin"/>
+	<property name="common.bin.dir" value="../AiWolfCommon/bin"/>
+	<property name="client.bin.dir" value="../AiWolfClient/bin"/>
+	
+	<!-- javadocを出力するディレクトリ -->
+	<property name="javadoc.dir" value="./docs"/>
+
+	<!-- jarを出力するディレクトリ -->
+	<property name="jar.dir" value="./jar"/>
+
+	<!-- jarファイル名 -->
+	<property name="server.name" value="./aiwolf-server"/>
+	<property name="common.name" value="./aiwolf-common"/>
+	<property name="client.name" value="./aiwolf-client"/>
+	
+	<!-- Version -->
+	<property name="version" value="0.1.6"/>
+
+	<!-- ****ターゲット**** -->
+	<!-- jarファイルの作成 -->
+	<target name="jar" depends="compile">
+		<mkdir dir="${jar.dir}" />
+		<jar jarfile="${jar.dir}/${server.name}-${version}.jar" basedir="${server.bin.dir}"></jar>
+		<jar jarfile="${jar.dir}/${common.name}-${version}.jar" basedir="${common.bin.dir}"></jar>
+		<jar jarfile="${jar.dir}/${client.name}-${version}.jar" basedir="${client.bin.dir}"></jar>
+	</target>
+
+	<!-- コンパイル -->
+	<target name="compile">
+		<mkdir dir="${server.bin.dir}" />
+		<javac srcdir="${server.src.dir}" destdir="${server.bin.dir}"/>
+		<mkdir dir="${common.bin.dir}" />
+		<javac srcdir="${common.src.dir}" destdir="${common.bin.dir}"/>
+		<mkdir dir="${client.bin.dir}" />
+		<javac srcdir="${client.src.dir}" destdir="${client.bin.dir}"/>
+	</target>
+	
+	<!-- javadocの作成 -->
+	<target name="javadoc">
+		<delete dir="${javadoc.dir}" />
+		<mkdir dir="${javadoc.dir}" />
+		<javadoc destdir="${javadoc.dir}" access="protected" encoding="UTF-8" additionalparam="-J-Dfile.encoding=UTF-8">
+			<!--<fileset dir="${server.src.dir}"/>-->
+			<fileset dir="${common.src.dir}"/>
+			<fileset dir="${client.src.dir}"/>
+		</javadoc>
+		<zip destfile="docs.zip"><fileset dir="${javadoc.dir}" /></zip>
+	</target>
+	 
+	<!-- 生成したファイルやフォルダの削除 -->
+	<!--
+	<target name="clean">
+		<delete dir="${classes.dir}" />
+		<delete dir="${javadoc.dir}" />
+		<delete file="${jar.name}" />
+	</target>
+	-->
+</project>
