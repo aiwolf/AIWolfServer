@@ -6,7 +6,11 @@ import org.aiwolf.server.AIWolfGame;
 import org.aiwolf.server.GameSetting;
 import org.aiwolf.server.net.TcpipServer;
 
-
+/**
+ * Main Class to start server application 
+ * @author tori
+ *
+ */
 public class ServerStarter {
 
 	/**
