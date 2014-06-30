@@ -43,7 +43,6 @@ public class ServerStarter {
 		GameSetting gameSetting = GameSetting.getDefaultGame(playerNum);
 		AIWolfGame game = new AIWolfGame(gameSetting, gameServer);
 		game.setRand(new Random());
-		game.init();
 		game.start();
 		
 		

@@ -182,9 +182,13 @@ public class TcpipServer implements GameServer {
 	        if(request == Request.Talk || request == Request.Whisper || request == Request.Name || request == Request.Role){
 	        	return line;
 	        }
-	        else{
+	        else if(request == Request.Attack || request == Request.Divine || request == Request.Guard || request == request.Vote){
 	        	return DataConverter.getInstance().toAgent(line);
 	        }
+	        else{
+	        	return null;
+	        }
+	        		
 			
 		}catch(IOException e){
 			throw new LostClientException("Lost connection with "+agent, e);

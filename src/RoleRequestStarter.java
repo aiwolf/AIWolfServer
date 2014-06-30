@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
 
 import org.aiwolf.common.data.Player;
@@ -42,6 +43,7 @@ public class RoleRequestStarter {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException {
+
 
 		List<Pair<String, Role>> playerRoleList = new ArrayList<Pair<String,Role>>();
 		String defaultClsName = Class.forName("org.aiwolf.client.base.smpl.SamplePlayer").getName();

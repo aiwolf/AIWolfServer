@@ -14,6 +14,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import org.aiwolf.common.AIWolfRuntimeException;
@@ -80,6 +83,7 @@ public class AIWolfGame {
 		rand = new Random();
 		this.gameSetting = gameSeting;
 		this.gameServer = gameServer;
+		gameLogger = AiWolfLoggerFactory.getSimpleLogger(this.getClass().getSimpleName());
 	}
 
 
@@ -112,7 +116,7 @@ public class AIWolfGame {
 	/**
 	 * Initialize Game
 	 */
-	public void init(){
+	protected void init(){
 		gameDataMap = new TreeMap<Integer, GameData>();
 		gameData = new GameData(gameSetting);
 		agentNameMap = new HashMap<Agent, String>();
@@ -184,11 +188,11 @@ public class AIWolfGame {
 
 		System.out.println("Winner:"+getWinner());
 
-		for(Agent agent:gameData.getAgentList()){
-			GameInfo gameInfo = gameData.getGameInfo(agent);
-//			System.out.println(JSON.encode(gameInfo));
-			break;
-		}
+//		for(Agent agent:gameData.getAgentList()){
+//			GameInfo gameInfo = gameData.getGameInfo(agent);
+////			System.out.println(JSON.encode(gameInfo));
+//			break;
+//		}
 		
 	}
 
@@ -246,6 +250,11 @@ public class AIWolfGame {
 		System.out.println("===========");
 		System.out.printf("Day %02d\n", gameData.getDay());
 		if(yesterday != null){
+			
+			for(Vote vote:yesterday.getVoteList()){
+				System.out.printf("Vote:%s->%s\n", vote.getAgent(), vote.getTarget());
+			}
+			
 			Judge divine = yesterday.getDivine();
 			System.out.printf("%s executed\n", yesterday.getExecuted());
 			if(divine != null){
@@ -254,6 +263,11 @@ public class AIWolfGame {
 			Guard guard = yesterday.getGuard();
 			if(guard != null){
 				System.out.printf("%s guarded\n", guard);
+			}
+
+			System.out.println("Attack Vote Result");
+			for(Vote vote:yesterday.getAttackVoteList()){
+				System.out.printf("AttackVote:%s->%s\n", vote.getAgent(), vote.getTarget());
 			}
 			System.out.printf("%s attacked\n", yesterday.getAttacked());		
 		}		

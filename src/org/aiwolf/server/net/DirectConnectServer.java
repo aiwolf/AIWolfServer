@@ -65,17 +65,9 @@ public class DirectConnectServer implements GameServer {
 
 	@Override
 	public void init(Agent agent) {
-		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
-		agentPlayerMap.get(agent).initialize();
+		agentPlayerMap.get(agent).initialize(gameData.getGameInfo(agent));
 	}
 	
-	@Override
-	public void dayStart(Agent agent) {
-		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
-		agentPlayerMap.get(agent).dayStart();
-	}
-	
-
 	@Override
 	public String requestName(Agent agent) {
 		return agentPlayerMap.get(agent).getName();
@@ -84,6 +76,12 @@ public class DirectConnectServer implements GameServer {
 	@Override
 	public Role requestRequestRole(Agent agent) {
 		return requestRoleMap.get(agent);
+	}
+	
+	@Override
+	public void dayStart(Agent agent) {
+		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
+		agentPlayerMap.get(agent).dayStart();
 	}
 	
 	@Override
