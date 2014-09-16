@@ -17,6 +17,7 @@ import org.aiwolf.common.data.Team;
 import org.aiwolf.common.data.Vote;
 import org.aiwolf.common.net.GameInfo;
 import org.aiwolf.common.net.GameInfoToSend;
+import org.aiwolf.common.net.GameSetting;
 import org.aiwolf.common.net.JudgeToSend;
 import org.aiwolf.common.net.TalkToSend;
 import org.aiwolf.common.net.VoteToSend;
@@ -161,7 +162,7 @@ public class GameData {
 				gi.setAttackedAgent(attacked.getAgentIdx());
 			}
 			
-			if(gameSetting.isVoteVisible){
+			if(gameSetting.isVoteVisible()){
 				List<VoteToSend> voteList = new ArrayList<VoteToSend>();
 				for(Vote vote:yesterday.getVoteList()){
 					voteList.add(new VoteToSend(vote));

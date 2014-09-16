@@ -20,6 +20,7 @@ import org.aiwolf.common.data.Agent;
 import org.aiwolf.common.data.Request;
 import org.aiwolf.common.data.Role;
 import org.aiwolf.common.net.DataConverter;
+import org.aiwolf.common.net.GameSetting;
 import org.aiwolf.common.net.Packet;
 import org.aiwolf.common.util.AiWolfLoggerFactory;
 import org.aiwolf.common.util.BidiMap;
@@ -61,6 +62,11 @@ public class TcpipServer implements GameServer {
 	GameData gameData;
 	
 	/**
+	 * Game Setting
+	 */
+	GameSetting gameSetting;
+	
+	/**
 	 * 
 	 */
 	Logger serverLogger;
@@ -71,7 +77,8 @@ public class TcpipServer implements GameServer {
 	 * @param port
 	 * @param limit
 	 */
-	public TcpipServer(int port, int limit){
+	public TcpipServer(int port, int limit, GameSetting gameSetting){
+		this.gameSetting = gameSetting;
 		this.port = port;
 		this.limit = limit;
 		

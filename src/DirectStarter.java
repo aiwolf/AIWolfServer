@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.Random;
 
 import org.aiwolf.common.data.Player;
+import org.aiwolf.common.net.GameSetting;
 import org.aiwolf.common.util.CalendarTools;
 import org.aiwolf.common.util.Counter;
 import org.aiwolf.server.AIWolfGame;
-import org.aiwolf.server.GameSetting;
 import org.aiwolf.server.net.DirectConnectServer;
 import org.aiwolf.server.net.GameServer;
 

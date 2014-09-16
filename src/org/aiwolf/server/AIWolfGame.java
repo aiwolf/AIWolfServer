@@ -30,6 +30,7 @@ import org.aiwolf.common.data.Talk;
 import org.aiwolf.common.data.Team;
 import org.aiwolf.common.data.Vote;
 import org.aiwolf.common.net.GameInfo;
+import org.aiwolf.common.net.GameSetting;
 import org.aiwolf.common.util.AiWolfLoggerFactory;
 import org.aiwolf.common.util.Counter;
 import org.aiwolf.server.net.GameServer;
