@@ -35,7 +35,7 @@ public class GameSetting {
 		GameSetting setting = new GameSetting();
 		setting.maxTalk = 10;
 		setting.isEnableNoAttack = false;
-		setting.isVoteVisible = false;
+		setting.isVoteVisible = true;
 		
 		Role[] roles = Role.values();
 		for(int i = 0; i < roles.length; i++){

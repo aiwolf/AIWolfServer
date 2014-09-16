@@ -12,7 +12,7 @@ import org.aiwolf.server.net.TcpipServer;
 /**
  * Start TCP/IP Server
  * @author tori
- *
+ * @deprecated
  */
 public class ServerStartMain {
 

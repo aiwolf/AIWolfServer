@@ -77,7 +77,7 @@ public class TcpipServer implements GameServer {
 		
 		socketAgentMap = new BidiMap<Socket, Agent>();
 		String loggerName = this.getClass().getSimpleName();
-//		serverLogger = Logger.getLogger(loggerName);
+		serverLogger = Logger.getLogger(loggerName);
 //		serverLogger = AiWolfLoggerFactory.getLogger(loggerName);
 //		serverLogger.setLevel(Level.FINER);
 		//		try {
@@ -121,7 +121,7 @@ public class TcpipServer implements GameServer {
 				socketAgentMap.put(socket, agent);
 				
 				System.out.printf("Connect %s ( %d/%d )\n", agent, socketAgentMap.size(), limit);
-//				serverLogger.info(String.format("Connect %s ( %d/%d )", agent, socketAgentMap.size(), limit));
+				serverLogger.info(String.format("Connect %s ( %d/%d )", agent, socketAgentMap.size(), limit));
 			}
 	    }
 	    svsock.close();
@@ -152,7 +152,7 @@ public class TcpipServer implements GameServer {
 				Packet packet = new Packet(request, gameData.getFinalGameInfoToSend(agent));
 				message = DataConverter.getInstance().convert(packet);
 			}
-//			serverLogger.info("=>"+agent+":"+message);
+			serverLogger.info("=>"+agent+":"+message);
 
 			Socket sock = socketAgentMap.getKey(agent);
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
@@ -177,7 +177,7 @@ public class TcpipServer implements GameServer {
 			send(agent, request);
 			
 	        String line = br.readLine();
-//			serverLogger.info("<="+agent+":"+line);
+			serverLogger.info("<="+agent+":"+line);
 
 	        if(request == Request.Talk || request == Request.Whisper || request == Request.Name || request == Request.Role){
 	        	return line;

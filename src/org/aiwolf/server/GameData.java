@@ -185,7 +185,7 @@ public class GameData {
 				for(Vote vote:yesterday.getAttackVoteList()){
 					attackVoteList.add(new VoteToSend(vote));
 				}
-				gi.setVoteList(attackVoteList);
+				gi.setAttackVoteList(attackVoteList);
 			}
 		}
 		List<TalkToSend> talkList = new ArrayList<TalkToSend>();
@@ -201,25 +201,28 @@ public class GameData {
 		gi.setStatusMap(statusMap);
 		
 		LinkedHashMap<Integer, String> roleMap = new LinkedHashMap<Integer, String>();
-		roleMap.put(agent.getAgentIdx(), agentRoleMap.get(agent).toString());
-		if (today.getRole(agent).equals(Role.werewolf)) {
-			List<TalkToSend> whisperList = new ArrayList<TalkToSend>();
-			for(Talk talk:today.getWhisperList()){
-				whisperList.add(new TalkToSend(talk));
-			}
-			gi.setWhisperList(whisperList);
-			
-			for (Agent target : today.getAgentList()) {
-				if (today.getRole(target) == Role.werewolf) {
-					// wolfList.add(target);
-					roleMap.put(target.getAgentIdx(), Role.werewolf.toString());
+		Role role = agentRoleMap.get(agent);
+		if(role != null){
+			roleMap.put(agent.getAgentIdx(), role.toString());
+			if (today.getRole(agent).equals(Role.werewolf)) {
+				List<TalkToSend> whisperList = new ArrayList<TalkToSend>();
+				for(Talk talk:today.getWhisperList()){
+					whisperList.add(new TalkToSend(talk));
+				}
+				gi.setWhisperList(whisperList);
+				
+				for (Agent target : today.getAgentList()) {
+					if (today.getRole(target) == Role.werewolf) {
+						// wolfList.add(target);
+						roleMap.put(target.getAgentIdx(), Role.werewolf.toString());
+					}
 				}
 			}
-		}
-		if (today.getRole(agent).equals(Role.freemason)) {
-			for (Agent target : today.getAgentList()) {
-				if (today.getRole(target) == Role.freemason) {
-					roleMap.put(target.getAgentIdx(), Role.freemason.toString());
+			if (today.getRole(agent).equals(Role.freemason)) {
+				for (Agent target : today.getAgentList()) {
+					if (today.getRole(target) == Role.freemason) {
+						roleMap.put(target.getAgentIdx(), Role.freemason.toString());
+					}
 				}
 			}
 		}

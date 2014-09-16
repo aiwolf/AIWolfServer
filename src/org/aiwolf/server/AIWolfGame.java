@@ -120,7 +120,8 @@ public class AIWolfGame {
 		gameDataMap = new TreeMap<Integer, GameData>();
 		gameData = new GameData(gameSetting);
 		agentNameMap = new HashMap<Agent, String>();
-
+		gameServer.setGameData(gameData);
+		
 		List<Agent> agentList = gameServer.getConnectedAgentList();
 
 		if(agentList.size() != gameSetting.getPlayerNum()){
