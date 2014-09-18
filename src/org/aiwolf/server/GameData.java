@@ -170,18 +170,18 @@ public class GameData {
 				gi.setVoteList(voteList);
 			}
 			
-			if (today.getRole(agent).equals(Role.medium) && executed != null) {
+			if (today.getRole(agent).equals(Role.MEDIUM) && executed != null) {
 				Species result = yesterday.getRole(executed).getSpecies();
 				gi.setMediumResult(new JudgeToSend(new Judge(day, agent, executed, result)));
 			}
-			if (today.getRole(agent).equals(Role.seer)) {
+			if (today.getRole(agent).equals(Role.SEER)) {
 				Judge divine = yesterday.getDivine();
 				if (divine != null && divine.getTarget() != null) {
 					Species result = yesterday.getRole(divine.getTarget()).getSpecies();
 					gi.setDivineResult(new JudgeToSend(new Judge(day, agent, divine.getTarget(), result)));
 				}
 			}
-			if (today.getRole(agent).equals(Role.werewolf)) {
+			if (today.getRole(agent).equals(Role.WEREWOLF)) {
 				List<VoteToSend> attackVoteList = new ArrayList<VoteToSend>();
 				for(Vote vote:yesterday.getAttackVoteList()){
 					attackVoteList.add(new VoteToSend(vote));
@@ -205,7 +205,7 @@ public class GameData {
 		Role role = agentRoleMap.get(agent);
 		if(role != null){
 			roleMap.put(agent.getAgentIdx(), role.toString());
-			if (today.getRole(agent).equals(Role.werewolf)) {
+			if (today.getRole(agent).equals(Role.WEREWOLF)) {
 				List<TalkToSend> whisperList = new ArrayList<TalkToSend>();
 				for(Talk talk:today.getWhisperList()){
 					whisperList.add(new TalkToSend(talk));
@@ -213,16 +213,16 @@ public class GameData {
 				gi.setWhisperList(whisperList);
 				
 				for (Agent target : today.getAgentList()) {
-					if (today.getRole(target) == Role.werewolf) {
+					if (today.getRole(target) == Role.WEREWOLF) {
 						// wolfList.add(target);
-						roleMap.put(target.getAgentIdx(), Role.werewolf.toString());
+						roleMap.put(target.getAgentIdx(), Role.WEREWOLF.toString());
 					}
 				}
 			}
-			if (today.getRole(agent).equals(Role.freemason)) {
+			if (today.getRole(agent).equals(Role.FREEMASON)) {
 				for (Agent target : today.getAgentList()) {
-					if (today.getRole(target) == Role.freemason) {
-						roleMap.put(target.getAgentIdx(), Role.freemason.toString());
+					if (today.getRole(target) == Role.FREEMASON) {
+						roleMap.put(target.getAgentIdx(), Role.FREEMASON.toString());
 					}
 				}
 			}
@@ -425,10 +425,10 @@ public class GameData {
 		gameData.day = this.day+1;
 		gameData.agentStatusMap = new HashMap<Agent, Status>(agentStatusMap);
 		if(executed != null){
-			gameData.agentStatusMap.put(executed, Status.dead);
+			gameData.agentStatusMap.put(executed, Status.DEAD);
 		}
 		if(attacked != null){
-			gameData.agentStatusMap.put(attacked, Status.dead);
+			gameData.agentStatusMap.put(attacked, Status.DEAD);
 		}
 		gameData.agentRoleMap = new HashMap<Agent, Role>(agentRoleMap);
 		

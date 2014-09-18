@@ -153,10 +153,10 @@ public class AIWolfGame {
 			List<Agent> requestedAgentList = requestRoleMap.get(role);
 			for(int i = 0; i < gameSetting.getRoleNum(role); i++){
 				if(requestedAgentList.isEmpty()){
-					gameData.addAgent(noRequestAgentList.remove(0), Status.alive, role);
+					gameData.addAgent(noRequestAgentList.remove(0), Status.ALIVE, role);
 				}
 				else{
-					gameData.addAgent(requestedAgentList.remove(0), Status.alive, role);
+					gameData.addAgent(requestedAgentList.remove(0), Status.ALIVE, role);
 				}
 			}
 		}
@@ -225,10 +225,10 @@ public class AIWolfGame {
 		int humanSide = 0;
 		int wolfSide = 0;
 		for(Agent agent:gameData.getAgentList()){
-			if(gameData.getStatus(agent) == Status.dead){
+			if(gameData.getStatus(agent) == Status.DEAD){
 				continue;
 			}
-			if(gameData.getRole(agent).getSpecies() == Species.Human){
+			if(gameData.getRole(agent).getSpecies() == Species.HUMAN){
 				humanSide++;
 			}
 			else{
@@ -236,10 +236,10 @@ public class AIWolfGame {
 			}
 		}
 		if(wolfSide == 0){
-			return Team.villager;
+			return Team.VILLAGER;
 		}
 		else if(humanSide <= wolfSide){
-			return Team.werewolf;
+			return Team.WEREWOLF;
 		}
 		else{
 			return null;
@@ -336,14 +336,14 @@ public class AIWolfGame {
 		
 		List<Vote> voteList = gameData.getVoteList();
 		Agent target = getVotedAgent(voteList);
-		if(gameData.getStatus(target) == Status.alive){
+		if(gameData.getStatus(target) == Status.ALIVE){
 			gameData.setExecuteTarget(target);
 			gameLogger.info(String.format("%d,execute,%d,%s", gameData.getDay(), target.getAgentIdx(), gameData.getRole(target)));
 		}
 		
 		
 		//Attack
-		if(!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getExecuted()) == Role.werewolf)){
+		if(!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getExecuted()) == Role.WEREWOLF)){
 			List<Vote> attackCandidateList = gameData.getAttackVoteList();
 			Agent attacked = getAttackVotedAgent(attackCandidateList);
 			
@@ -372,7 +372,7 @@ public class AIWolfGame {
 	protected Agent getVotedAgent(List<Vote> voteList) {
 		Counter<Agent> counter = new Counter<Agent>();
 		for(Vote vote:voteList){
-			if(gameData.getStatus(vote.getTarget()) == Status.alive){
+			if(gameData.getStatus(vote.getTarget()) == Status.ALIVE){
 				counter.add(vote.getTarget());
 			}
 		}
@@ -404,7 +404,7 @@ public class AIWolfGame {
 	protected Agent getAttackVotedAgent(List<Vote> voteList) {
 		Counter<Agent> counter = new Counter<Agent>();
 		for(Vote vote:voteList){
-			if(gameData.getStatus(vote.getTarget()) == Status.alive && gameData.getRole(vote.getTarget()) != Role.werewolf){
+			if(gameData.getStatus(vote.getTarget()) == Status.ALIVE && gameData.getRole(vote.getTarget()) != Role.WEREWOLF){
 				counter.add(vote.getTarget());
 			}
 		}
@@ -485,7 +485,7 @@ public class AIWolfGame {
 			boolean continueWhisper = false;
 			Collections.shuffle(alivelist);
 			for(Agent agent:alivelist){
-				if(gameData.getRole(agent) == Role.werewolf){
+				if(gameData.getRole(agent) == Role.WEREWOLF){
 					String whisperContent = gameServer.requestWhisper(agent);
 					if(!whisperContent.isEmpty()){
 						Talk whisper = new Talk(gameData.nextWhisperIdx(), gameData.getDay(), agent, whisperContent);
@@ -521,7 +521,7 @@ public class AIWolfGame {
 
 	protected void divine() {
 		for(Agent agent:getAliveAgentList()){
-			if(gameData.getRole(agent) == Role.seer){
+			if(gameData.getRole(agent) == Role.SEER){
 				Agent target = gameServer.requestDivineTarget(agent);
 				Judge divine = new Judge(gameData.getDay(), agent, target, gameData.getRole(target).getSpecies());
 				gameData.addDivine(divine);
@@ -534,7 +534,7 @@ public class AIWolfGame {
 
 	protected void guard() {
 		for(Agent agent:getAliveAgentList()){
-			if(gameData.getRole(agent) == Role.bodyguard){
+			if(gameData.getRole(agent) == Role.BODYGUARD){
 				Agent target = gameServer.requestGuardTarget(agent);
 				Guard guard = new Guard(gameData.getDay(), agent, target);
 				gameData.addGuard(guard);
@@ -548,7 +548,7 @@ public class AIWolfGame {
 
 	protected void attack() {
 		for(Agent agent:getAliveAgentList()){
-			if(gameData.getRole(agent) == Role.werewolf){
+			if(gameData.getRole(agent) == Role.WEREWOLF){
 				Agent target = gameServer.requestAttackTarget(agent);
 				Vote attackVote = new Vote(gameData.getDay(), agent, target);
 				gameData.addAttack(attackVote);
@@ -566,7 +566,7 @@ public class AIWolfGame {
 	protected List<Agent> getAliveAgentList(){
 		List<Agent> agentList = new ArrayList<Agent>();
 		for(Agent agent:gameData.getAgentList()){
-			if(gameData.getStatus(agent) == Status.alive){
+			if(gameData.getStatus(agent) == Status.ALIVE){
 				agentList.add(agent);
 			}
 		}
@@ -574,11 +574,11 @@ public class AIWolfGame {
 	}
 
 	protected List<Agent> getAliveHumanList(){
-		return gameData.getFilteredAgentList(getAliveAgentList(), Species.Human);
+		return gameData.getFilteredAgentList(getAliveAgentList(), Species.HUMAN);
 	}
 
 	protected List<Agent> getAliveWolfList(){
-		return gameData.getFilteredAgentList(getAliveAgentList(), Species.Werewolf);
+		return gameData.getFilteredAgentList(getAliveAgentList(), Species.WEREWOLF);
 	}
 
 
