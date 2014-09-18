@@ -1,3 +1,4 @@
+package org.aiwolf.server.bin;
 
 import java.io.File;
 import java.io.IOException;

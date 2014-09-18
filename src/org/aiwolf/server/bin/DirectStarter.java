@@ -1,3 +1,5 @@
+package org.aiwolf.server.bin;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.aiwolf.common.bin.ClientStarter;
 import org.aiwolf.common.data.Player;
 import org.aiwolf.common.net.GameSettingEntity;
 import org.aiwolf.common.util.CalendarTools;

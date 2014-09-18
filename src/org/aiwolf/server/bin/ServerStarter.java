@@ -1,3 +1,4 @@
+package org.aiwolf.server.bin;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.Random;
