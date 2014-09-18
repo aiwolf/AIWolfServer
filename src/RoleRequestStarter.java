@@ -10,7 +10,7 @@ import java.util.Random;
 
 import org.aiwolf.common.data.Player;
 import org.aiwolf.common.data.Role;
-import org.aiwolf.common.net.GameSetting;
+import org.aiwolf.common.net.GameSettingEntity;
 import org.aiwolf.common.util.CalendarTools;
 import org.aiwolf.common.util.Pair;
 import org.aiwolf.server.AIWolfGame;
@@ -107,7 +107,7 @@ public class RoleRequestStarter {
 		File logFile = new File(String.format("%s/aiwolfGame%s.log", logDir, timeString));
 		
 		DirectConnectServer gameServer = new DirectConnectServer(playerMap);
-		GameSetting gameSetting = GameSetting.getDefaultGame(playerNum);
+		GameSettingEntity gameSetting = GameSettingEntity.getDefaultGame(playerNum);
 		AIWolfGame game = new AIWolfGame(gameSetting, gameServer);
 		game.setLogFile(logFile);
 		game.setRand(new Random());

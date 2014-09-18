@@ -20,7 +20,7 @@ import org.aiwolf.common.data.Agent;
 import org.aiwolf.common.data.Request;
 import org.aiwolf.common.data.Role;
 import org.aiwolf.common.net.DataConverter;
-import org.aiwolf.common.net.GameSetting;
+import org.aiwolf.common.net.GameSettingEntity;
 import org.aiwolf.common.net.Packet;
 import org.aiwolf.common.util.AiWolfLoggerFactory;
 import org.aiwolf.common.util.BidiMap;
@@ -64,7 +64,7 @@ public class TcpipServer implements GameServer {
 	/**
 	 * Game Setting
 	 */
-	GameSetting gameSetting;
+	GameSettingEntity gameSetting;
 	
 	/**
 	 * 
@@ -77,7 +77,7 @@ public class TcpipServer implements GameServer {
 	 * @param port
 	 * @param limit
 	 */
-	public TcpipServer(int port, int limit, GameSetting gameSetting){
+	public TcpipServer(int port, int limit, GameSettingEntity gameSetting){
 		this.gameSetting = gameSetting;
 		this.port = port;
 		this.limit = limit;
@@ -270,6 +270,13 @@ public class TcpipServer implements GameServer {
 	public void setGameData(GameData gameData) {
 		this.gameData = gameData;
 	}
+	
+
+	@Override
+	public void setGameSetting(GameSettingEntity gameSetting) {
+		this.gameSetting = gameSetting;
+	}
+
 
 	@Override
 	public void dayStart(Agent agent) {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.aiwolf.common.data.Agent;
 import org.aiwolf.common.data.Role;
+import org.aiwolf.common.net.GameSettingEntity;
 import org.aiwolf.server.GameData;
 
 public interface GameServer {
@@ -15,7 +16,12 @@ public interface GameServer {
 	 */
 	List<Agent> getConnectedAgentList();
 
-
+	/**
+	 * set GameSetting 
+	 * @param gameSetting
+	 */
+	void setGameSetting(GameSettingEntity gameSetting);
+	
 	/**
 	 * 
 	 * @param agent
@@ -102,5 +108,5 @@ public interface GameServer {
 	 * close connections
 	 */
 	void close();
-	
+
 }

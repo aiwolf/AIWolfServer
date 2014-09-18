@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.aiwolf.common.data.Player;
-import org.aiwolf.common.net.GameSetting;
+import org.aiwolf.common.net.GameSettingEntity;
 import org.aiwolf.common.util.CalendarTools;
 import org.aiwolf.common.util.Counter;
 import org.aiwolf.server.AIWolfGame;
@@ -69,7 +69,7 @@ public class DirectStarter {
 		File logFile = new File(String.format("%s/aiwolfGame%s.log", logDir, timeString));
 		
 		GameServer gameServer = new DirectConnectServer(playerList);
-		GameSetting gameSetting = GameSetting.getDefaultGame(playerNum);
+		GameSettingEntity gameSetting = GameSettingEntity.getDefaultGame(playerNum);
 		AIWolfGame game = new AIWolfGame(gameSetting, gameServer);
 		game.setLogFile(logFile);
 		game.setRand(new Random());

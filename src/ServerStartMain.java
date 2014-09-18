@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.logging.Handler;
 import java.util.logging.StreamHandler;
 
-import org.aiwolf.common.net.GameSetting;
+import org.aiwolf.common.net.GameSettingEntity;
 import org.aiwolf.common.util.ServerLogFormat;
 import org.aiwolf.server.AIWolfGame;
 import org.aiwolf.server.net.TcpipServer;
@@ -25,7 +25,7 @@ public class ServerStartMain {
 	public static void main(String[] args) throws SocketTimeoutException, IOException {
 		int port = 10000;
 		int playerNum = 12;
-		GameSetting gameSetting = GameSetting.getDefaultGame(playerNum);
+		GameSettingEntity gameSetting = GameSettingEntity.getDefaultGame(playerNum);
 		
 		TcpipServer gameServer = new TcpipServer(port, playerNum, gameSetting);
 		Handler handler = new StreamHandler(System.out, new ServerLogFormat(true));

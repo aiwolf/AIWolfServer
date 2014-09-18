@@ -17,7 +17,7 @@ import org.aiwolf.common.data.Team;
 import org.aiwolf.common.data.Vote;
 import org.aiwolf.common.net.GameInfo;
 import org.aiwolf.common.net.GameInfoToSend;
-import org.aiwolf.common.net.GameSetting;
+import org.aiwolf.common.net.GameSettingEntity;
 import org.aiwolf.common.net.JudgeToSend;
 import org.aiwolf.common.net.TalkToSend;
 import org.aiwolf.common.net.VoteToSend;
@@ -104,9 +104,9 @@ public class GameData {
 	/**
 	 * ゲームの設定
 	 */
-	GameSetting gameSetting;
+	GameSettingEntity gameSetting;
 	
-	protected GameData(GameSetting gameSetting){
+	protected GameData(GameSettingEntity gameSetting){
 		agentStatusMap = new LinkedHashMap<Agent, Status>();
 		agentRoleMap = new HashMap<Agent, Role>();
 		talkList = new ArrayList<Talk>();

@@ -30,7 +30,7 @@ import org.aiwolf.common.data.Talk;
 import org.aiwolf.common.data.Team;
 import org.aiwolf.common.data.Vote;
 import org.aiwolf.common.net.GameInfo;
-import org.aiwolf.common.net.GameSetting;
+import org.aiwolf.common.net.GameSettingEntity;
 import org.aiwolf.common.util.AiWolfLoggerFactory;
 import org.aiwolf.common.util.Counter;
 import org.aiwolf.server.net.GameServer;
@@ -48,7 +48,7 @@ public class AIWolfGame {
 	/**
 	 * Settings of the game
 	 */
-	GameSetting gameSetting;
+	GameSettingEntity gameSetting;
 
 	/**
 	 * server to connect clients
@@ -80,7 +80,7 @@ public class AIWolfGame {
 	/**
 	 *
 	 */
-	public AIWolfGame(GameSetting gameSeting, GameServer gameServer) {
+	public AIWolfGame(GameSettingEntity gameSeting, GameServer gameServer) {
 		rand = new Random();
 		this.gameSetting = gameSeting;
 		this.gameServer = gameServer;
@@ -164,6 +164,7 @@ public class AIWolfGame {
 		gameDataMap.put(gameData.getDay(), gameData);
 
 		gameServer.setGameData(gameData);
+		gameServer.setGameSetting(gameSetting);
 		for(Agent agent:agentList){
 			gameServer.init(agent);
 			agentNameMap.put(agent, gameServer.requestName(agent));

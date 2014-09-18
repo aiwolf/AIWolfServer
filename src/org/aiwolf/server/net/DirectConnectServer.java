@@ -9,6 +9,8 @@ import java.util.Map;
 import org.aiwolf.common.data.Agent;
 import org.aiwolf.common.data.Player;
 import org.aiwolf.common.data.Role;
+import org.aiwolf.common.net.GameSetting;
+import org.aiwolf.common.net.GameSettingEntity;
 import org.aiwolf.server.GameData;
 
 /**
@@ -30,6 +32,11 @@ public class DirectConnectServer implements GameServer {
 	 * GameData
 	 */
 	GameData gameData;
+	
+	/**
+	 * Game Setting
+	 */
+	GameSettingEntity gameSetting;
 	
 	public DirectConnectServer(List<Player> playerList){
 		agentPlayerMap = new LinkedHashMap<Agent, Player>();
@@ -61,11 +68,16 @@ public class DirectConnectServer implements GameServer {
 	public void setGameData(GameData gameData) {
 		this.gameData = gameData;
 	}
+	
+	@Override
+	public void setGameSetting(GameSettingEntity gameSetting){
+		this.gameSetting = gameSetting;
+	}
 
 
 	@Override
 	public void init(Agent agent) {
-		agentPlayerMap.get(agent).initialize(gameData.getGameInfo(agent));
+		agentPlayerMap.get(agent).initialize(gameData.getGameInfo(agent), gameSetting);
 	}
 	
 	@Override
