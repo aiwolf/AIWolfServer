@@ -56,6 +56,19 @@ public class DirectStarter {
 		}
 
 		
+		start(clsCountMap, logDir);
+	}
+
+	/**
+	 * 
+	 * @param clsCountMap
+	 * @param logDir
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	public static void start(Counter<String> clsCountMap, String logDir) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException {
 		int playerNum = clsCountMap.getTotalCount();
 		List<Player> playerList = new ArrayList<Player>();
 //		for(int i = 0; i < playerNum; i++){
@@ -74,8 +87,8 @@ public class DirectStarter {
 		GameServer gameServer = new DirectConnectServer(playerList);
 		GameSettingEntity gameSetting = GameSettingEntity.getDefaultGame(playerNum);
 		AIWolfGame game = new AIWolfGame(gameSetting, gameServer);
-		game.setLogFile(logFile);
-		game.setRand(new Random());
+//		game.setLogFile(logFile);
+		game.setRand(new Random(gameSetting.getRandomSeed()));
 //		game.init();
 		game.start();
 //		game.finish();
