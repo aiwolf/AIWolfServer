@@ -257,14 +257,28 @@ public class AIWolfGame {
 	private void log() {
 		GameData yesterday = gameData.getDayBefore();
 		
-		System.out.println("===========");
-		System.out.printf("Day %02d\n", gameData.getDay());
+		System.out.println("=============================================");
 		if(yesterday != null){
+			System.out.printf("Day %02d\n", yesterday.getDay());
+			System.out.println("========talk========");
+			for(Talk talk:yesterday.getTalkList()){
+				System.out.println(talk);
+			}
+			System.out.println("========Whisper========");
+			for(Talk whisper:yesterday.getWhisperList()){
+				System.out.println(whisper);
+			}
 			
+			System.out.println("========Actions========");
 			for(Vote vote:yesterday.getVoteList()){
 				System.out.printf("Vote:%s->%s\n", vote.getAgent(), vote.getTarget());
 			}
 			
+//			System.out.println("Attack Vote Result");
+			for(Vote vote:yesterday.getAttackVoteList()){
+				System.out.printf("AttackVote:%s->%s\n", vote.getAgent(), vote.getTarget());
+			}
+
 			Judge divine = yesterday.getDivine();
 			System.out.printf("%s executed\n", yesterday.getExecuted());
 			if(divine != null){
@@ -274,13 +288,12 @@ public class AIWolfGame {
 			if(guard != null){
 				System.out.printf("%s guarded\n", guard);
 			}
-
-			System.out.println("Attack Vote Result");
-			for(Vote vote:yesterday.getAttackVoteList()){
-				System.out.printf("AttackVote:%s->%s\n", vote.getAgent(), vote.getTarget());
+			Agent attacked = yesterday.getAttacked();
+			if(attacked != null){
+				System.out.printf("%s attacked\n", attacked);
 			}
-			System.out.printf("%s attacked\n", yesterday.getAttacked());		
-		}		
+		}
+		System.out.println("======");
 		List<Agent> agentList = gameData.getAgentList();
 		Collections.sort(agentList, new Comparator<Agent>() {
 			@Override
@@ -288,7 +301,6 @@ public class AIWolfGame {
 				return o1.getAgentIdx()-o2.getAgentIdx();
 			}
 		});
-		System.out.println("======");
 		for(Agent agent:agentList){
 			System.out.printf("%s\t%s\t%s\t%s", agent, agentNameMap.get(agent), gameData.getStatus(agent), gameData.getRole(agent));
 			if(yesterday != null){
@@ -309,19 +321,9 @@ public class AIWolfGame {
 			}
 			System.out.println();
 		}
-		System.out.printf("%d-%d\n", getAliveHumanList().size(), getAliveWolfList().size());
-		if(yesterday != null){
-			for(Talk talk:yesterday.getTalkList()){
-				System.out.println(talk);
-			}
-		}
-		if(yesterday != null){
-			for(Talk whisper:yesterday.getWhisperList()){
-				System.out.println(whisper);
-			}
-		}
+		System.out.printf("Human:%d\nWerewolf:%d\n", getAliveHumanList().size(), getAliveWolfList().size());
 
-		System.out.println("===========");
+		System.out.println("=============================================");
 	}
 
 
