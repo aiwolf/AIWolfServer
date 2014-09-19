@@ -97,6 +97,12 @@ public class DirectConnectServer implements GameServer {
 	}
 	
 	@Override
+	public void dayFinish(Agent agent) {
+		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
+//		agentPlayerMap.get(agent).dayStart();
+	}
+	
+	@Override
 	public String requestTalk(Agent agent) {
 		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
 		return agentPlayerMap.get(agent).talk();

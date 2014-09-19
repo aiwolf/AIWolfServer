@@ -100,6 +100,12 @@ public interface GameServer {
 	void dayStart(Agent agent);
 
 	/**
+	 * called when day finished
+	 * @param agent
+	 */
+	void dayFinish(Agent agent);
+
+	/**
 	 * send finished message
 	 */
 	void finish(Agent agent);

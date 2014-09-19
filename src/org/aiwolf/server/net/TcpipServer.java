@@ -207,6 +207,15 @@ public class TcpipServer implements GameServer {
 		send(agent, Request.Initialize);
 	}
 
+	@Override
+	public void dayStart(Agent agent) {
+		send(agent, Request.DailyInitialize);
+	}
+
+	@Override
+	public void dayFinish(Agent agent){
+		send(agent, Request.DailyFinish);
+	}
 
 	@Override
 	public String requestName(Agent agent) {
@@ -277,11 +286,6 @@ public class TcpipServer implements GameServer {
 		this.gameSetting = gameSetting;
 	}
 
-
-	@Override
-	public void dayStart(Agent agent) {
-		send(agent, Request.DailyInitialize);
-	}
 
 	/**
 	 * @return isWaitForClient
