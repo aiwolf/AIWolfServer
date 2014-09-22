@@ -153,10 +153,10 @@ public class GameData {
 
 		if (yesterday != null) {
 			Agent executed = yesterday.getExecuted();
-
 			if(executed != null){
 				gi.setExecutedAgent(executed.getAgentIdx());
 			}
+
 			Agent attacked = yesterday.getAttacked();
 			if(attacked != null){
 				gi.setAttackedAgent(attacked.getAgentIdx());
@@ -187,6 +187,13 @@ public class GameData {
 					attackVoteList.add(new VoteToSend(vote));
 				}
 				gi.setAttackVoteList(attackVoteList);
+			}
+			if(today.getRole(agent).equals(Role.BODYGUARD)){
+				Guard guard = yesterday.getGuard();
+				if(guard != null){
+					gi.setGuardedAgent(guard.getTarget().getAgentIdx());
+				}
+				
 			}
 		}
 		List<TalkToSend> talkList = new ArrayList<TalkToSend>();

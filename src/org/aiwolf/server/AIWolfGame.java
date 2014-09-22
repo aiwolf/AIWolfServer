@@ -371,8 +371,9 @@ public class AIWolfGame {
 				}
 			}
 		}
-		
-		
+		for(Agent agent:gameData.getAgentList()){
+			gameServer.dayFinish(agent);
+		}
 		gameData = gameData.nextDay();
 		gameDataMap.put(gameData.getDay(), gameData);
 		gameServer.setGameData(gameData);
