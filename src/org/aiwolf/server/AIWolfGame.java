@@ -345,11 +345,11 @@ public class AIWolfGame {
 		//Vote
 		
 		List<Vote> voteList = gameData.getVoteList();
-		Agent target = getVotedAgent(voteList);
-		if(gameData.getStatus(target) == Status.ALIVE){
-			gameData.setExecuteTarget(target);
+		Agent executed = getVotedAgent(voteList);
+		if(gameData.getStatus(executed) == Status.ALIVE){
+			gameData.setExecuteTarget(executed);
 			if(gameLogger != null){
-				gameLogger.info(String.format("%d,execute,%d,%s", gameData.getDay(), target.getAgentIdx(), gameData.getRole(target)));
+				gameLogger.info(String.format("%d,execute,%d,%s", gameData.getDay(), executed.getAgentIdx(), gameData.getRole(executed)));
 			}
 		}
 		
@@ -358,6 +358,9 @@ public class AIWolfGame {
 		if(!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getExecuted()) == Role.WEREWOLF)){
 			List<Vote> attackCandidateList = gameData.getAttackVoteList();
 			Agent attacked = getAttackVotedAgent(attackCandidateList);
+			if(attacked == executed){
+				attacked = null;
+			}
 			
 			if((gameData.getGuard() == null || !gameData.getGuard().getTarget().equals(attacked)) && attacked != null){
 				gameData.setAttackedTarget(attacked);
