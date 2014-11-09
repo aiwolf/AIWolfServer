@@ -130,6 +130,13 @@ public class RoleRequestStarter {
 		start(playerNum, playerMap, logDir);
 	}
 	
+	/**
+	 * すべてのプレイヤーインスタンスとそのRoleを設定して開始
+	 * @param playerNum
+	 * @param playerMap
+	 * @param logDir
+	 * @throws IOException
+	 */
 	public static void start(int playerNum, Map<Player, Role> playerMap, String logDir) throws IOException {
 		String timeString = CalendarTools.toDateTime(System.currentTimeMillis()).replaceAll("[\\s-/:]", "");
 		File logFile = new File(String.format("%s/aiwolfGame%s.log", logDir, timeString));
@@ -137,9 +144,7 @@ public class RoleRequestStarter {
 		DirectConnectServer gameServer = new DirectConnectServer(playerMap);
 		GameSettingEntity gameSetting = GameSettingEntity.getDefaultGame(playerNum);
 		AIWolfGame game = new AIWolfGame(gameSetting, gameServer);
-		if(logDir != null){
-			game.setLogFile(logFile);
-		}
+		game.setLogFile(logFile);
 		game.setRand(new Random());
 		game.start();
 	}
