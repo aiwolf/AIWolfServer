@@ -18,7 +18,8 @@ import org.aiwolf.server.AIWolfGame;
 import org.aiwolf.server.net.DirectConnectServer;
 
 /**
- * 役割を指定してスタートするStarter
+ * 役割を指定してスタートするStarter<br>
+ * DirectStarter
  * @author tori
  *
  */
@@ -47,7 +48,7 @@ public class RoleRequestStarter {
 
 
 		List<Pair<String, Role>> playerRoleList = new ArrayList<Pair<String,Role>>();
-		String defaultClsName = Class.forName("org.aiwolf.client.base.smpl.SamplePlayer").getName();
+		String defaultClsName = Class.forName("org.aiwolf.client.base.smpl.SampleRoleAssignPlayer").getName();
 		int playerNum = -1;
 		String logDir = "./log/";
 		for(int i = 0; i < args.length; i++){
@@ -104,13 +105,41 @@ public class RoleRequestStarter {
 			playerMap.put((Player) Class.forName(defaultClsName).newInstance(), null);
 		}
 		
+		start(playerNum, playerMap, logDir);
+	}
+
+	/**
+	 * 一人のRoleを指定してDirectに実行
+	 * @param player
+	 * @param role
+	 * @param playerNum
+	 * @param defaultClsName
+	 * @param logDir
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	public static void start(Player player, Role role, int playerNum, String defaultClsName, String logDir) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException{
+		Map<Player, Role> playerMap = new HashMap<Player, Role>();
+
+		playerMap.put(player, role);
+		while(playerMap.size() < playerNum){
+			playerMap.put((Player) Class.forName(defaultClsName).newInstance(), null);
+		}
+		start(playerNum, playerMap, logDir);
+	}
+	
+	public static void start(int playerNum, Map<Player, Role> playerMap, String logDir) throws IOException {
 		String timeString = CalendarTools.toDateTime(System.currentTimeMillis()).replaceAll("[\\s-/:]", "");
 		File logFile = new File(String.format("%s/aiwolfGame%s.log", logDir, timeString));
 		
 		DirectConnectServer gameServer = new DirectConnectServer(playerMap);
 		GameSettingEntity gameSetting = GameSettingEntity.getDefaultGame(playerNum);
 		AIWolfGame game = new AIWolfGame(gameSetting, gameServer);
-		game.setLogFile(logFile);
+		if(logDir != null){
+			game.setLogFile(logFile);
+		}
 		game.setRand(new Random());
 		game.start();
 	}
