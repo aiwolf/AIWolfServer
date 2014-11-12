@@ -582,8 +582,12 @@ public class AIWolfGame {
 	 */
 	protected void vote() {
 
+		List<Agent> agentList = getAliveAgentList();
 		for(Agent agent:getAliveAgentList()){
 			Agent target = gameServer.requestVote(agent);
+			if(gameData.getStatus(target) == Status.DEAD){
+				target = getRandomAgent(agentList, agent);
+			}
 			Vote vote = new Vote(gameData.getDay(), agent, target);
 			gameData.addVote(vote);
 			
@@ -593,11 +597,32 @@ public class AIWolfGame {
 		}
 	}
 
+	/**
+	 * ランダムなエージェントを獲得する．ただし，agentを除く．
+	 * @param agentList
+	 * @param agent
+	 * @return
+	 */
+	protected Agent getRandomAgent(List<Agent> agentList, Agent agent) {
+		Agent target;
+		boolean removed = agentList.remove(agent);
+		target = agentList.get(rand.nextInt(agentList.size()));
+		if(removed){
+			agentList.add(agent);
+		}
+		return target;
+	}
+
 
 	protected void divine() {
+		List<Agent> agentList = getAliveAgentList();
 		for(Agent agent:getAliveAgentList()){
 			if(gameData.getRole(agent) == Role.SEER){
 				Agent target = gameServer.requestDivineTarget(agent);
+				if(gameData.getStatus(target) == Status.DEAD){
+					target = getRandomAgent(agentList, agent);
+				}
+				
 				Judge divine = new Judge(gameData.getDay(), agent, target, gameData.getRole(target).getSpecies());
 				gameData.addDivine(divine);
 
@@ -610,9 +635,13 @@ public class AIWolfGame {
 
 
 	protected void guard() {
+		List<Agent> agentList = getAliveAgentList();
 		for(Agent agent:getAliveAgentList()){
 			if(gameData.getRole(agent) == Role.BODYGUARD){
 				Agent target = gameServer.requestGuardTarget(agent);
+				if(gameData.getStatus(target) == Status.DEAD){
+					target = getRandomAgent(agentList, agent);
+				}
 				Guard guard = new Guard(gameData.getDay(), agent, target);
 				gameData.addGuard(guard);
 				
@@ -625,9 +654,21 @@ public class AIWolfGame {
 
 
 	protected void attack() {
+		List<Agent> agentList = getAliveAgentList();
+		Iterator<Agent> it = agentList.iterator();
+		while(it.hasNext()){
+			Agent agent = it.next();
+			if(gameData.getRole(agent) == Role.WEREWOLF){
+				it.remove();
+			}
+		}
+		
 		for(Agent agent:getAliveAgentList()){
 			if(gameData.getRole(agent) == Role.WEREWOLF){
 				Agent target = gameServer.requestAttackTarget(agent);
+				if(gameData.getStatus(target) == Status.DEAD || gameData.getRole(target) == Role.WEREWOLF){
+					target = getRandomAgent(agentList, agent);
+				}
 				Vote attackVote = new Vote(gameData.getDay(), agent, target);
 				gameData.addAttack(attackVote);
 
