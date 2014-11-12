@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -82,7 +83,7 @@ public class AIWolfGame {
 	 * Name of Agents
 	 */
 	Map<Agent, String> agentNameMap;
-	
+
 	/**
 	 *
 	 */
@@ -145,12 +146,17 @@ public class AIWolfGame {
 		for(Agent agent:agentList){
 			Role requestedRole = gameServer.requestRequestRole(agent);
 			if(requestedRole != null){
-				requestRoleMap.get(requestedRole).add(agent);
-				System.out.println(agent+" request "+requestedRole);
+				if(requestRoleMap.get(requestedRole).size() < gameSetting.getRoleNum(requestedRole)){
+					requestRoleMap.get(requestedRole).add(agent);
+				}
+				else{
+					noRequestAgentList.add(agent);
+				}
+//				System.out.println(agent+" request "+requestedRole);
 			}
 			else{
 				noRequestAgentList.add(agent);
-				System.out.println(agent+" request no role");
+//				System.out.println(agent+" request no role");
 			}
 		}
 		
@@ -186,12 +192,13 @@ public class AIWolfGame {
 
 //		System.out.printf("%d-%d\n", getAliveHumanList().size(), getAliveWolfList().size());
 		while(!isGameFinished()){
-			log();
+//			log();
 
 			day();
 			night();
-			gameLogger.flush();
-
+			if(gameLogger != null){
+				gameLogger.flush();
+			}
 		}
 		log();
 		finish();
@@ -216,7 +223,7 @@ public class AIWolfGame {
 		}
 		
 		for(Agent agent:gameData.getAgentList()){
-			System.out.println("Send finish to "+agent);
+//			System.out.println("Send finish to "+agent);
 			gameServer.finish(agent);
 		}
 		try {
@@ -258,6 +265,8 @@ public class AIWolfGame {
 	}
 
 	private void log() {
+	
+		
 		GameData yesterday = gameData.getDayBefore();
 		
 		System.out.println("=============================================");
@@ -334,10 +343,14 @@ public class AIWolfGame {
 		dayStart();
 		talk();
 		
-		vote();
+		if(gameData.getDay() != 0){
+			vote();
+		}
 		divine();
-		guard();
-		attack();
+		if(gameData.getDay() != 0){
+			guard();
+			attack();
+		}
 	}
 
 	/**
@@ -351,9 +364,10 @@ public class AIWolfGame {
 
 		
 		//Vote
+		
 		List<Vote> voteList = gameData.getVoteList();
 		Agent executed = getVotedAgent(voteList);
-		if(gameData.getStatus(executed) == Status.ALIVE){
+		if(gameData.getStatus(executed) == Status.ALIVE  && gameData.getDay() != 0){
 			gameData.setExecuteTarget(executed);
 			if(gameLogger != null){
 				gameLogger.log(String.format("%d,execute,%d,%s", gameData.getDay(), executed.getAgentIdx(), gameData.getRole(executed)));
@@ -361,8 +375,16 @@ public class AIWolfGame {
 		}
 		
 		//Attack
-		if(!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getExecuted()) == Role.WEREWOLF)){
+		if(!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getExecuted()) == Role.WEREWOLF) && gameData.getDay() != 0){
 			List<Vote> attackCandidateList = gameData.getAttackVoteList();
+			Iterator<Vote> it = attackCandidateList.iterator();
+			while(it.hasNext()){
+				Vote vote = it.next();
+				if(vote.getAgent() == executed){
+					it.remove();
+				}
+			}
+			
 			Agent attacked = getAttackVotedAgent(attackCandidateList);
 			if(attacked == executed){
 				attacked = null;
@@ -482,9 +504,11 @@ public class AIWolfGame {
 		for(int i = 0; i < gameSetting.getMaxTalk(); i++){
 			boolean continueTalk = false;
 
-			List<Agent> alivelist = getAliveAgentList();
-			Collections.shuffle(alivelist);
-			for(Agent agent:alivelist){
+			List<Agent> aliveList = getAliveAgentList();
+			Collections.shuffle(aliveList);
+			aliveList.removeAll(overSet);
+			aliveList.addAll(overSet);
+			for(Agent agent:aliveList){
 				if(overSet.contains(agent)){
 					continue;
 				}
@@ -495,6 +519,7 @@ public class AIWolfGame {
 						gameData.addTalk(agent, sentence);
 						if(!talkContent.equals(Talk.OVER)){
 							continueTalk = true;
+							overSet.clear();
 						}
 						else{
 							overSet.add(agent);
@@ -518,10 +543,12 @@ public class AIWolfGame {
 		//Whisper by werewolf
 		Set<Agent> overSet = new HashSet<Agent>();
 		for(int j = 0; j < gameSetting.getMaxTalk(); j++){
-			List<Agent> alivelist = getAliveAgentList();
+			List<Agent> aliveList = getAliveAgentList();
 			boolean continueWhisper = false;
-			Collections.shuffle(alivelist);
-			for(Agent agent:alivelist){
+			Collections.shuffle(aliveList);
+			aliveList.removeAll(overSet);
+			aliveList.addAll(overSet);
+			for(Agent agent:aliveList){
 				if(gameData.getRole(agent) == Role.WEREWOLF){
 					if(overSet.contains(agent)){
 						continue;
@@ -532,6 +559,7 @@ public class AIWolfGame {
 						gameData.addWisper(agent, whisper);
 						if(!whisperContent.equals(Talk.OVER)){
 							continueWhisper = true;
+							overSet.clear();
 						}
 						else{
 							overSet.add(agent);

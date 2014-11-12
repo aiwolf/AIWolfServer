@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Random;
 
 import org.aiwolf.common.data.Player;
@@ -121,7 +121,7 @@ public class RoleRequestStarter {
 	 * @throws IOException
 	 */
 	public static void start(Player player, Role role, int playerNum, String defaultClsName, String logDir) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException{
-		Map<Player, Role> playerMap = new HashMap<Player, Role>();
+		Map<Player, Role> playerMap = new LinkedHashMap<Player, Role>();
 
 		playerMap.put(player, role);
 		while(playerMap.size() < playerNum){
@@ -139,12 +139,14 @@ public class RoleRequestStarter {
 	 */
 	public static void start(int playerNum, Map<Player, Role> playerMap, String logDir) throws IOException {
 		String timeString = CalendarTools.toDateTime(System.currentTimeMillis()).replaceAll("[\\s-/:]", "");
-		File logFile = new File(String.format("%s/aiwolfGame%s.log", logDir, timeString));
-		
+	
 		DirectConnectServer gameServer = new DirectConnectServer(playerMap);
 		GameSettingEntity gameSetting = GameSettingEntity.getDefaultGame(playerNum);
 		AIWolfGame game = new AIWolfGame(gameSetting, gameServer);
-		game.setLogFile(logFile);
+		if(logDir != null){
+			File logFile = new File(String.format("%s/aiwolfGame%s.log", logDir, timeString));
+			game.setLogFile(logFile);
+		}
 		game.setRand(new Random());
 		game.start();
 	}
