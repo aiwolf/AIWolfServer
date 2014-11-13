@@ -192,7 +192,7 @@ public class AIWolfGame {
 
 //		System.out.printf("%d-%d\n", getAliveHumanList().size(), getAliveWolfList().size());
 		while(!isGameFinished()){
-//			log();
+			log();
 
 			day();
 			night();
