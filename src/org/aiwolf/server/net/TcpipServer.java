@@ -186,6 +186,9 @@ public class TcpipServer implements GameServer {
 	        String line = br.readLine();
 			serverLogger.info("<="+agent+":"+line);
 
+			if(line.isEmpty()){
+				line = null;
+			}
 	        if(request == Request.Talk || request == Request.Whisper || request == Request.Name || request == Request.Role){
 	        	return line;
 	        }

@@ -554,7 +554,7 @@ public class AIWolfGame {
 						continue;
 					}
 					String whisperContent = gameServer.requestWhisper(agent);
-					if(!whisperContent.isEmpty()){
+					if(whisperContent != null && !whisperContent.isEmpty()){
 						Talk whisper = new Talk(gameData.nextWhisperIdx(), gameData.getDay(), agent, whisperContent);
 						gameData.addWisper(agent, whisper);
 						if(!whisperContent.equals(Talk.OVER)){
@@ -585,7 +585,7 @@ public class AIWolfGame {
 		List<Agent> agentList = getAliveAgentList();
 		for(Agent agent:getAliveAgentList()){
 			Agent target = gameServer.requestVote(agent);
-			if(gameData.getStatus(target) == Status.DEAD){
+			if(gameData.getStatus(target) == Status.DEAD || target == null){
 				target = getRandomAgent(agentList, agent);
 			}
 			Vote vote = new Vote(gameData.getDay(), agent, target);
@@ -597,29 +597,12 @@ public class AIWolfGame {
 		}
 	}
 
-	/**
-	 * ランダムなエージェントを獲得する．ただし，agentを除く．
-	 * @param agentList
-	 * @param agent
-	 * @return
-	 */
-	protected Agent getRandomAgent(List<Agent> agentList, Agent agent) {
-		Agent target;
-		boolean removed = agentList.remove(agent);
-		target = agentList.get(rand.nextInt(agentList.size()));
-		if(removed){
-			agentList.add(agent);
-		}
-		return target;
-	}
-
-
 	protected void divine() {
 		List<Agent> agentList = getAliveAgentList();
 		for(Agent agent:getAliveAgentList()){
 			if(gameData.getRole(agent) == Role.SEER){
 				Agent target = gameServer.requestDivineTarget(agent);
-				if(gameData.getStatus(target) == Status.DEAD){
+				if(gameData.getStatus(target) == Status.DEAD || target == null){
 					target = getRandomAgent(agentList, agent);
 				}
 				
@@ -639,7 +622,7 @@ public class AIWolfGame {
 		for(Agent agent:getAliveAgentList()){
 			if(gameData.getRole(agent) == Role.BODYGUARD){
 				Agent target = gameServer.requestGuardTarget(agent);
-				if(gameData.getStatus(target) == Status.DEAD){
+				if(gameData.getStatus(target) == Status.DEAD || target == null){
 					target = getRandomAgent(agentList, agent);
 				}
 				Guard guard = new Guard(gameData.getDay(), agent, target);
@@ -666,7 +649,7 @@ public class AIWolfGame {
 		for(Agent agent:getAliveAgentList()){
 			if(gameData.getRole(agent) == Role.WEREWOLF){
 				Agent target = gameServer.requestAttackTarget(agent);
-				if(gameData.getStatus(target) == Status.DEAD || gameData.getRole(target) == Role.WEREWOLF){
+				if(gameData.getStatus(target) == Status.DEAD || gameData.getRole(target) == Role.WEREWOLF || target == null){
 					target = getRandomAgent(agentList, agent);
 				}
 				Vote attackVote = new Vote(gameData.getDay(), agent, target);
@@ -677,6 +660,23 @@ public class AIWolfGame {
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * ランダムなエージェントを獲得する．ただし，agentを除く．
+	 * @param agentList
+	 * @param agent
+	 * @return
+	 */
+	protected Agent getRandomAgent(List<Agent> agentList, Agent agent) {
+		Agent target;
+		boolean removed = agentList.remove(agent);
+		target = agentList.get(rand.nextInt(agentList.size()));
+		if(removed){
+			agentList.add(agent);
+		}
+		return target;
 	}
 
 	/**

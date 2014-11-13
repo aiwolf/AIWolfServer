@@ -108,72 +108,78 @@ public class DirectConnectServer implements GameServer {
 	public String requestTalk(Agent agent) {
 		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
 		String talk = agentPlayerMap.get(agent).talk();
-		if(talk == null){
-			throw new NoReturnObjectException();
-		}
-		else{
-			return talk;
-		}
+		return talk;
+		//		if(talk == null){
+//			throw new NoReturnObjectException();
+//		}
+//		else{
+//			return talk;
+//		}
 	}
 
 	@Override
 	public String requestWhisper(Agent agent) {
 		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
 		String whisper = agentPlayerMap.get(agent).whisper();
-		if(whisper == null){
-			throw new NoReturnObjectException();
-		}
-		else{
-			return whisper;
-		}
+		return whisper;
+//		if(whisper == null){
+//			throw new NoReturnObjectException();
+//		}
+//		else{
+//			return whisper;
+//		}
 	}
 
 	@Override
 	public Agent requestVote(Agent agent) {
 		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
 		Agent target = agentPlayerMap.get(agent).vote();
-		if(target == null){
-			throw new NoReturnObjectException();
-		}
-		else{
-			return target;
-		}
+		return target;
+//		if(target == null){
+//			throw new NoReturnObjectException();
+//		}
+//		else{
+//			return target;
+//		}
 	}
 
 	@Override
 	public Agent requestDivineTarget(Agent agent) {
 		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
 		Agent target = agentPlayerMap.get(agent).divine();
-		if(target == null){
-			throw new NoReturnObjectException();
-		}
-		else{
-			return target;
-		}
+		return target;
+		//		if(target == null){
+//			throw new NoReturnObjectException();
+//		}
+//		else{
+//			return target;
+//		}
 	}
 
 	@Override
 	public Agent requestGuardTarget(Agent agent) {
 		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
 		Agent target = agentPlayerMap.get(agent).guard();
-		if(target == null){
-			throw new NoReturnObjectException();
-		}
-		else{
-			return target;
-		}
+		return target;
+//		if(target == null){
+//			throw new NoReturnObjectException();
+//		}
+//		else{
+//			return target;
+//		}
 	}
 
 	@Override
 	public Agent requestAttackTarget(Agent agent) {
 		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
 		Agent target = agentPlayerMap.get(agent).attack();
-		if(target == null){
-			throw new NoReturnObjectException();
-		}
-		else{
-			return target;
-		}
+		return target;
+//		if(target == null){
+//			throw new NoReturnObjectException();
+//		}
+//		else{
+//			return target;
+//		}
 		
 	}
 
