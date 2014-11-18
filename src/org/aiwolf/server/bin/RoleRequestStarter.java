@@ -148,6 +148,7 @@ public class RoleRequestStarter {
 			game.setLogFile(logFile);
 		}
 		game.setRand(new Random());
+//		game.setShowConsoleLog(false);
 		game.start();
 	}
 

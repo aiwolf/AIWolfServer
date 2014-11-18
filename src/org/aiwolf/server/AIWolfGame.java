@@ -70,6 +70,12 @@ public class AIWolfGame {
 	GameData gameData;
 
 	/**
+	 * Show console log?
+	 */
+	boolean isShowConsoleLog = true;
+	
+
+	/**
 	 * ログを記録するファイル
 	 */
 	File logFile;
@@ -203,7 +209,7 @@ public class AIWolfGame {
 		log();
 		finish();
 
-		System.out.println("Winner:"+getWinner());
+//		System.out.println("Winner:"+getWinner());
 
 //		for(Agent agent:gameData.getAgentList()){
 //			GameInfo gameInfo = gameData.getGameInfo(agent);
@@ -266,6 +272,9 @@ public class AIWolfGame {
 
 	private void log() {
 	
+		if(!isShowConsoleLog){
+			return;
+		}
 		
 		GameData yesterday = gameData.getDayBefore();
 		
@@ -715,6 +724,22 @@ public class AIWolfGame {
 
 	public GameData getGameData() {
 		return gameData;
+	}
+
+
+	/**
+	 * @return isShowConsoleLog
+	 */
+	public boolean isShowConsoleLog() {
+		return isShowConsoleLog;
+	}
+
+
+	/**
+	 * @param isShowConsoleLog isShowConsoleLog
+	 */
+	public void setShowConsoleLog(boolean isShowConsoleLog) {
+		this.isShowConsoleLog = isShowConsoleLog;
 	}
 
 
