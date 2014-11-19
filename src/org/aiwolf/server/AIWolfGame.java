@@ -209,8 +209,9 @@ public class AIWolfGame {
 		log();
 		finish();
 
-//		System.out.println("Winner:"+getWinner());
-
+		if(isShowConsoleLog){
+			System.out.println("Winner:"+getWinner());
+		}
 //		for(Agent agent:gameData.getAgentList()){
 //			GameInfo gameInfo = gameData.getGameInfo(agent);
 ////			System.out.println(JSON.encode(gameInfo));
