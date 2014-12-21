@@ -27,6 +27,11 @@ public class DirectConnectServer implements GameServer {
 	 */
 	Map<Agent, Player> agentPlayerMap;
 	
+	/**
+	 * Agents connected to the server
+	 */
+	Map<Player, Agent> playerAgentMap;
+
 	
 	Map<Agent, Role> requestRoleMap;
 	
@@ -42,21 +47,26 @@ public class DirectConnectServer implements GameServer {
 	
 	public DirectConnectServer(List<Player> playerList){
 		agentPlayerMap = new LinkedHashMap<Agent, Player>();
+		playerAgentMap = new LinkedHashMap<Player, Agent>();
 		int idx = 1;
 		for(Player player:playerList){
-			agentPlayerMap.put(Agent.getAgent(idx++), player);
+			Agent agent = Agent.getAgent(idx++);
+			agentPlayerMap.put(agent, player);
+			playerAgentMap.put(player, agent);
 		}
 		requestRoleMap = new HashMap<Agent, Role>();
 	}
 	
 	public DirectConnectServer(Map<Player, Role> playerMap){
 		agentPlayerMap = new LinkedHashMap<Agent, Player>();
+		playerAgentMap = new LinkedHashMap<Player, Agent>();
 		requestRoleMap = new HashMap<Agent, Role>();
 
 		int idx = 1;
 		for(Player player:playerMap.keySet()){
 			Agent agent = Agent.getAgent(idx++);
 			agentPlayerMap.put(agent, player);
+			playerAgentMap.put(player, agent);
 			requestRoleMap.put(agent, playerMap.get(player));
 		}
 	}
@@ -84,7 +94,13 @@ public class DirectConnectServer implements GameServer {
 	
 	@Override
 	public String requestName(Agent agent) {
-		return agentPlayerMap.get(agent).getName();
+		String name = agentPlayerMap.get(agent).getName();
+		if(name != null){
+			return name;
+		}
+		else{
+			return agentPlayerMap.get(agent).getClass().getSimpleName();
+		}
 	}
 	
 	@Override
@@ -191,6 +207,10 @@ public class DirectConnectServer implements GameServer {
 
 	@Override
 	public void close() {
+	}
+
+	public Agent getAgent(Player player) {
+		return playerAgentMap.get(player);
 	}
 
 

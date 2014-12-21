@@ -105,7 +105,7 @@ public class RoleRequestStarter {
 			playerMap.put((Player) Class.forName(defaultClsName).newInstance(), null);
 		}
 		
-		start(playerNum, playerMap, logDir);
+		start(playerMap, logDir);
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class RoleRequestStarter {
 		while(playerMap.size() < playerNum){
 			playerMap.put((Player) Class.forName(defaultClsName).newInstance(), null);
 		}
-		start(playerNum, playerMap, logDir);
+		start(playerMap, logDir);
 	}
 	
 	/**
@@ -137,14 +137,14 @@ public class RoleRequestStarter {
 	 * @param logDir
 	 * @throws IOException
 	 */
-	public static void start(int playerNum, Map<Player, Role> playerMap, String logDir) throws IOException {
+	public static void start(Map<Player, Role> playerMap, String logDir) throws IOException {
 		String timeString = CalendarTools.toDateTime(System.currentTimeMillis()).replaceAll("[\\s-/:]", "");
 	
 		DirectConnectServer gameServer = new DirectConnectServer(playerMap);
-		GameSettingEntity gameSetting = GameSettingEntity.getDefaultGame(playerNum);
+		GameSettingEntity gameSetting = GameSettingEntity.getDefaultGame(playerMap.size());
 		AIWolfGame game = new AIWolfGame(gameSetting, gameServer);
 		if(logDir != null){
-			File logFile = new File(String.format("%s/aiwolfGame%s.log", logDir, timeString));
+			File logFile = new File(String.format("%s/contest%s.log", logDir, timeString));
 			game.setLogFile(logFile);
 		}
 		game.setRand(new Random());
