@@ -73,18 +73,18 @@ public class AIWolfGame {
 	 * Show console log?
 	 */
 	boolean isShowConsoleLog = true;
-	
+
 
 	/**
 	 * ログを記録するファイル
 	 */
 	File logFile;
-	
+
 	/**
 	 * ログファイル
 	 */
 	GameLogger gameLogger;
-	
+
 	/**
 	 * Name of Agents
 	 */
@@ -111,7 +111,7 @@ public class AIWolfGame {
 
 	/**
 	 * @param logFile セットする logFile
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public void setLogFile(File logFile) throws IOException {
 		this.logFile = logFile;
@@ -135,7 +135,7 @@ public class AIWolfGame {
 		gameData = new GameData(gameSetting);
 		agentNameMap = new HashMap<Agent, String>();
 		gameServer.setGameData(gameData);
-		
+
 		List<Agent> agentList = gameServer.getConnectedAgentList();
 
 		if(agentList.size() != gameSetting.getPlayerNum()){
@@ -165,8 +165,8 @@ public class AIWolfGame {
 //				System.out.println(agent+" request no role");
 			}
 		}
-		
-		
+
+
 		for(Role role:Role.values()){
 			List<Agent> requestedAgentList = requestRoleMap.get(role);
 			for(int i = 0; i < gameSetting.getRoleNum(role); i++){
@@ -217,7 +217,7 @@ public class AIWolfGame {
 ////			System.out.println(JSON.encode(gameInfo));
 //			break;
 //		}
-		
+
 	}
 
 	public void finish(){
@@ -228,18 +228,18 @@ public class AIWolfGame {
 			gameLogger.log(String.format("%d,result,%d,%d,%s", gameData.getDay(),  getAliveHumanList().size(), getAliveWolfList().size(), getWinner()));
 			gameLogger.close();
 		}
-		
+
 		for(Agent agent:gameData.getAgentList()){
 //			System.out.println("Send finish to "+agent);
 			gameServer.finish(agent);
 		}
-		try {
+/*		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
-	
+
 	/**
 	 * Get won team.
 	 * if game not finished, return null
@@ -272,13 +272,13 @@ public class AIWolfGame {
 	}
 
 	private void log() {
-	
+
 		if(!isShowConsoleLog){
 			return;
 		}
-		
+
 		GameData yesterday = gameData.getDayBefore();
-		
+
 		System.out.println("=============================================");
 		if(yesterday != null){
 			System.out.printf("Day %02d\n", yesterday.getDay());
@@ -290,12 +290,12 @@ public class AIWolfGame {
 			for(Talk whisper:yesterday.getWhisperList()){
 				System.out.println(whisper);
 			}
-			
+
 			System.out.println("========Actions========");
 			for(Vote vote:yesterday.getVoteList()){
 				System.out.printf("Vote:%s->%s\n", vote.getAgent(), vote.getTarget());
 			}
-			
+
 //			System.out.println("Attack Vote Result");
 			for(Vote vote:yesterday.getAttackVoteList()){
 				System.out.printf("AttackVote:%s->%s\n", vote.getAgent(), vote.getTarget());
@@ -352,7 +352,7 @@ public class AIWolfGame {
 	protected void day() {
 		dayStart();
 		talk();
-		
+
 		if(gameData.getDay() != 0){
 			vote();
 		}
@@ -372,9 +372,9 @@ public class AIWolfGame {
 			gameServer.dayFinish(agent);
 		}
 
-		
+
 		//Vote
-		
+
 		List<Vote> voteList = gameData.getVoteList();
 		Agent executed = getVotedAgent(voteList);
 		if(gameData.getStatus(executed) == Status.ALIVE  && gameData.getDay() != 0){
@@ -383,7 +383,7 @@ public class AIWolfGame {
 				gameLogger.log(String.format("%d,execute,%d,%s", gameData.getDay(), executed.getAgentIdx(), gameData.getRole(executed)));
 			}
 		}
-		
+
 		//Attack
 		if(!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getExecuted()) == Role.WEREWOLF) && gameData.getDay() != 0){
 			List<Vote> attackCandidateList = gameData.getAttackVoteList();
@@ -394,12 +394,12 @@ public class AIWolfGame {
 					it.remove();
 				}
 			}
-			
+
 			Agent attacked = getAttackVotedAgent(attackCandidateList);
 			if(attacked == executed){
 				attacked = null;
 			}
-			
+
 			if((gameData.getGuard() == null || !gameData.getGuard().getTarget().equals(attacked)) && attacked != null){
 				gameData.setAttackedTarget(attacked);
 				if(gameLogger != null){
@@ -412,11 +412,11 @@ public class AIWolfGame {
 				}
 			}
 		}
-		
+
 		gameData = gameData.nextDay();
 		gameDataMap.put(gameData.getDay(), gameData);
 		gameServer.setGameData(gameData);
-		
+
 	}
 
 
@@ -469,7 +469,7 @@ public class AIWolfGame {
 				counter.add(agent);
 			}
 		}
-		
+
 		int max = counter.get(counter.getLargest());
 		List<Agent> candidateList = new ArrayList<Agent>();
 		for(Agent agent:counter){
@@ -496,7 +496,7 @@ public class AIWolfGame {
 				gameLogger.log(String.format("%d,status,%d,%s,%s,%s", gameData.getDay(), agent.getAgentIdx(),gameData.getRole(agent), gameData.getStatus(agent), agentNameMap.get(agent)));
 			}
 		}
-		
+
 		for(Agent agent:getGameData().getAgentList()){
 			gameServer.dayStart(agent);
 		}
@@ -545,7 +545,7 @@ public class AIWolfGame {
 			if(!continueTalk){
 				break;
 			}
-			
+
 		}
 	}
 
@@ -600,7 +600,7 @@ public class AIWolfGame {
 			}
 			Vote vote = new Vote(gameData.getDay(), agent, target);
 			gameData.addVote(vote);
-			
+
 			if(gameLogger != null){
 				gameLogger.log(String.format("%d,vote,%d,%d", gameData.getDay(), vote.getAgent().getAgentIdx(), vote.getTarget().getAgentIdx()));
 			}
@@ -615,7 +615,7 @@ public class AIWolfGame {
 				if(gameData.getStatus(target) == Status.DEAD || target == null){
 					target = getRandomAgent(agentList, agent);
 				}
-				
+
 				Judge divine = new Judge(gameData.getDay(), agent, target, gameData.getRole(target).getSpecies());
 				gameData.addDivine(divine);
 
@@ -637,7 +637,7 @@ public class AIWolfGame {
 				}
 				Guard guard = new Guard(gameData.getDay(), agent, target);
 				gameData.addGuard(guard);
-				
+
 				if(gameLogger != null){
 					gameLogger.log(String.format("%d,guard,%d,%d,%s", gameData.getDay(), guard.getAgent().getAgentIdx(), guard.getTarget().getAgentIdx(), gameData.getRole(guard.getTarget())));
 				}
@@ -655,7 +655,7 @@ public class AIWolfGame {
 				it.remove();
 			}
 		}
-		
+
 		for(Agent agent:getAliveAgentList()){
 			if(gameData.getRole(agent) == Role.WEREWOLF){
 				Agent target = gameServer.requestAttackTarget(agent);
@@ -742,9 +742,6 @@ public class AIWolfGame {
 	public void setShowConsoleLog(boolean isShowConsoleLog) {
 		this.isShowConsoleLog = isShowConsoleLog;
 	}
-
-
-
 
 
 }
