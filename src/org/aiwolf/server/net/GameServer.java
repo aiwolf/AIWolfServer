@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.aiwolf.common.data.Agent;
 import org.aiwolf.common.data.Role;
-import org.aiwolf.common.net.GameSettingEntity;
+import org.aiwolf.common.net.GameSetting;
 import org.aiwolf.server.GameData;
 
 public interface GameServer {
@@ -20,7 +20,7 @@ public interface GameServer {
 	 * set GameSetting 
 	 * @param gameSetting
 	 */
-	void setGameSetting(GameSettingEntity gameSetting);
+	void setGameSetting(GameSetting gameSetting);
 	
 	/**
 	 * 

@@ -12,7 +12,7 @@ import org.aiwolf.common.data.Player;
 import org.aiwolf.common.data.Role;
 import org.aiwolf.common.data.Talk;
 import org.aiwolf.common.net.GameSetting;
-import org.aiwolf.common.net.GameSettingEntity;
+import org.aiwolf.common.net.GameSetting;
 import org.aiwolf.server.GameData;
 
 /**
@@ -43,7 +43,7 @@ public class DirectConnectServer implements GameServer {
 	/**
 	 * Game Setting
 	 */
-	GameSettingEntity gameSetting;
+	GameSetting gameSetting;
 	
 	public DirectConnectServer(List<Player> playerList){
 		agentPlayerMap = new LinkedHashMap<Agent, Player>();
@@ -82,7 +82,7 @@ public class DirectConnectServer implements GameServer {
 	}
 	
 	@Override
-	public void setGameSetting(GameSettingEntity gameSetting){
+	public void setGameSetting(GameSetting gameSetting){
 		this.gameSetting = gameSetting;
 	}
 

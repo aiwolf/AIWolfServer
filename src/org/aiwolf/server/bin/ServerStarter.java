@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.Random;
 
-import org.aiwolf.common.net.GameSettingEntity;
+import org.aiwolf.common.net.GameSetting;
 import org.aiwolf.server.AIWolfGame;
 import org.aiwolf.server.net.TcpipServer;
 
@@ -37,7 +37,7 @@ public class ServerStarter {
 		}
 		
 		System.out.printf("Start AiWolf Server port:%d playerNum:%d\n", port, playerNum);
-		GameSettingEntity gameSetting = GameSettingEntity.getDefaultGame(playerNum);
+		GameSetting gameSetting = GameSetting.getDefaultGame(playerNum);
 		
 		TcpipServer gameServer = new TcpipServer(port, playerNum, gameSetting);
 		gameServer.waitForConnection();

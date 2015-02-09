@@ -11,7 +11,7 @@ import java.util.Random;
 
 import org.aiwolf.common.data.Player;
 import org.aiwolf.common.data.Role;
-import org.aiwolf.common.net.GameSettingEntity;
+import org.aiwolf.common.net.GameSetting;
 import org.aiwolf.common.util.CalendarTools;
 import org.aiwolf.common.util.Pair;
 import org.aiwolf.server.AIWolfGame;
@@ -141,7 +141,7 @@ public class RoleRequestStarter {
 		String timeString = CalendarTools.toDateTime(System.currentTimeMillis()).replaceAll("[\\s-/:]", "");
 	
 		DirectConnectServer gameServer = new DirectConnectServer(playerMap);
-		GameSettingEntity gameSetting = GameSettingEntity.getDefaultGame(playerMap.size());
+		GameSetting gameSetting = GameSetting.getDefaultGame(playerMap.size());
 		AIWolfGame game = new AIWolfGame(gameSetting, gameServer);
 		if(logDir != null){
 			File logFile = new File(String.format("%s/contest%s.log", logDir, timeString));
