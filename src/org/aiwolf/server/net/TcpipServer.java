@@ -152,7 +152,7 @@ public class TcpipServer implements GameServer {
 		try{
 			String message;
 			if(request != Request.Finish){
-				Packet packet = new Packet(request, gameData.getGameInfoToSend(agent));
+				Packet packet = new Packet(request, gameData.getGameInfoToSend(agent), gameSetting);
 				message = DataConverter.getInstance().convert(packet);
 			}
 			else{
