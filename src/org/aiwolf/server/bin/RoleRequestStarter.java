@@ -120,14 +120,14 @@ public class RoleRequestStarter {
 	 * @throws ClassNotFoundException
 	 * @throws IOException
 	 */
-	public static void start(Player player, Role role, int playerNum, String defaultClsName, String logDir) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException{
+	public static AIWolfGame start(Player player, Role role, int playerNum, String defaultClsName, String logDir) throws InstantiationException, IllegalAccessException, ClassNotFoundException, IOException{
 		Map<Player, Role> playerMap = new LinkedHashMap<Player, Role>();
 
 		playerMap.put(player, role);
 		while(playerMap.size() < playerNum){
 			playerMap.put((Player) Class.forName(defaultClsName).newInstance(), null);
 		}
-		start(playerMap, logDir);
+		return start(playerMap, logDir);
 	}
 	
 	/**
@@ -137,7 +137,7 @@ public class RoleRequestStarter {
 	 * @param logDir
 	 * @throws IOException
 	 */
-	public static void start(Map<Player, Role> playerMap, String logDir) throws IOException {
+	public static AIWolfGame start(Map<Player, Role> playerMap, String logDir) throws IOException {
 		String timeString = CalendarTools.toDateTime(System.currentTimeMillis()).replaceAll("[\\s-/:]", "");
 	
 		DirectConnectServer gameServer = new DirectConnectServer(playerMap);
@@ -150,6 +150,7 @@ public class RoleRequestStarter {
 		game.setRand(new Random());
 //		game.setShowConsoleLog(false);
 		game.start();
+		return game;
 	}
 
 }
