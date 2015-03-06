@@ -37,6 +37,7 @@ import org.aiwolf.common.net.GameSetting;
 import org.aiwolf.common.util.AiWolfLoggerFactory;
 import org.aiwolf.common.util.Counter;
 import org.aiwolf.server.net.GameServer;
+import org.aiwolf.server.util.FileGameLogger;
 import org.aiwolf.server.util.GameLogger;
 
 /**
@@ -78,10 +79,10 @@ public class AIWolfGame {
 	/**
 	 * ログを記録するファイル
 	 */
-	File logFile;
+//	File logFile;
 
 	/**
-	 * ログファイル
+	 * Logger
 	 */
 	GameLogger gameLogger;
 
@@ -104,9 +105,9 @@ public class AIWolfGame {
 	/**
 	 * @return logFile
 	 */
-	public File getLogFile() {
-		return logFile;
-	}
+//	public File getLogFile() {
+//		return logFile;
+//	}
 
 
 	/**
@@ -114,11 +115,26 @@ public class AIWolfGame {
 	 * @throws IOException
 	 */
 	public void setLogFile(File logFile) throws IOException {
-		this.logFile = logFile;
-		gameLogger = new GameLogger(logFile);
+//		this.logFile = logFile;
+		gameLogger = new FileGameLogger(logFile);
 	}
 
+	/**
+	 * set GameLogger
+	 * @param gameLogger
+	 */
+	public void setGameLogger(GameLogger gameLogger){
+		this.gameLogger = gameLogger;
+	}
 
+	/**
+	 * get GameLogger
+	 */
+	public GameLogger getGameLogger(){
+		return this.gameLogger;
+	}
+
+	
 	/**
 	 * Set Random Class
 	 * @param rand
@@ -722,12 +738,23 @@ public class AIWolfGame {
 		return winner != null;
 	}
 
-
+	/**
+	 * get all data of the game
+	 * @return
+	 */
 	public GameData getGameData() {
 		return gameData;
 	}
 
-
+	/**
+	 * get setting of the game
+	 * @return
+	 */
+	public GameSetting getGameSetting(){
+		return gameSetting;
+	}
+	
+	
 	/**
 	 * @return isShowConsoleLog
 	 */

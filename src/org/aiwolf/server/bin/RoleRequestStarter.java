@@ -16,6 +16,7 @@ import org.aiwolf.common.util.CalendarTools;
 import org.aiwolf.common.util.Pair;
 import org.aiwolf.server.AIWolfGame;
 import org.aiwolf.server.net.DirectConnectServer;
+import org.aiwolf.server.util.GameLogger;
 
 /**
  * 役割を指定してスタートするStarter<br>
@@ -153,4 +154,23 @@ public class RoleRequestStarter {
 		return game;
 	}
 
+	/**
+	 * すべてのプレイヤーインスタンスとそのRoleを設定して開始
+	 * @param playerNum
+	 * @param playerMap
+	 * @param logDir
+	 * @throws IOException
+	 */
+	public static AIWolfGame start(Map<Player, Role> playerMap, GameLogger logger) throws IOException {
+		String timeString = CalendarTools.toDateTime(System.currentTimeMillis()).replaceAll("[\\s-/:]", "");
+	
+		DirectConnectServer gameServer = new DirectConnectServer(playerMap);
+		GameSetting gameSetting = GameSetting.getDefaultGame(playerMap.size());
+		AIWolfGame game = new AIWolfGame(gameSetting, gameServer);
+		game.setGameLogger(logger);
+		game.setRand(new Random());
+//		game.setShowConsoleLog(false);
+		game.start();
+		return game;
+	}
 }
