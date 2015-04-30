@@ -64,7 +64,7 @@ public class RoleRequestStarter {
 							playerRoleList.add(new Pair<String, Role>(clsName, null));
 							continue;
 						}
-						Role role = Role.valueOf(args[i]);
+						Role role = Role.valueOf(args[i].toUpperCase());
 						playerRoleList.add(new Pair<String, Role>(clsName, role));
 					}catch(IllegalArgumentException e){
 						System.err.println("No such role as "+args[i]);
