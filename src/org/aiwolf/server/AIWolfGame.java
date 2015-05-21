@@ -663,8 +663,8 @@ public class AIWolfGame {
 
 
 	protected void attack() {
-		List<Agent> agentList = getAliveAgentList();
-		Iterator<Agent> it = agentList.iterator();
+		List<Agent> randomTargetCandidateList = getAliveAgentList();
+		Iterator<Agent> it = randomTargetCandidateList.iterator();
 		while(it.hasNext()){
 			Agent agent = it.next();
 			if(gameData.getRole(agent) == Role.WEREWOLF){
@@ -676,7 +676,7 @@ public class AIWolfGame {
 			if(gameData.getRole(agent) == Role.WEREWOLF){
 				Agent target = gameServer.requestAttackTarget(agent);
 				if(gameData.getStatus(target) == Status.DEAD || gameData.getRole(target) == Role.WEREWOLF || target == null){
-					target = getRandomAgent(agentList, agent);
+					target = getRandomAgent(randomTargetCandidateList, agent);
 				}
 				Vote attackVote = new Vote(gameData.getDay(), agent, target);
 				gameData.addAttack(attackVote);
@@ -690,18 +690,18 @@ public class AIWolfGame {
 
 
 	/**
-	 * ランダムなエージェントを獲得する．ただし，agentを除く．
+	 * ランダムなエージェントを獲得する．ただし，withoutを除く．
 	 * @param agentList
-	 * @param agent
+	 * @param without
 	 * @return
 	 */
-	protected Agent getRandomAgent(List<Agent> agentList, Agent agent) {
+	protected Agent getRandomAgent(List<Agent> agentList, Agent... without) {
 		Agent target;
-		boolean removed = agentList.remove(agent);
-		target = agentList.get(rand.nextInt(agentList.size()));
-		if(removed){
-			agentList.add(agent);
+		List<Agent> list = new ArrayList<Agent>(agentList);
+		for(Agent agent:without){
+			list.remove(agent);
 		}
+		target = list.get(rand.nextInt(list.size()));
 		return target;
 	}
 
