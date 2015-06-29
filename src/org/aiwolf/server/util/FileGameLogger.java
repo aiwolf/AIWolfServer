@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import org.aiwolf.common.net.GameInfo;
+import org.aiwolf.common.util.CalendarTools;
 
 /**
  * GameLogger using File
@@ -17,11 +18,31 @@ public class FileGameLogger implements GameLogger {
 
 	File logFile;
 	BufferedWriter bw;
+
+	/**
+	 * 
+	 * @param logFile
+	 * @throws IOException
+	 */
+	public FileGameLogger(String logFile) throws IOException {
+		this(new File(logFile));
+	}
+	
+	/**
+	 * 
+	 * @param logFile
+	 * @throws IOException
+	 */
 	public FileGameLogger(File logFile) throws IOException {
 		super();
-		this.logFile = logFile;
 
 		if(logFile != null){
+			if(logFile.isDirectory()){
+				String timeString = CalendarTools.toDateTime(System.currentTimeMillis()).replaceAll("[\\s-/:]", "");
+				logFile = new File(logFile.getAbsolutePath()+"/"+timeString+".log");
+			}
+			this.logFile = logFile;
+
 			logFile.getParentFile().mkdirs();
 			bw = new BufferedWriter(new FileWriter(logFile));
 		}

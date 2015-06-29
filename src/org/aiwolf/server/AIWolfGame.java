@@ -417,9 +417,11 @@ public class AIWolfGame {
 			}
 
 			if((gameData.getGuard() == null || !gameData.getGuard().getTarget().equals(attacked)) && attacked != null){
-				gameData.setAttackedTarget(attacked);
-				if(gameLogger != null){
-					gameLogger.log(String.format("%d,attack,%d,true", gameData.getDay(), attacked.getAgentIdx()));
+				if(gameData.getGuard() == null || gameData.getExecuted() != gameData.getGuard().getAgent()){
+					gameData.setAttackedTarget(attacked);
+					if(gameLogger != null){
+						gameLogger.log(String.format("%d,attack,%d,true", gameData.getDay(), attacked.getAgentIdx()));
+					}
 				}
 			}
 			else if(attacked != null){
@@ -607,11 +609,10 @@ public class AIWolfGame {
 	 *
 	 */
 	protected void vote() {
-
 		List<Agent> agentList = getAliveAgentList();
 		for(Agent agent:getAliveAgentList()){
 			Agent target = gameServer.requestVote(agent);
-			if(gameData.getStatus(target) == Status.DEAD || target == null){
+			if(gameData.getStatus(target) == Status.DEAD || target == null || agent.equals(target)){
 				target = getRandomAgent(agentList, agent);
 			}
 			Vote vote = new Vote(gameData.getDay(), agent, target);
@@ -623,39 +624,47 @@ public class AIWolfGame {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	protected void divine() {
 		List<Agent> agentList = getAliveAgentList();
 		for(Agent agent:getAliveAgentList()){
 			if(gameData.getRole(agent) == Role.SEER){
 				Agent target = gameServer.requestDivineTarget(agent);
 				if(gameData.getStatus(target) == Status.DEAD || target == null){
-					target = getRandomAgent(agentList, agent);
+//					target = getRandomAgent(agentList, agent);
 				}
-
-				Judge divine = new Judge(gameData.getDay(), agent, target, gameData.getRole(target).getSpecies());
-				gameData.addDivine(divine);
-
-				if(gameLogger != null){
-					gameLogger.log(String.format("%d,divine,%d,%d,%s", gameData.getDay(), divine.getAgent().getAgentIdx(), divine.getTarget().getAgentIdx(), divine.getResult()));
+				else{
+					Judge divine = new Judge(gameData.getDay(), agent, target, gameData.getRole(target).getSpecies());
+					gameData.addDivine(divine);
+	
+					if(gameLogger != null){
+						gameLogger.log(String.format("%d,divine,%d,%d,%s", gameData.getDay(), divine.getAgent().getAgentIdx(), divine.getTarget().getAgentIdx(), divine.getResult()));
+					}
 				}
 			}
 		}
 	}
 
-
+	/**
+	 * 
+	 */
 	protected void guard() {
 		List<Agent> agentList = getAliveAgentList();
 		for(Agent agent:getAliveAgentList()){
 			if(gameData.getRole(agent) == Role.BODYGUARD){
 				Agent target = gameServer.requestGuardTarget(agent);
-				if(gameData.getStatus(target) == Status.DEAD || target == null){
-					target = getRandomAgent(agentList, agent);
+				if(target == null || agent.equals(target)){
+//					target = getRandomAgent(agentList, agent);
 				}
-				Guard guard = new Guard(gameData.getDay(), agent, target);
-				gameData.addGuard(guard);
+				else{
+					Guard guard = new Guard(gameData.getDay(), agent, target);
+					gameData.addGuard(guard);
 
-				if(gameLogger != null){
-					gameLogger.log(String.format("%d,guard,%d,%d,%s", gameData.getDay(), guard.getAgent().getAgentIdx(), guard.getTarget().getAgentIdx(), gameData.getRole(guard.getTarget())));
+					if(gameLogger != null){
+						gameLogger.log(String.format("%d,guard,%d,%d,%s", gameData.getDay(), guard.getAgent().getAgentIdx(), guard.getTarget().getAgentIdx(), gameData.getRole(guard.getTarget())));
+					}
 				}
 			}
 		}
