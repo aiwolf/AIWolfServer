@@ -685,13 +685,15 @@ public class AIWolfGame {
 			if(gameData.getRole(agent) == Role.WEREWOLF){
 				Agent target = gameServer.requestAttackTarget(agent);
 				if(gameData.getStatus(target) == Status.DEAD || gameData.getRole(target) == Role.WEREWOLF || target == null){
-					target = getRandomAgent(randomTargetCandidateList, agent);
+//					target = getRandomAgent(randomTargetCandidateList, agent);
 				}
-				Vote attackVote = new Vote(gameData.getDay(), agent, target);
-				gameData.addAttack(attackVote);
-
-				if(gameLogger != null){
-					gameLogger.log(String.format("%d,attackVote,%d,%d", gameData.getDay(), attackVote.getAgent().getAgentIdx(), attackVote.getTarget().getAgentIdx()));
+				else{
+					Vote attackVote = new Vote(gameData.getDay(), agent, target);
+					gameData.addAttack(attackVote);
+	
+					if(gameLogger != null){
+						gameLogger.log(String.format("%d,attackVote,%d,%d", gameData.getDay(), attackVote.getAgent().getAgentIdx(), attackVote.getTarget().getAgentIdx()));
+					}
 				}
 			}
 		}
