@@ -654,6 +654,9 @@ public class AIWolfGame {
 		List<Agent> agentList = getAliveAgentList();
 		for(Agent agent:getAliveAgentList()){
 			if(gameData.getRole(agent) == Role.BODYGUARD){
+				if(agent == gameData.getExecuted()){
+					continue;
+				}
 				Agent target = gameServer.requestGuardTarget(agent);
 				if(target == null || agent.equals(target)){
 //					target = getRandomAgent(agentList, agent);
