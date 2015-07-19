@@ -416,18 +416,30 @@ public class AIWolfGame {
 				attacked = null;
 			}
 
-			if((gameData.getGuard() == null || !gameData.getGuard().getTarget().equals(attacked)) && attacked != null){
-				if(gameData.getGuard() == null || gameData.getExecuted() != gameData.getGuard().getAgent()){
-					gameData.setAttackedTarget(attacked);
-					if(gameLogger != null){
-						gameLogger.log(String.format("%d,attack,%d,true", gameData.getDay(), attacked.getAgentIdx()));
+			boolean isGuarded = false;
+			if(gameData.getGuard() != null){
+				if(gameData.getGuard().getTarget().equals(attacked) && attacked != null){
+					if(gameData.getExecuted() == null || !gameData.getExecuted().equals(gameData.getGuard().getAgent())){
+						isGuarded = true;
 					}
+				}
+			}
+			if(!isGuarded && attacked != null){
+				gameData.setAttackedTarget(attacked);
+				if(gameLogger != null){
+					gameLogger.log(String.format("%d,attack,%d,true", gameData.getDay(), attacked.getAgentIdx()));
 				}
 			}
 			else if(attacked != null){
 				if(gameLogger != null){
 					gameLogger.log(String.format("%d,attack,%d,false", gameData.getDay(), attacked.getAgentIdx()));
 				}
+			}
+			else{
+				if(gameLogger != null){
+					gameLogger.log(String.format("%d,attack,-1,false", gameData.getDay()));
+				}
+				
 			}
 		}
 
