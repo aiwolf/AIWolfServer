@@ -89,7 +89,7 @@ public class DirectConnectServer implements GameServer {
 
 	@Override
 	public void init(Agent agent) {
-		agentPlayerMap.get(agent).initialize(gameData.getGameInfo(agent), gameSetting);
+		agentPlayerMap.get(agent).initialize(gameData.getGameInfo(agent), gameSetting.clone());
 	}
 	
 	@Override
