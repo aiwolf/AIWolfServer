@@ -44,11 +44,15 @@ public class FileGameLogger implements GameLogger {
 			this.logFile = logFile;
 
 			logFile.getParentFile().mkdirs();
-			bw = new BufferedWriter(new FileWriter(logFile));
+			try{
+				bw = new BufferedWriter(new FileWriter(logFile));
+				return;
+			}catch(IOException e){
+				e.printStackTrace();
+				System.err.println("Fail to create logfile. Output log to system.out");
+			}
 		}
-		else{
-			bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		}
+		bw = new BufferedWriter(new OutputStreamWriter(System.out));
 	}
 
 	/**

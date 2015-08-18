@@ -26,6 +26,7 @@ import org.aiwolf.common.AIWolfRuntimeException;
 import org.aiwolf.common.data.Agent;
 import org.aiwolf.common.data.Guard;
 import org.aiwolf.common.data.Judge;
+import org.aiwolf.common.data.Player;
 import org.aiwolf.common.data.Role;
 import org.aiwolf.common.data.Species;
 import org.aiwolf.common.data.Status;
@@ -795,7 +796,6 @@ public class AIWolfGame {
 	public void setShowConsoleLog(boolean isShowConsoleLog) {
 		this.isShowConsoleLog = isShowConsoleLog;
 	}
-
 
 
 

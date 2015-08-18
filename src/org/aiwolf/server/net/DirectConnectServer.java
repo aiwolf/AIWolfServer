@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.aiwolf.common.AiWolfAgentException;
 import org.aiwolf.common.NoReturnObjectException;
 import org.aiwolf.common.data.Agent;
 import org.aiwolf.common.data.Player;
@@ -25,25 +26,25 @@ public class DirectConnectServer implements GameServer {
 	/**
 	 * Agents connected to the server
 	 */
-	Map<Agent, Player> agentPlayerMap;
+	protected Map<Agent, Player> agentPlayerMap;
 	
 	/**
 	 * Agents connected to the server
 	 */
-	Map<Player, Agent> playerAgentMap;
+	protected Map<Player, Agent> playerAgentMap;
 
 	
-	Map<Agent, Role> requestRoleMap;
+	protected Map<Agent, Role> requestRoleMap;
 	
 	/**
 	 * GameData
 	 */
-	GameData gameData;
+	protected GameData gameData;
 	
 	/**
 	 * Game Setting
 	 */
-	GameSetting gameSetting;
+	protected GameSetting gameSetting;
 	
 	public DirectConnectServer(List<Player> playerList){
 		agentPlayerMap = new LinkedHashMap<Agent, Player>();
@@ -89,120 +90,167 @@ public class DirectConnectServer implements GameServer {
 
 	@Override
 	public void init(Agent agent) {
-		agentPlayerMap.get(agent).initialize(gameData.getGameInfo(agent), gameSetting.clone());
+		try{
+			agentPlayerMap.get(agent).initialize(gameData.getGameInfo(agent), gameSetting.clone());
+		}catch(Throwable e){
+			throw new AiWolfAgentException(agent, "init", e);
+		}
 	}
 	
 	@Override
 	public String requestName(Agent agent) {
-		String name = agentPlayerMap.get(agent).getName();
-		if(name != null){
-			return name;
-		}
-		else{
-			return agentPlayerMap.get(agent).getClass().getSimpleName();
+		try{
+			String name = agentPlayerMap.get(agent).getName();
+			if(name != null){
+				return name;
+			}
+			else{
+				return agentPlayerMap.get(agent).getClass().getSimpleName();
+			}
+		}catch(Throwable e){
+			throw new AiWolfAgentException(agent, "requestName", e);
 		}
 	}
 	
 	@Override
 	public Role requestRequestRole(Agent agent) {
-		return requestRoleMap.get(agent);
+		try{
+			return requestRoleMap.get(agent);
+		}catch(Throwable e){
+			throw new AiWolfAgentException(agent, "requestRequestRole", e);
+		}
 	}
 	
 	@Override
 	public void dayStart(Agent agent) {
-		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
-		agentPlayerMap.get(agent).dayStart();
+		try{
+			agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
+			agentPlayerMap.get(agent).dayStart();
+		}catch(Throwable e){
+			throw new AiWolfAgentException(agent, "dayStart", e);
+		}
 	}
 	
 	@Override
 	public void dayFinish(Agent agent) {
-		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
-//		agentPlayerMap.get(agent).dayStart();
+		try{
+			agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
+	//		agentPlayerMap.get(agent).dayStart();
+		}catch(Throwable e){
+			throw new AiWolfAgentException(agent, "dayFinish", e);
+		}
 	}
 	
 	@Override
 	public String requestTalk(Agent agent) {
-		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
-		String talk = agentPlayerMap.get(agent).talk();
-		return talk;
-		//		if(talk == null){
-//			throw new NoReturnObjectException();
-//		}
-//		else{
-//			return talk;
-//		}
+		try{
+			agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
+			String talk = agentPlayerMap.get(agent).talk();
+			return talk;
+			//		if(talk == null){
+	//			throw new NoReturnObjectException();
+	//		}
+	//		else{
+	//			return talk;
+	//		}
+		}catch(Throwable e){
+			throw new AiWolfAgentException(agent, "requestTalk", e);
+		}
 	}
 
 	@Override
 	public String requestWhisper(Agent agent) {
-		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
-		String whisper = agentPlayerMap.get(agent).whisper();
-		return whisper;
-//		if(whisper == null){
-//			throw new NoReturnObjectException();
-//		}
-//		else{
-//			return whisper;
-//		}
+		try{
+			agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
+			String whisper = agentPlayerMap.get(agent).whisper();
+			return whisper;
+	//		if(whisper == null){
+	//			throw new NoReturnObjectException();
+	//		}
+	//		else{
+	//			return whisper;
+	//		}
+		}catch(Throwable e){
+			throw new AiWolfAgentException(agent, "requestWhisper", e);
+		}
 	}
 
 	@Override
 	public Agent requestVote(Agent agent) {
-		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
-		Agent target = agentPlayerMap.get(agent).vote();
-		return target;
-//		if(target == null){
-//			throw new NoReturnObjectException();
-//		}
-//		else{
-//			return target;
-//		}
+		try{
+			agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
+			Agent target = agentPlayerMap.get(agent).vote();
+			return target;
+	//		if(target == null){
+	//			throw new NoReturnObjectException();
+	//		}
+	//		else{
+	//			return target;
+	//		}
+		}catch(Throwable e){
+			throw new AiWolfAgentException(agent, "requestVote", e);
+		}
 	}
 
 	@Override
 	public Agent requestDivineTarget(Agent agent) {
-		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
-		Agent target = agentPlayerMap.get(agent).divine();
-		return target;
-		//		if(target == null){
-//			throw new NoReturnObjectException();
-//		}
-//		else{
-//			return target;
-//		}
+		try{
+			agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
+			Agent target = agentPlayerMap.get(agent).divine();
+			return target;
+			//		if(target == null){
+	//			throw new NoReturnObjectException();
+	//		}
+	//		else{
+	//			return target;
+	//		}
+		}catch(Throwable e){
+			throw new AiWolfAgentException(agent, "requestDivineTarget", e);
+		}
 	}
 
 	@Override
 	public Agent requestGuardTarget(Agent agent) {
-		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
-		Agent target = agentPlayerMap.get(agent).guard();
-		return target;
-//		if(target == null){
-//			throw new NoReturnObjectException();
-//		}
-//		else{
-//			return target;
-//		}
+		try{
+			agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
+			Agent target = agentPlayerMap.get(agent).guard();
+			return target;
+	//		if(target == null){
+	//			throw new NoReturnObjectException();
+	//		}
+	//		else{
+	//			return target;
+	//		}
+		}catch(Throwable e){
+			throw new AiWolfAgentException(agent, "requestGuardTarget", e);
+		}
 	}
 
 	@Override
 	public Agent requestAttackTarget(Agent agent) {
-		agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
-		Agent target = agentPlayerMap.get(agent).attack();
-		return target;
-//		if(target == null){
-//			throw new NoReturnObjectException();
-//		}
-//		else{
-//			return target;
-//		}
-		
+		try{
+			agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
+			Agent target = agentPlayerMap.get(agent).attack();
+			return target;
+	//		if(target == null){
+	//			throw new NoReturnObjectException();
+	//		}
+	//		else{
+	//			return target;
+	//		}
+		}catch(Throwable e){
+			throw new AiWolfAgentException(agent, "requestAttackTarget", e);
+		}		
 	}
 
 	@Override
 	public void finish(Agent agent){
-		agentPlayerMap.get(agent).update(gameData.getFinalGameInfo(agent));
-		agentPlayerMap.get(agent).finish();
+		try{
+			agentPlayerMap.get(agent).update(gameData.getFinalGameInfo(agent));
+			agentPlayerMap.get(agent).finish();
+		}catch(Throwable e){
+			throw new AiWolfAgentException(agent, "finish", e);
+		}
 	}
 
 	@Override
@@ -213,6 +261,12 @@ public class DirectConnectServer implements GameServer {
 		return playerAgentMap.get(player);
 	}
 
+	
+	public Player getPlayer(Agent agent){
+		return agentPlayerMap.get(agent);
+	}
+	
+	
 
 	
 
