@@ -22,7 +22,7 @@ import org.aiwolf.server.util.GameLogger;
  * 役割を指定してスタートするStarter<br>
  * DirectStarter
  * @author tori
- *
+ * @deprecated
  */
 public class RoleRequestStarter {
 	

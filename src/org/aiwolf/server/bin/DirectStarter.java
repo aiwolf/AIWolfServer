@@ -20,7 +20,7 @@ import org.aiwolf.server.net.GameServer;
 /**
  * クライアントを指定して直接シミュレーションを実行する
  * @author tori
- *
+ * @deprecated
  */
 public class DirectStarter {
 
