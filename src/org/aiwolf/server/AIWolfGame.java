@@ -49,48 +49,48 @@ import org.aiwolf.server.util.GameLogger;
 public class AIWolfGame {
 
 
-	Random rand;
+	protected Random rand;
 
 	/**
 	 * Settings of the game
 	 */
-	GameSetting gameSetting;
+	protected GameSetting gameSetting;
 
 	/**
 	 * server to connect clients
 	 */
-	GameServer gameServer;
+	protected GameServer gameServer;
 
 	/**
 	 *
 	 */
-	Map<Integer, GameData> gameDataMap;
+	protected Map<Integer, GameData> gameDataMap;
 
 	/**
 	 *
 	 */
-	GameData gameData;
+	protected GameData gameData;
 
 	/**
 	 * Show console log?
 	 */
-	boolean isShowConsoleLog = true;
+	protected boolean isShowConsoleLog = true;
 
 
 	/**
 	 * ログを記録するファイル
 	 */
-//	File logFile;
+//	protected File logFile;
 
 	/**
 	 * Logger
 	 */
-	GameLogger gameLogger;
+	protected GameLogger gameLogger;
 
 	/**
 	 * Name of Agents
 	 */
-	Map<Agent, String> agentNameMap;
+	protected Map<Agent, String> agentNameMap;
 
 	/**
 	 *

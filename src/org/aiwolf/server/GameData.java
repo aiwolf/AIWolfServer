@@ -33,78 +33,78 @@ public class GameData {
 	/**
 	 * The day of the data
 	 */
-	int day;
+	protected int day;
 	
 	/**
 	 * status of each agents
 	 */
-	Map<Agent, Status> agentStatusMap;
+	protected Map<Agent, Status> agentStatusMap;
 
 	/**
 	 * roles of each agents
 	 */
-	Map<Agent, Role> agentRoleMap;
+	protected Map<Agent, Role> agentRoleMap;
 	
 	/**
 	 * 
 	 */
-	List<Talk> talkList;
+	protected List<Talk> talkList;
 	
 	/**
 	 * 
 	 */
-	List<Talk> wisperList;
+	protected List<Talk> wisperList;
 
 	/**
 	 * 
 	 */
-	List<Vote> voteList;
+	protected List<Vote> voteList;
 
 	/**
 	 * 
 	 */
-	List<Vote> attackCandidateList;
+	protected List<Vote> attackCandidateList;
 	
 	
 	/**
 	 * Result divine
 	 */
-	Judge divine;
+	protected Judge divine;
 	
 	/**
 	 * Result divine
 	 */
-	Guard guard;
+	protected Guard guard;
 
 	/**
 	 * agents who killed by villegers
 	 */
-	Agent executed;
+	protected Agent executed;
 	
 	/**
 	 * agents who killed by werewolf
 	 */
-	Agent attacked;
+	protected Agent attacked;
 
 	/**
 	 * agents who sudden death
 	 */
-	List<Agent> suddendeathList;
+	protected List<Agent> suddendeathList;
 
 	/**
 	 * game data of one day before
 	 */
-	GameData dayBefore;
+	protected GameData dayBefore;
 
-	int talkIdx;
+	protected int talkIdx;
 
-	int wisperIdx;
+	protected int wisperIdx;
 
 	
 	/**
 	 * ゲームの設定
 	 */
-	GameSetting gameSetting;
+	protected GameSetting gameSetting;
 	
 	protected GameData(GameSetting gameSetting){
 		agentStatusMap = new LinkedHashMap<Agent, Status>();

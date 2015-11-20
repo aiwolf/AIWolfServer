@@ -36,6 +36,7 @@ public class DirectConnectServer implements GameServer {
 	
 	protected Map<Agent, Role> requestRoleMap;
 	
+
 	/**
 	 * GameData
 	 */
@@ -56,6 +57,7 @@ public class DirectConnectServer implements GameServer {
 			playerAgentMap.put(player, agent);
 		}
 		requestRoleMap = new HashMap<Agent, Role>();
+
 	}
 	
 	public DirectConnectServer(Map<Player, Role> playerMap){
@@ -70,6 +72,8 @@ public class DirectConnectServer implements GameServer {
 			playerAgentMap.put(player, agent);
 			requestRoleMap.put(agent, playerMap.get(player));
 		}
+		
+
 	}
 	
 	@Override
@@ -93,6 +97,7 @@ public class DirectConnectServer implements GameServer {
 		try{
 			agentPlayerMap.get(agent).initialize(gameData.getGameInfo(agent), gameSetting.clone());
 		}catch(Throwable e){
+			e.printStackTrace();
 			throw new AiWolfAgentException(agent, "init", e);
 		}
 	}
