@@ -127,7 +127,7 @@ public class TcpipServer implements GameServer {
 		        Agent agent = Agent.getAgent(idx++);
 				socketAgentMap.put(socket, agent);
 				
-				System.out.printf("Connect %s ( %d/%d )\n", agent, socketAgentMap.size(), limit);
+//				System.out.printf("Connect %s ( %d/%d )\n", agent, socketAgentMap.size(), limit);
 				serverLogger.info(String.format("Connect %s ( %d/%d )", agent, socketAgentMap.size(), limit));
 			}
 	    }
@@ -151,7 +151,7 @@ public class TcpipServer implements GameServer {
 	protected void send(Agent agent, Request request){
 		try{
 			String message;
-			if(request != Request.Finish){
+			if(request != Request.FINISH){
 				Packet packet = new Packet(request, gameData.getGameInfoToSend(agent), gameSetting);
 				message = DataConverter.getInstance().convert(packet);
 			}
@@ -189,10 +189,10 @@ public class TcpipServer implements GameServer {
 			if(line.isEmpty()){
 				line = null;
 			}
-	        if(request == Request.Talk || request == Request.Whisper || request == Request.Name || request == Request.Role){
+	        if(request == Request.TALK || request == Request.WHISPER || request == Request.NAME || request == Request.ROLE){
 	        	return line;
 	        }
-	        else if(request == Request.Attack || request == Request.Divine || request == Request.Guard || request == request.Vote){
+	        else if(request == Request.ATTACK || request == Request.DIVINE || request == Request.GUARD || request == request.VOTE){
 	        	return DataConverter.getInstance().toAgent(line);
 	        }
 	        else{
@@ -207,28 +207,28 @@ public class TcpipServer implements GameServer {
 	
 	@Override
 	public void init(Agent agent) {
-		send(agent, Request.Initialize);
+		send(agent, Request.INITIALIZE);
 	}
 
 	@Override
 	public void dayStart(Agent agent) {
-		send(agent, Request.DailyInitialize);
+		send(agent, Request.DAILY_INITIALIZE);
 	}
 
 	@Override
 	public void dayFinish(Agent agent){
-		send(agent, Request.DailyFinish);
+		send(agent, Request.DAILY_FINISH);
 	}
 
 	@Override
 	public String requestName(Agent agent) {
-		return (String)request(agent, Request.Name);
+		return (String)request(agent, Request.NAME);
 	}
 	
 
 	@Override
 	public Role requestRequestRole(Agent agent) {
-		String roleString = (String)request(agent, Request.Role);
+		String roleString = (String)request(agent, Request.ROLE);
 		try{
 			return Role.valueOf(roleString);
 		}catch(IllegalArgumentException e){
@@ -239,43 +239,43 @@ public class TcpipServer implements GameServer {
 	
 	@Override
 	public String requestTalk(Agent agent) {
-		return (String)request(agent, Request.Talk);
+		return (String)request(agent, Request.TALK);
 	}
 
 	@Override
 	public String requestWhisper(Agent agent) {
-		return (String)request(agent, Request.Whisper);
+		return (String)request(agent, Request.WHISPER);
 	}
 
 	@Override
 	public Agent requestVote(Agent agent) {
-		return (Agent)request(agent, Request.Vote);
+		return (Agent)request(agent, Request.VOTE);
 //		return JSON.decode(result);
 	}
 
 	@Override
 	public Agent requestDivineTarget(Agent agent) {
-		return (Agent)request(agent, Request.Divine);
+		return (Agent)request(agent, Request.DIVINE);
 //		return JSON.decode(result);
 	}
 
 	@Override
 	public Agent requestGuardTarget(Agent agent) {
-		return (Agent)request(agent, Request.Guard);
+		return (Agent)request(agent, Request.GUARD);
 //		return JSON.decode(result);
 	}
 
 	@Override
 	public Agent requestAttackTarget(Agent agent) {
-		return (Agent)request(agent, Request.Attack);
+		return (Agent)request(agent, Request.ATTACK);
 //		return JSON.decode(result);
 	}
 	
 
 	@Override
 	public void finish(Agent agent) {
-		send(agent, Request.Finish);
-		send(agent, Request.Finish);
+		send(agent, Request.FINISH);
+		send(agent, Request.FINISH);
 	}
 
 	@Override

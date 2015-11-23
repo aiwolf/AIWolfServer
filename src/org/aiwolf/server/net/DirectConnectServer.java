@@ -6,20 +6,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.aiwolf.common.AiWolfAgentException;
-import org.aiwolf.common.NoReturnObjectException;
+import org.aiwolf.common.AIWolfAgentException;
 import org.aiwolf.common.data.Agent;
 import org.aiwolf.common.data.Player;
 import org.aiwolf.common.data.Role;
-import org.aiwolf.common.data.Talk;
-import org.aiwolf.common.net.GameSetting;
 import org.aiwolf.common.net.GameSetting;
 import org.aiwolf.server.GameData;
 
 /**
  * Connect player and server directry
  * @author tori
- *
+ * @deprecated
  */
 public class DirectConnectServer implements GameServer {
 
@@ -98,7 +95,7 @@ public class DirectConnectServer implements GameServer {
 			agentPlayerMap.get(agent).initialize(gameData.getGameInfo(agent), gameSetting.clone());
 		}catch(Throwable e){
 			e.printStackTrace();
-			throw new AiWolfAgentException(agent, "init", e);
+			throw new AIWolfAgentException(agent, "init", e);
 		}
 	}
 	
@@ -113,7 +110,7 @@ public class DirectConnectServer implements GameServer {
 				return agentPlayerMap.get(agent).getClass().getSimpleName();
 			}
 		}catch(Throwable e){
-			throw new AiWolfAgentException(agent, "requestName", e);
+			throw new AIWolfAgentException(agent, "requestName", e);
 		}
 	}
 	
@@ -122,7 +119,7 @@ public class DirectConnectServer implements GameServer {
 		try{
 			return requestRoleMap.get(agent);
 		}catch(Throwable e){
-			throw new AiWolfAgentException(agent, "requestRequestRole", e);
+			throw new AIWolfAgentException(agent, "requestRequestRole", e);
 		}
 	}
 	
@@ -132,7 +129,7 @@ public class DirectConnectServer implements GameServer {
 			agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
 			agentPlayerMap.get(agent).dayStart();
 		}catch(Throwable e){
-			throw new AiWolfAgentException(agent, "dayStart", e);
+			throw new AIWolfAgentException(agent, "dayStart", e);
 		}
 	}
 	
@@ -142,7 +139,7 @@ public class DirectConnectServer implements GameServer {
 			agentPlayerMap.get(agent).update(gameData.getGameInfo(agent));
 	//		agentPlayerMap.get(agent).dayStart();
 		}catch(Throwable e){
-			throw new AiWolfAgentException(agent, "dayFinish", e);
+			throw new AIWolfAgentException(agent, "dayFinish", e);
 		}
 	}
 	
@@ -159,7 +156,7 @@ public class DirectConnectServer implements GameServer {
 	//			return talk;
 	//		}
 		}catch(Throwable e){
-			throw new AiWolfAgentException(agent, "requestTalk", e);
+			throw new AIWolfAgentException(agent, "requestTalk", e);
 		}
 	}
 
@@ -176,7 +173,7 @@ public class DirectConnectServer implements GameServer {
 	//			return whisper;
 	//		}
 		}catch(Throwable e){
-			throw new AiWolfAgentException(agent, "requestWhisper", e);
+			throw new AIWolfAgentException(agent, "requestWhisper", e);
 		}
 	}
 
@@ -193,7 +190,7 @@ public class DirectConnectServer implements GameServer {
 	//			return target;
 	//		}
 		}catch(Throwable e){
-			throw new AiWolfAgentException(agent, "requestVote", e);
+			throw new AIWolfAgentException(agent, "requestVote", e);
 		}
 	}
 
@@ -210,7 +207,7 @@ public class DirectConnectServer implements GameServer {
 	//			return target;
 	//		}
 		}catch(Throwable e){
-			throw new AiWolfAgentException(agent, "requestDivineTarget", e);
+			throw new AIWolfAgentException(agent, "requestDivineTarget", e);
 		}
 	}
 
@@ -227,7 +224,7 @@ public class DirectConnectServer implements GameServer {
 	//			return target;
 	//		}
 		}catch(Throwable e){
-			throw new AiWolfAgentException(agent, "requestGuardTarget", e);
+			throw new AIWolfAgentException(agent, "requestGuardTarget", e);
 		}
 	}
 
@@ -244,7 +241,7 @@ public class DirectConnectServer implements GameServer {
 	//			return target;
 	//		}
 		}catch(Throwable e){
-			throw new AiWolfAgentException(agent, "requestAttackTarget", e);
+			throw new AIWolfAgentException(agent, "requestAttackTarget", e);
 		}		
 	}
 
@@ -254,7 +251,7 @@ public class DirectConnectServer implements GameServer {
 			agentPlayerMap.get(agent).update(gameData.getFinalGameInfo(agent));
 			agentPlayerMap.get(agent).finish();
 		}catch(Throwable e){
-			throw new AiWolfAgentException(agent, "finish", e);
+			throw new AIWolfAgentException(agent, "finish", e);
 		}
 	}
 
