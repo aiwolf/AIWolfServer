@@ -10,7 +10,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +24,7 @@ import org.aiwolf.common.data.Role;
 import org.aiwolf.common.net.DataConverter;
 import org.aiwolf.common.net.GameSetting;
 import org.aiwolf.common.net.Packet;
+import org.aiwolf.common.net.TalkToSend;
 import org.aiwolf.common.util.AiWolfLoggerFactory;
 import org.aiwolf.common.util.BidiMap;
 import org.aiwolf.server.GameData;
@@ -71,6 +74,9 @@ public class TcpipServer implements GameServer {
 	 */
 	Logger serverLogger;
 	
+	Map<Agent, Integer> lastTalkIdxMap;
+	Map<Agent, Integer> lastWhisperIdxMap;
+	
 
 	/**
 	 * 
@@ -94,6 +100,9 @@ public class TcpipServer implements GameServer {
 //			e.printStackTrace();
 //			serverLogger = AiWolfLoggerFactory.getLogger(loggerName);
 //		}
+		
+		lastTalkIdxMap = new HashMap<Agent, Integer>();
+		lastWhisperIdxMap = new HashMap<Agent, Integer>();
 	}
 	
 	/**
@@ -151,8 +160,26 @@ public class TcpipServer implements GameServer {
 	protected void send(Agent agent, Request request){
 		try{
 			String message;
-			if(request != Request.FINISH){
+			if(request == Request.DAILY_INITIALIZE || request == Request.INITIALIZE){
+				lastTalkIdxMap.clear();
+				lastWhisperIdxMap.clear();
 				Packet packet = new Packet(request, gameData.getGameInfoToSend(agent), gameSetting);
+				message = DataConverter.getInstance().convert(packet);
+			}
+			else if(request == Request.NAME || request == Request.ROLE){
+				Packet packet = new Packet(request);
+				message = DataConverter.getInstance().convert(packet);
+			}
+			else if(request != Request.FINISH){
+//				Packet packet = new Packet(request, gameData.getGameInfoToSend(agent), gameSetting);
+//				message = DataConverter.getInstance().convert(packet);
+				List<TalkToSend> talkList = gameData.getGameInfoToSend(agent).getTalkList();
+				List<TalkToSend> whisperList = gameData.getGameInfoToSend(agent).getWhisperList();
+				
+				talkList = minimize(agent, talkList, lastTalkIdxMap);
+				whisperList = minimize(agent, whisperList, lastWhisperIdxMap);
+				
+				Packet packet = new Packet(request, talkList, whisperList);
 				message = DataConverter.getInstance().convert(packet);
 			}
 			else{
@@ -170,6 +197,22 @@ public class TcpipServer implements GameServer {
 //			serverLogger.severe(e.getMessage());
 			throw new LostClientException(e);
 		}
+	}
+
+	/**
+	 * delete talks already sent
+	 * @param agent
+	 * @param list
+	 * @param lastIdxMap
+	 * @return
+	 */
+	private List<TalkToSend> minimize(Agent agent, List<TalkToSend> list, Map<Agent, Integer> lastIdxMap) {
+		int lastIdx = list.size();
+		if(lastIdxMap.containsKey(agent) && list.size() >= lastIdxMap.get(agent)){
+			list = list.subList(lastIdxMap.get(agent), list.size());
+		}
+		lastIdxMap.put(agent, lastIdx);
+		return list;
 	}
 
 	/**
