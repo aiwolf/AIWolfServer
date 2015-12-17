@@ -127,7 +127,7 @@ public class TcpipServer implements GameServer {
 	    
 	    ServerSocket svsock = new ServerSocket(port);
 	    
-	    int idx = 0;
+	    int idx = 1;
 	    isWaitForClient = true;
 	    while(socketAgentMap.size() < limit && isWaitForClient){
 	        Socket socket = svsock.accept();
