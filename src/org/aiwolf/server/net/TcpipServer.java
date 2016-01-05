@@ -11,8 +11,11 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +31,7 @@ import org.aiwolf.common.net.TalkToSend;
 import org.aiwolf.common.util.AiWolfLoggerFactory;
 import org.aiwolf.common.util.BidiMap;
 import org.aiwolf.server.GameData;
+import org.aiwolf.server.IllegalPlayerNumException;
 import org.aiwolf.server.LostClientException;
 
 /**
@@ -73,9 +77,18 @@ public class TcpipServer implements GameServer {
 	 * 
 	 */
 	Logger serverLogger;
+
+	/**
+	 * 
+	 */
+	Map<Agent, String> nameMap;
+	
+	Set<ServerListener> serverListenerSet;
 	
 	Map<Agent, Integer> lastTalkIdxMap;
 	Map<Agent, Integer> lastWhisperIdxMap;
+
+	private ServerSocket serverSocket;
 	
 
 	/**
@@ -91,6 +104,8 @@ public class TcpipServer implements GameServer {
 		socketAgentMap = new BidiMap<Socket, Agent>();
 		String loggerName = this.getClass().getSimpleName();
 		serverLogger = Logger.getLogger(loggerName);
+		nameMap = new HashMap<>();
+		serverListenerSet = new HashSet<>();
 //		serverLogger = AiWolfLoggerFactory.getLogger(loggerName);
 //		serverLogger.setLevel(Level.FINER);
 		//		try {
@@ -119,31 +134,66 @@ public class TcpipServer implements GameServer {
 	    		sock.close();
 	    	}
 	    }
+
 	    socketAgentMap.clear();
-	    // サーバソケットの作成
+	    nameMap.clear();
 
 //		serverLogger.info(String.format("Waiting for connection...\n"));
 	    System.out.println("Waiting for connection...\n");
 	    
-	    ServerSocket svsock = new ServerSocket(port);
-	    
-	    int idx = 1;
+	    serverSocket = new ServerSocket(port);
+
 	    isWaitForClient = true;
+
 	    while(socketAgentMap.size() < limit && isWaitForClient){
-	        Socket socket = svsock.accept();
+	        Socket socket = serverSocket.accept();
 	        
 	        synchronized (socketAgentMap) {
-		        Agent agent = Agent.getAgent(idx++);
+		        Agent agent = null;
+		        for(int i = 0; i < limit; i++){
+		        	if(!socketAgentMap.containsValue(Agent.getAgent(i))){
+		        		agent = Agent.getAgent(i);
+		        		break;
+		        	}
+		        }
+		        if(agent == null){
+		        	throw new IllegalPlayerNumException("Fail to create agent");
+		        }
 				socketAgentMap.put(socket, agent);
-				
-//				System.out.printf("Connect %s ( %d/%d )\n", agent, socketAgentMap.size(), limit);
-				serverLogger.info(String.format("Connect %s ( %d/%d )", agent, socketAgentMap.size(), limit));
-			}
+				String name = requestName(agent);
+				nameMap.put(agent, name);
+
+				for(ServerListener listener:serverListenerSet){
+					listener.connected(socket, agent, name);
+				}
+	        }
+	        
 	    }
-	    svsock.close();
+	    isWaitForClient = false;
+	    serverSocket.close();
 	}
 	
-	
+	/**
+	 * 
+	 */
+	public void stopWaitingForConnection() {
+		isWaitForClient = false;
+		try {
+			serverSocket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		for(Socket s:socketAgentMap.keySet()){
+			try {
+				s.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		socketAgentMap.clear();
+	}
+
+
 	
 	@Override
 	public List<Agent> getConnectedAgentList() {
@@ -244,7 +294,7 @@ public class TcpipServer implements GameServer {
 	        		
 			
 		}catch(IOException e){
-			throw new LostClientException("Lost connection with "+agent, e);
+			throw new LostClientException("Lost connection with "+agent, e, agent);
 		}
 	}
 	
@@ -349,6 +399,13 @@ public class TcpipServer implements GameServer {
 
 	@Override
 	public void close(){
+		try {
+			if(serverSocket != null && !serverSocket.isClosed()){
+				serverSocket.close();
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		for(Socket socket:socketAgentMap.keySet()){
 			try {
 				socket.close();
@@ -356,6 +413,7 @@ public class TcpipServer implements GameServer {
 				e.printStackTrace();
 			}
 		}
+		socketAgentMap.clear();
 	}
 
 	/**
@@ -370,6 +428,26 @@ public class TcpipServer implements GameServer {
 	 */
 	public void setServerLogger(Logger serverLogger) {
 		this.serverLogger = serverLogger;
+	}
+
+	/**
+	 * add server listener
+	 * @param e
+	 * @return
+	 * @see java.util.Set#add(java.lang.Object)
+	 */
+	public boolean addServerListener(ServerListener e) {
+		return serverListenerSet.add(e);
+	}
+
+	/**
+	 * remove server listener
+	 * @param o
+	 * @return
+	 * @see java.util.Set#remove(java.lang.Object)
+	 */
+	public boolean removeServerListener(ServerListener e) {
+		return serverListenerSet.remove(e);
 	}
 
 	

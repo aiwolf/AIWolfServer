@@ -1,6 +1,7 @@
 package org.aiwolf.server;
 
 import org.aiwolf.common.AIWolfRuntimeException;
+import org.aiwolf.common.data.Agent;
 
 /**
  * throws when the cliend connection is lost
@@ -9,6 +10,8 @@ import org.aiwolf.common.AIWolfRuntimeException;
  */
 public class LostClientException extends AIWolfRuntimeException {
 
+	Agent agent;
+	
 	public LostClientException() {
 	}
 
@@ -29,4 +32,25 @@ public class LostClientException extends AIWolfRuntimeException {
 		super(arg0, arg1, arg2, arg3);
 	}
 
+	public LostClientException(String arg0, Throwable arg1, Agent agent) {
+		super(arg0, arg1);
+		this.agent = agent;
+	}
+
+	/**
+	 * @return agent
+	 */
+	public Agent getAgent() {
+		return agent;
+	}
+
+	/**
+	 * @param agent セットする agent
+	 */
+	public void setAgent(Agent agent) {
+		this.agent = agent;
+	}
+
+	
+	
 }

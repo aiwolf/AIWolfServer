@@ -211,30 +211,36 @@ public class AIWolfGame {
 	 * Start game
 	 */
 	public void start(){
-		init();
-
-//		System.out.printf("%d-%d\n", getAliveHumanList().size(), getAliveWolfList().size());
-		while(!isGameFinished()){
-			log();
-
-			day();
-			night();
-			if(gameLogger != null){
-				gameLogger.flush();
+		try{
+			init();
+		
+		//		System.out.printf("%d-%d\n", getAliveHumanList().size(), getAliveWolfList().size());
+			while(!isGameFinished()){
+				log();
+		
+				day();
+				night();
+				if(gameLogger != null){
+					gameLogger.flush();
+				}
 			}
+			log();
+			finish();
+		
+			if(isShowConsoleLog){
+				System.out.println("Winner:"+getWinner());
+			}
+		//		for(Agent agent:gameData.getAgentList()){
+		//			GameInfo gameInfo = gameData.getGameInfo(agent);
+		////			System.out.println(JSON.encode(gameInfo));
+		//			break;
+		//		}
+		}catch(LostClientException e){
+			if(gameLogger != null){
+				gameLogger.log("Lost Connection of "+e.getAgent());
+			}
+			throw e;
 		}
-		log();
-		finish();
-
-		if(isShowConsoleLog){
-			System.out.println("Winner:"+getWinner());
-		}
-//		for(Agent agent:gameData.getAgentList()){
-//			GameInfo gameInfo = gameData.getGameInfo(agent);
-////			System.out.println(JSON.encode(gameInfo));
-//			break;
-//		}
-
 	}
 
 	public void finish(){
@@ -645,11 +651,12 @@ public class AIWolfGame {
 		for(Agent agent:getAliveAgentList()){
 			if(gameData.getRole(agent) == Role.SEER){
 				Agent target = gameServer.requestDivineTarget(agent);
-				if(gameData.getStatus(target) == Status.DEAD || target == null){
+				Role targetRole = gameData.getRole(target);
+				if(gameData.getStatus(target) == Status.DEAD || target == null || targetRole == null){
 //					target = getRandomAgent(agentList, agent);
 				}
 				else{
-					Judge divine = new Judge(gameData.getDay(), agent, target, gameData.getRole(target).getSpecies());
+					Judge divine = new Judge(gameData.getDay(), agent, target, targetRole.getSpecies());
 					gameData.addDivine(divine);
 	
 					if(gameLogger != null){
