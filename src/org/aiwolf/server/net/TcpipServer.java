@@ -150,7 +150,7 @@ public class TcpipServer implements GameServer {
 	        
 	        synchronized (socketAgentMap) {
 		        Agent agent = null;
-		        for(int i = 0; i < limit; i++){
+		        for(int i = 1; i < limit; i++){
 		        	if(!socketAgentMap.containsValue(Agent.getAgent(i))){
 		        		agent = Agent.getAgent(i);
 		        		break;
