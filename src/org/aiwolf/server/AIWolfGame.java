@@ -95,9 +95,9 @@ public class AIWolfGame {
 	/**
 	 *
 	 */
-	public AIWolfGame(GameSetting gameSeting, GameServer gameServer) {
+	public AIWolfGame(GameSetting gameSetting, GameServer gameServer) {
 		rand = new Random();
-		this.gameSetting = gameSeting;
+		this.gameSetting = gameSetting;
 		this.gameServer = gameServer;
 //		gameLogger = AiWolfLoggerFactory.getSimpleLogger(this.getClass().getSimpleName());
 	}
