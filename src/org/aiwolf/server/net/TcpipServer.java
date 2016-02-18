@@ -245,7 +245,7 @@ public class TcpipServer implements GameServer {
     		bw.flush();
 		}catch(IOException e){
 //			serverLogger.severe(e.getMessage());
-			throw new LostClientException(e);
+			throw new LostClientException(e, agent);
 		}
 	}
 

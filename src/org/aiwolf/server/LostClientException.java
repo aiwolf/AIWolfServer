@@ -19,6 +19,11 @@ public class LostClientException extends AIWolfRuntimeException {
 		super(arg0);
 	}
 
+	public LostClientException(Throwable arg0, Agent agent) {
+		super(arg0);
+		this.agent = agent;
+	}
+	
 	public LostClientException(Throwable arg0) {
 		super(arg0);
 	}
