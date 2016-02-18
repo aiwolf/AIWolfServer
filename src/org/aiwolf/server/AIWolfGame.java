@@ -804,7 +804,14 @@ public class AIWolfGame {
 		this.isShowConsoleLog = isShowConsoleLog;
 	}
 
-
+	/**
+	 * 
+	 * @param agent
+	 * @return
+	 */
+	public String getAgentName(Agent agent){
+		return agentNameMap.get(agent);
+	}
 
 
 }
