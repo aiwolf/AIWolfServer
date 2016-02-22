@@ -1,10 +1,7 @@
 package org.aiwolf.server;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,25 +14,17 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
-import org.aiwolf.common.AIWolfRuntimeException;
 import org.aiwolf.common.data.Agent;
 import org.aiwolf.common.data.Guard;
 import org.aiwolf.common.data.Judge;
-import org.aiwolf.common.data.Player;
 import org.aiwolf.common.data.Role;
 import org.aiwolf.common.data.Species;
 import org.aiwolf.common.data.Status;
 import org.aiwolf.common.data.Talk;
 import org.aiwolf.common.data.Team;
 import org.aiwolf.common.data.Vote;
-import org.aiwolf.common.net.GameInfo;
 import org.aiwolf.common.net.GameSetting;
-import org.aiwolf.common.util.AiWolfLoggerFactory;
 import org.aiwolf.common.util.Counter;
 import org.aiwolf.server.net.GameServer;
 import org.aiwolf.server.util.FileGameLogger;
@@ -202,7 +191,9 @@ public class AIWolfGame {
 		gameServer.setGameSetting(gameSetting);
 		for(Agent agent:agentList){
 			gameServer.init(agent);
-			agentNameMap.put(agent, gameServer.requestName(agent));
+			String requestName = gameServer.requestName(agent);
+			agentNameMap.put(agent, requestName);
+			System.out.println(requestName);
 		}
 	}
 

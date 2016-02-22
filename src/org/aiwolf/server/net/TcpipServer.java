@@ -294,7 +294,7 @@ public class TcpipServer implements GameServer {
 	        		
 			
 		}catch(IOException e){
-			throw new LostClientException("Lost connection with "+agent, e, agent);
+			throw new LostClientException("Lost connection with "+agent+"\t"+getName(agent), e, agent);
 		}
 	}
 	
@@ -315,7 +315,14 @@ public class TcpipServer implements GameServer {
 
 	@Override
 	public String requestName(Agent agent) {
-		return (String)request(agent, Request.NAME);
+		if(nameMap.containsKey(agent)){
+			return nameMap.get(agent);
+		}
+		else{
+			String name = (String)request(agent, Request.NAME);
+			nameMap.put(agent, name);
+			return name;
+		}
 	}
 	
 
@@ -448,6 +455,10 @@ public class TcpipServer implements GameServer {
 	 */
 	public boolean removeServerListener(ServerListener e) {
 		return serverListenerSet.remove(e);
+	}
+
+	public String getName(Agent agent) {
+		return nameMap.get(agent);
 	}
 
 	
