@@ -1,4 +1,5 @@
 package org.aiwolf.server.bin;
+import java.io.File;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.Random;
@@ -22,6 +23,7 @@ public class ServerStarter {
 	public static void main(String[] args) throws SocketTimeoutException, IOException {
 		int port = 10000;
 		int playerNum = 12;
+		String logFileName = null;
 		
 		for(int i = 0; i < args.length; i++){
 			if(args[i].startsWith("-")){
@@ -32,6 +34,10 @@ public class ServerStarter {
 				else if(args[i].equals("-n")){
 					i++;
 					playerNum = Integer.parseInt(args[i]);
+				}
+				else if(args[i].equals("-l")){
+					i++;
+					logFileName = args[i];
 				}
 			}
 		}
@@ -44,6 +50,9 @@ public class ServerStarter {
 		
 		AIWolfGame game = new AIWolfGame(gameSetting, gameServer);
 		game.setRand(new Random());
+		if(logFileName != null){
+			game.setLogFile(new File(logFileName));
+		}
 		game.start();
 		
 		
