@@ -16,6 +16,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,6 +49,8 @@ import org.aiwolf.server.LostClientException;
 public class TcpipServer implements GameServer {
 
 	
+
+
 	/**
 	 * Server Port
 	 */
@@ -90,6 +99,10 @@ public class TcpipServer implements GameServer {
 
 	private ServerSocket serverSocket;
 	
+	/**
+	 * Time limit for waiting request
+	 */
+	int timeLimit = 1;
 
 	/**
 	 * 
@@ -273,10 +286,30 @@ public class TcpipServer implements GameServer {
 	protected Object request(Agent agent, Request request){
 		try{
 			Socket sock = socketAgentMap.getKey(agent);
-			BufferedReader br = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+			final BufferedReader br = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 			send(agent, request);
 			
-	        String line = br.readLine();
+			String line = null;
+			ExecutorService pool = Executors.newSingleThreadExecutor();
+			RequestReadCallable task = new RequestReadCallable(br);
+			try {
+				Future<String> future = pool.submit(task);
+				try{
+					line = future.get(timeLimit, TimeUnit.SECONDS);	//5秒でタイムアウト
+				} catch (InterruptedException | ExecutionException e) {
+					throw e;
+				} catch (TimeoutException e) {
+					sock.close();
+					throw e;
+				}
+			} finally {
+				pool.shutdownNow();
+			}
+			
+//	        String line = br.readLine();
+			if(!task.isSuccess()){
+				throw task.getIOException();
+			}
 			serverLogger.info("<="+agent+":"+line);
 
 			if(line.isEmpty()){
@@ -293,8 +326,10 @@ public class TcpipServer implements GameServer {
 	        }
 	        		
 			
-		}catch(IOException e){
+		}catch(InterruptedException | ExecutionException | IOException e){
 			throw new LostClientException("Lost connection with "+agent+"\t"+getName(agent), e, agent);
+		}catch(TimeoutException e){
+			throw new LostClientException(String.format("Timeout %s(%s) %s", agent, getName(agent), request), e, agent);
 		}
 	}
 	
@@ -462,4 +497,32 @@ public class TcpipServer implements GameServer {
 	}
 
 	
+}
+
+
+class RequestReadCallable implements Callable<String> {
+	private final BufferedReader br;
+	IOException ioException;
+	RequestReadCallable(BufferedReader br) {
+		this.br = br;
+	}
+
+	@Override
+	public String call() {
+		try{
+			String line = br.readLine();
+			return line;
+		}catch(IOException e){
+			ioException = e;
+			return null;
+		}
+	}
+	
+	public boolean isSuccess(){
+		return ioException == null;
+	}
+	
+	public IOException getIOException(){
+		return ioException;
+	}
 }
