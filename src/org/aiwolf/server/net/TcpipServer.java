@@ -496,6 +496,20 @@ public class TcpipServer implements GameServer {
 		return nameMap.get(agent);
 	}
 
+	/**
+	 * @return timeLimit
+	 */
+	public int getTimeLimit() {
+		return timeLimit;
+	}
+
+	/**
+	 * @param timeLimit セットする timeLimit
+	 */
+	public void setTimeLimit(int timeLimit) {
+		this.timeLimit = timeLimit;
+	}
+
 	
 }
 
