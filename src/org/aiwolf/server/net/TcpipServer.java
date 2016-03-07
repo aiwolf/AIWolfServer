@@ -312,7 +312,7 @@ public class TcpipServer implements GameServer {
 			}
 			serverLogger.info("<="+agent+":"+line);
 
-			if(line.isEmpty()){
+			if(line != null && line.isEmpty()){
 				line = null;
 			}
 	        if(request == Request.TALK || request == Request.WHISPER || request == Request.NAME || request == Request.ROLE){
