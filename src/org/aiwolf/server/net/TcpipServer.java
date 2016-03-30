@@ -318,7 +318,7 @@ public class TcpipServer implements GameServer {
 	        if(request == Request.TALK || request == Request.WHISPER || request == Request.NAME || request == Request.ROLE){
 	        	return line;
 	        }
-	        else if(request == Request.ATTACK || request == Request.DIVINE || request == Request.GUARD || request == request.VOTE){
+	        else if(request == Request.ATTACK || request == Request.DIVINE || request == Request.GUARD || request == Request.VOTE){
 	        	return DataConverter.getInstance().toAgent(line);
 	        }
 	        else{
