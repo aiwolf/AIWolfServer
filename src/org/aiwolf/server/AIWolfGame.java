@@ -193,7 +193,7 @@ public class AIWolfGame {
 			gameServer.init(agent);
 			String requestName = gameServer.requestName(agent);
 			agentNameMap.put(agent, requestName);
-			System.out.println(requestName);
+//			System.out.println(requestName);
 		}
 	}
 
