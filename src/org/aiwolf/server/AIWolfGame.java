@@ -539,6 +539,9 @@ public class AIWolfGame {
 	protected void talk() {
 
 		Set<Agent> overSet = new HashSet<Agent>();
+		if(gameData.getDay() == 0){
+			whisper();
+		}
 		for(int i = 0; i < gameSetting.getMaxTalk(); i++){
 			boolean continueTalk = false;
 
