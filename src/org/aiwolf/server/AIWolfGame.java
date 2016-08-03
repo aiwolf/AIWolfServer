@@ -598,6 +598,9 @@ public class AIWolfGame {
 						continue;
 					}
 					String whisperContent = gameServer.requestWhisper(agent);
+					if(whisperContent == null || whisperContent.isEmpty()){
+						whisperContent = Talk.OVER;
+					}
 					if(whisperContent != null && !whisperContent.isEmpty()){
 						Talk whisper = new Talk(gameData.nextWhisperIdx(), gameData.getDay(), agent, whisperContent);
 						gameData.addWisper(agent, whisper);
