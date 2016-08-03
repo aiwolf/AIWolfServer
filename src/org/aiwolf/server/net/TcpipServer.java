@@ -295,7 +295,7 @@ public class TcpipServer implements GameServer {
 			try {
 				Future<String> future = pool.submit(task);
 				try{
-					line = future.get(timeLimit, TimeUnit.SECONDS);	//5秒でタイムアウト
+					line = future.get(timeLimit, TimeUnit.SECONDS);	//1秒でタイムアウト
 				} catch (InterruptedException | ExecutionException e) {
 					throw e;
 				} catch (TimeoutException e) {

@@ -555,7 +555,7 @@ public class AIWolfGame {
 				}
 				String talkContent = gameServer.requestTalk(agent);
 				if(talkContent == null || talkContent.isEmpty()){
-					talkContent = Talk.OVER;
+					talkContent = Talk.SKIP;
 				}
 				if(talkContent != null){
 					if(!talkContent.isEmpty()){
@@ -599,7 +599,7 @@ public class AIWolfGame {
 					}
 					String whisperContent = gameServer.requestWhisper(agent);
 					if(whisperContent == null || whisperContent.isEmpty()){
-						whisperContent = Talk.OVER;
+						whisperContent = Talk.SKIP;
 					}
 					if(whisperContent != null && !whisperContent.isEmpty()){
 						Talk whisper = new Talk(gameData.nextWhisperIdx(), gameData.getDay(), agent, whisperContent);
