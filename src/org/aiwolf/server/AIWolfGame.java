@@ -554,6 +554,9 @@ public class AIWolfGame {
 					continue;
 				}
 				String talkContent = gameServer.requestTalk(agent);
+				if(talkContent == null || talkContent.isEmpty()){
+					talkContent = Talk.SKIP;
+				}
 				if(talkContent != null){
 					if(!talkContent.isEmpty()){
 						Talk sentence = new Talk(gameData.nextTalkIdx(), gameData.getDay(), agent, talkContent);
