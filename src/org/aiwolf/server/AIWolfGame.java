@@ -555,7 +555,7 @@ public class AIWolfGame {
 				}
 				String talkContent = gameServer.requestTalk(agent);
 				if(talkContent == null || talkContent.isEmpty()){
-					talkContent = Talk.SKIP;
+					talkContent = Talk.OVER;
 				}
 				if(talkContent != null){
 					if(!talkContent.isEmpty()){
