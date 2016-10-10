@@ -2,9 +2,11 @@ package org.aiwolf.server.util;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.zip.GZIPOutputStream;
 
 import org.aiwolf.common.net.GameInfo;
 import org.aiwolf.common.util.CalendarTools;
@@ -16,9 +18,13 @@ import org.aiwolf.common.util.CalendarTools;
  */
 public class FileGameLogger implements GameLogger {
 
-	File logFile;
-	BufferedWriter bw;
+	protected File logFile;
+	protected BufferedWriter bw;
 
+	protected FileGameLogger(){
+		
+	}
+	
 	/**
 	 * 
 	 * @param logFile
@@ -45,7 +51,12 @@ public class FileGameLogger implements GameLogger {
 
 			logFile.getParentFile().mkdirs();
 			try{
-				bw = new BufferedWriter(new FileWriter(logFile));
+				if(!logFile.getPath().endsWith(".gz")){
+					bw = new BufferedWriter(new FileWriter(logFile));
+				}
+				else{
+					bw = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(logFile), true)));
+				}
 				return;
 			}catch(IOException e){
 				e.printStackTrace();

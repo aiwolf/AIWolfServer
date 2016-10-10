@@ -85,7 +85,7 @@ public class TcpipServer implements GameServer {
 	/**
 	 * 
 	 */
-	Logger serverLogger;
+//	Logger serverLogger;
 
 	/**
 	 * 
@@ -102,7 +102,7 @@ public class TcpipServer implements GameServer {
 	/**
 	 * Time limit for waiting request
 	 */
-	int timeLimit = 1;
+	int timeLimit = 1000;
 
 	/**
 	 * 
@@ -116,7 +116,7 @@ public class TcpipServer implements GameServer {
 		
 		socketAgentMap = new BidiMap<Socket, Agent>();
 		String loggerName = this.getClass().getSimpleName();
-		serverLogger = Logger.getLogger(loggerName);
+//		serverLogger = Logger.getLogger(loggerName);
 		nameMap = new HashMap<>();
 		serverListenerSet = new HashSet<>();
 //		serverLogger = AiWolfLoggerFactory.getLogger(loggerName);
@@ -192,7 +192,9 @@ public class TcpipServer implements GameServer {
 	public void stopWaitingForConnection() {
 		isWaitForClient = false;
 		try {
-			serverSocket.close();
+			if(serverSocket != null){
+				serverSocket.close();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -249,7 +251,7 @@ public class TcpipServer implements GameServer {
 				Packet packet = new Packet(request, gameData.getFinalGameInfoToSend(agent));
 				message = DataConverter.getInstance().convert(packet);
 			}
-			serverLogger.info("=>"+agent+":"+message);
+//			serverLogger.info("=>"+agent+":"+message);
 
 			Socket sock = socketAgentMap.getKey(agent);
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
@@ -295,7 +297,7 @@ public class TcpipServer implements GameServer {
 			try {
 				Future<String> future = pool.submit(task);
 				try{
-					line = future.get(timeLimit, TimeUnit.SECONDS);	//1秒でタイムアウト
+					line = future.get(timeLimit, TimeUnit.MILLISECONDS);	//1秒でタイムアウト
 				} catch (InterruptedException | ExecutionException e) {
 					throw e;
 				} catch (TimeoutException e) {
@@ -310,7 +312,7 @@ public class TcpipServer implements GameServer {
 			if(!task.isSuccess()){
 				throw task.getIOException();
 			}
-			serverLogger.info("<="+agent+":"+line);
+//			serverLogger.info("<="+agent+":"+line);
 
 			if(line != null && line.isEmpty()){
 				line = null;
@@ -461,16 +463,16 @@ public class TcpipServer implements GameServer {
 	/**
 	 * @return serverLogger
 	 */
-	public Logger getServerLogger() {
-		return serverLogger;
-	}
-
-	/**
-	 * @param serverLogger セットする serverLogger
-	 */
-	public void setServerLogger(Logger serverLogger) {
-		this.serverLogger = serverLogger;
-	}
+//	public Logger getServerLogger() {
+//		return serverLogger;
+//	}
+//
+//	/**
+//	 * @param serverLogger セットする serverLogger
+//	 */
+//	public void setServerLogger(Logger serverLogger) {
+//		this.serverLogger = serverLogger;
+//	}
 
 	/**
 	 * add server listener
