@@ -370,6 +370,7 @@ public class AIWolfGame {
 		if(gameData.getDay() != 0){
 			vote();
 		}
+		//TODO Divineなどは追放者が決定したあとになる
 		divine();
 		if(gameData.getDay() != 0){
 			guard();
@@ -398,6 +399,8 @@ public class AIWolfGame {
 			}
 		}
 
+		//TODO ここにWhisper，Divine,Attack，Guardが入る
+		
 		//Attack
 		if(!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getExecuted()) == Role.WEREWOLF) && gameData.getDay() != 0){
 			List<Vote> attackCandidateList = gameData.getAttackVoteList();
@@ -569,11 +572,13 @@ public class AIWolfGame {
 							overSet.add(agent);
 						}
 						if(gameLogger != null){
+							//TODO Talkの仕様変更に従って，ログを変更する
 							gameLogger.log(String.format("%d,talk,%d,%d,%s", gameData.getDay(), sentence.getIdx(),agent.getAgentIdx(), sentence.getContent()));
 						}
 					}
 				}
 			}
+			//TODO Whisperは無くなる
 			whisper();
 
 			if(!continueTalk){
