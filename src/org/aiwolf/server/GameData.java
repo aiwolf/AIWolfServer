@@ -89,7 +89,7 @@ public class GameData {
 	/**
 	 * <div lang="ja">昨夜死亡したエージェントのリスト</div>
 	 * 
-	 * <div lang="ena">the list of agents died last night</div>
+	 * <div lang="en">the list of agents died last night</div>
 	 */
 	// 妖狐導入されるまでは，実質的に襲撃死エージェントが入る
 	protected List<Agent> deadAgentList;
