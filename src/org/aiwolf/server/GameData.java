@@ -388,18 +388,6 @@ public class GameData {
 	}
 
 	/**
-	 * <div lang="ja">昨夜死亡したエージェントのリストをセットする
-	 * 
-	 * </div> <div lang="en">Sets the list of agents died last night.</div>
-	 * 
-	 * @param deadAgentList
-	 *            - <div lang="ja">エージェントのリスト</div><div lang="en">the list of agents</div>
-	 */
-	public void setDeadAgentList(List<Agent> deadAgentList) {
-		this.deadAgentList = deadAgentList;
-	}
-
-	/**
 	 * 
 	 * @param day
 	 * @return
@@ -459,6 +447,20 @@ public class GameData {
 	}
 
 	/**
+	 * <div lang="ja">昨夜死亡したエージェントを追加する
+	 * 
+	 * </div> <div lang="en">Adds the agent died last night.</div>
+	 * 
+	 * @param deadAgentList
+	 *            - <div lang="ja">追加するエージェント</div><div lang="en">the agent to be added</div>
+	 */
+	public void addDeadAgent(Agent deadAgent) {
+		if (!deadAgentList.contains(deadAgent)) {
+			deadAgentList.add(deadAgent);
+		}
+	}
+
+	/**
 	 * @return <div lang="ja">昨夜死亡したエージェントのリスト</div> <div lang="en">the list of agents died last night</div>
 	 */
 	public List<Agent> getDeadAgentList() {
@@ -484,6 +486,8 @@ public class GameData {
 		if(executed != null){
 			gameData.agentStatusMap.put(executed, Status.DEAD);
 		}
+
+		// TODO attackedの仕様変更により無くなる予定
 		if(attacked != null){
 			gameData.agentStatusMap.put(attacked, Status.DEAD);
 		}
