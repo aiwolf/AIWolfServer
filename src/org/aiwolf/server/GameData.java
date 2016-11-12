@@ -92,7 +92,7 @@ public class GameData {
 	 * <div lang="en">the list of agents died last night</div>
 	 */
 	// 妖狐導入されるまでは，実質的に襲撃死エージェントが入る
-	protected List<Agent> deadAgentList;
+	protected List<Agent> lastDeadAgentList;
 
 	/**
 	 * agents who sudden death
@@ -121,7 +121,7 @@ public class GameData {
 		wisperList = new ArrayList<Talk>();
 		voteList = new ArrayList<Vote>();
 		attackCandidateList = new ArrayList<Vote>();
-		deadAgentList = new ArrayList<Agent>();
+		lastDeadAgentList = new ArrayList<Agent>();
 		suddendeathList = new ArrayList<Agent>();
 		
 		this.gameSetting = gameSetting;
@@ -451,20 +451,21 @@ public class GameData {
 	 * 
 	 * </div> <div lang="en">Adds the agent died last night.</div>
 	 * 
-	 * @param deadAgentList
-	 *            - <div lang="ja">追加するエージェント</div><div lang="en">the agent to be added</div>
+	 * @param agent
+	 *            - <div lang="ja">追加するエージェント</div><div lang="en">the agent to
+	 *            be added</div>
 	 */
-	public void addDeadAgent(Agent deadAgent) {
-		if (!deadAgentList.contains(deadAgent)) {
-			deadAgentList.add(deadAgent);
+	public void addLastDeadAgent(Agent agent) {
+		if (!lastDeadAgentList.contains(agent)) {
+			lastDeadAgentList.add(agent);
 		}
 	}
 
 	/**
 	 * @return <div lang="ja">昨夜死亡したエージェントのリスト</div> <div lang="en">the list of agents died last night</div>
 	 */
-	public List<Agent> getDeadAgentList() {
-		return deadAgentList;
+	public List<Agent> getLastDeadAgentList() {
+		return lastDeadAgentList;
 	}
 
 	/**
@@ -491,7 +492,7 @@ public class GameData {
 		if(attacked != null){
 			gameData.agentStatusMap.put(attacked, Status.DEAD);
 		}
-		for (Agent a : deadAgentList) {
+		for (Agent a : lastDeadAgentList) {
 			gameData.agentStatusMap.put(a, Status.DEAD);
 		}
 		gameData.agentRoleMap = new HashMap<Agent, Role>(agentRoleMap);
