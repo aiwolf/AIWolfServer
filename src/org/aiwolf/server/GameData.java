@@ -288,7 +288,9 @@ public class GameData {
 	
 	/**
 	 * Add new agent with thier role
+	 * 
 	 * @param agent
+	 * @param status
 	 * @param role
 	 */
 	public void addAgent(Agent agent, Status status, Role role){
@@ -332,19 +334,14 @@ public class GameData {
 		talkList.add(talk);
 	}
 	
-	/***
-	 * kaji
-	 */
-	
 	public void addWisper(Agent agent, Talk wisper) {
 		wisperList.add(wisper);
 	}
 
 	/**
 	 * Add vote data
-	 * @param day
-	 * @param agent
-	 * @param target
+	 * 
+	 * @param vote
 	 */
 	public void addVote(Vote vote) {
 		voteList.add(vote);
@@ -352,9 +349,8 @@ public class GameData {
 
 	/**
 	 * Add divine
-	 * @param day
-	 * @param agent
-	 * @param target
+	 * 
+	 * @param divine
 	 */
 	public void addDivine(Judge divine) {
 		this.divine = divine;
@@ -374,7 +370,6 @@ public class GameData {
 
 	/**
 	 * set executed 
-	 * @param day
 	 * @param target
 	 */
 	public void setExecuteTarget(Agent target) {
@@ -383,7 +378,6 @@ public class GameData {
 
 	/**
 	 * 
-	 * @param day
 	 * @param attacked
 	 */
 	public void setAttackedTarget(Agent attacked) {
@@ -392,7 +386,6 @@ public class GameData {
 
 	/**
 	 * 
-	 * @param day
 	 * @return
 	 */
 	public List<Vote> getAttackVoteList() {
