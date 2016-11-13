@@ -330,11 +330,6 @@ public class AIWolfGame {
 				System.out.printf("%s attacked\n", yesterday.getLastDeadAgentList().get(0));
 			}
 
-			// TODO GameData.attackedの仕様変更のため以下はなくなる予定
-			Agent attacked = yesterday.getAttacked();
-			if(attacked != null){
-				System.out.printf("%s attacked\n", attacked);
-			}
 		}
 		System.out.println("======");
 		List<Agent> agentList = gameData.getAgentList();
@@ -356,10 +351,6 @@ public class AIWolfGame {
 					System.out.print("\tattacked");
 				}
 
-				// TODO GameData.attackedの仕様変更のため以下はなくなる予定
-				if(yesterday.getAttacked() == agent){
-					System.out.print("\tattacked");
-				}
 				Judge divine = yesterday.getDivine();
 				if(divine != null && divine.getTarget() == agent){
 					System.out.print("\tdivined");
@@ -442,8 +433,6 @@ public class AIWolfGame {
 			if(!isGuarded && attacked != null){
 				gameData.addLastDeadAgent(attacked);
 
-				// TODO GameData.attackedの仕様変更のため以下はなくなる予定
-				gameData.setAttackedTarget(attacked);
 				if(gameLogger != null){
 					gameLogger.log(String.format("%d,attack,%d,true", gameData.getDay(), attacked.getAgentIdx()));
 				}
