@@ -159,7 +159,8 @@ public class GameData {
 	
 	/**
 	 * 
-	 * @param agent if null, get all information
+	 * @param agent
+	 *            - if null, get all information
 	 * @return
 	 */
 	public GameInfoToSend getGameInfoToSend(Agent agent){
@@ -178,12 +179,13 @@ public class GameData {
 			if(executed != null){
 				gi.setExecutedAgent(executed.getAgentIdx());
 			}
-
-			Agent attacked = yesterday.getAttacked();
-			if(attacked != null){
-				gi.setAttackedAgent(attacked.getAgentIdx());
-			}
 			
+			ArrayList<Integer> lastDeadAgentList = new ArrayList<>();
+			for (Agent a : yesterday.getLastDeadAgentList()) {
+				lastDeadAgentList.add(new Integer(a.getAgentIdx()));
+			}
+			gi.setLastDeadAgentList(lastDeadAgentList);
+
 			if(gameSetting.isVoteVisible()){
 				List<VoteToSend> voteList = new ArrayList<VoteToSend>();
 				for(Vote vote:yesterday.getVoteList()){
@@ -206,6 +208,11 @@ public class GameData {
 			}
 
 			if (agent == null || today.getRole(agent).equals(Role.WEREWOLF)) {
+				Agent attacked = yesterday.getAttacked();
+				if (attacked != null) {
+					gi.setAttackedAgent(attacked.getAgentIdx());
+				}
+
 				List<VoteToSend> attackVoteList = new ArrayList<VoteToSend>();
 				for(Vote vote:yesterday.getAttackVoteList()){
 					attackVoteList.add(new VoteToSend(vote));
