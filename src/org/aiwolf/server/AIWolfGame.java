@@ -326,7 +326,7 @@ public class AIWolfGame {
 			}
 
 			// TODO 妖狐導入の際は要変更
-			if (yesterday.getLastDeadAgentList().size() > 0) {
+			if (!yesterday.getLastDeadAgentList().isEmpty()) {
 				System.out.printf("%s attacked\n", yesterday.getLastDeadAgentList().get(0));
 			}
 
