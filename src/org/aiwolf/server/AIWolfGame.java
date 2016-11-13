@@ -421,6 +421,7 @@ public class AIWolfGame {
 			if(attacked == executed){
 				attacked = null;
 			}
+			gameData.setAttackedTarget(attacked);
 
 			boolean isGuarded = false;
 			if(gameData.getGuard() != null){
