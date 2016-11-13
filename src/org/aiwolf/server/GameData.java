@@ -82,7 +82,10 @@ public class GameData {
 	protected Agent executed;
 	
 	/**
-	 * agents who killed by werewolf
+	 * <div lang="ja">昨夜人狼が襲ったエージェント（成否は問わない）</div>
+	 * 
+	 * <div lang="en">the agent werewolves attacked last night (no matter
+	 * whether or not the attack succeeded)</div>
 	 */
 	protected Agent attacked;
 
@@ -440,7 +443,14 @@ public class GameData {
 	}
 
 	/**
-	 * @return attacked
+	 * <div lang="ja">昨夜人狼が襲ったエージェント（成否は問わない）を返す</div>
+	 * 
+	 * <div lang="en">Returns the agent werewolves attacked last night (no
+	 * matter whether or not the attack succeeded).</div>
+	 * 
+	 * @return attackedAgent - <div lang="ja">昨夜人狼が襲ったエージェント</div>
+	 * 
+	 *         <div lang="en">the agent werewolves attacked last night</div>
 	 */
 	public Agent getAttacked() {
 		return attacked;
@@ -488,10 +498,6 @@ public class GameData {
 			gameData.agentStatusMap.put(executed, Status.DEAD);
 		}
 
-		// TODO attackedの仕様変更により無くなる予定
-		if(attacked != null){
-			gameData.agentStatusMap.put(attacked, Status.DEAD);
-		}
 		for (Agent a : lastDeadAgentList) {
 			gameData.agentStatusMap.put(a, Status.DEAD);
 		}
