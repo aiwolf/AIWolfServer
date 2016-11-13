@@ -324,6 +324,13 @@ public class AIWolfGame {
 			if(guard != null){
 				System.out.printf("%s guarded\n", guard);
 			}
+
+			// TODO 妖狐導入の際は要変更
+			if (yesterday.getLastDeadAgentList().size() > 0) {
+				System.out.printf("%s attacked\n", yesterday.getLastDeadAgentList().get(0));
+			}
+
+			// TODO GameData.attackedの仕様変更のため以下はなくなる予定
 			Agent attacked = yesterday.getAttacked();
 			if(attacked != null){
 				System.out.printf("%s attacked\n", attacked);
@@ -343,6 +350,13 @@ public class AIWolfGame {
 				if(yesterday.getExecuted() == agent){
 					System.out.print("\texecuted");
 				}
+
+				// TODO 妖狐導入の際は要変更
+				if (yesterday.getLastDeadAgentList().contains(agent)) {
+					System.out.print("\tattacked");
+				}
+
+				// TODO GameData.attackedの仕様変更のため以下はなくなる予定
 				if(yesterday.getAttacked() == agent){
 					System.out.print("\tattacked");
 				}
@@ -426,6 +440,9 @@ public class AIWolfGame {
 				}
 			}
 			if(!isGuarded && attacked != null){
+				gameData.addLastDeadAgent(attacked);
+
+				// TODO GameData.attackedの仕様変更のため以下はなくなる予定
 				gameData.setAttackedTarget(attacked);
 				if(gameLogger != null){
 					gameLogger.log(String.format("%d,attack,%d,true", gameData.getDay(), attacked.getAgentIdx()));
