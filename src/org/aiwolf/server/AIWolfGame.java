@@ -370,16 +370,11 @@ public class AIWolfGame {
 
 	protected void day() {
 		dayStart();
-		talk();
-
-		if(gameData.getDay() != 0){
-			vote();
+		if (gameData.getDay() == 0) {
+			whisper();
 		}
-		//TODO Divineなどは追放者が決定したあとになる
-		divine();
-		if(gameData.getDay() != 0){
-			guard();
-			attack();
+		if (gameData.getDay() != 0) { // TODO 初日にtalkがあるかどうかはGameSettingで制御
+			talk();
 		}
 	}
 
@@ -392,62 +387,66 @@ public class AIWolfGame {
 			gameServer.dayFinish(agent);
 		}
 
-
-		//Vote
-
-		List<Vote> voteList = gameData.getVoteList();
-		Agent banished = getVotedAgent(voteList);
-		if(gameData.getStatus(banished) == Status.ALIVE  && gameData.getDay() != 0){
-			gameData.setBanishedTarget(banished);
-			if(gameLogger != null){
-				gameLogger.log(String.format("%d,banish,%d,%s", gameData.getDay(), banished.getAgentIdx(), gameData.getRole(banished)));
+		// Vote and banish except day 0
+		Agent banished = null;
+		if (gameData.getDay() != 0) {
+			vote();
+			List<Vote> voteList = gameData.getVoteList();
+			banished = getVotedAgent(voteList);
+			if (banished != null && gameData.getStatus(banished) == Status.ALIVE) {
+				gameData.setBanishedTarget(banished);
+				if (gameLogger != null) {
+					gameLogger.log(String.format("%d,banish,%d,%s", gameData.getDay(), banished.getAgentIdx(), gameData.getRole(banished)));
+				}
 			}
 		}
 
-		//TODO ここにWhisper，Divine,Attack，Guardが入る
-		
-		//Attack
-		if(!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getbanished()) == Role.WEREWOLF) && gameData.getDay() != 0){
-			List<Vote> attackCandidateList = gameData.getAttackVoteList();
-			Iterator<Vote> it = attackCandidateList.iterator();
-			while(it.hasNext()){
-				Vote vote = it.next();
-				if(vote.getAgent() == banished){
-					it.remove();
-				}
-			}
+		// every day
+		divine();
 
-			Agent attacked = getAttackVotedAgent(attackCandidateList);
-			if(attacked == banished){
-				attacked = null;
-			}
-			gameData.setAttackedTarget(attacked);
-
-			boolean isGuarded = false;
-			if(gameData.getGuard() != null){
-				if(gameData.getGuard().getTarget().equals(attacked) && attacked != null){
-					if(gameData.getbanished() == null || !gameData.getbanished().equals(gameData.getGuard().getAgent())){
-						isGuarded = true;
+		if (gameData.getDay() != 0) {
+			whisper();
+			attack();
+			guard();
+			if (!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getbanished()) == Role.WEREWOLF)) {
+				List<Vote> attackCandidateList = gameData.getAttackVoteList();
+				Iterator<Vote> it = attackCandidateList.iterator();
+				while (it.hasNext()) {
+					Vote vote = it.next();
+					if (vote.getAgent() == banished) {
+						it.remove();
 					}
 				}
-			}
-			if(!isGuarded && attacked != null){
-				gameData.addLastDeadAgent(attacked);
 
-				if(gameLogger != null){
-					gameLogger.log(String.format("%d,attack,%d,true", gameData.getDay(), attacked.getAgentIdx()));
+				Agent attacked = getAttackVotedAgent(attackCandidateList);
+				if (attacked == banished) {
+					attacked = null;
 				}
-			}
-			else if(attacked != null){
-				if(gameLogger != null){
-					gameLogger.log(String.format("%d,attack,%d,false", gameData.getDay(), attacked.getAgentIdx()));
+				gameData.setAttackedTarget(attacked);
+
+				boolean isGuarded = false;
+				if (gameData.getGuard() != null) {
+					if (gameData.getGuard().getTarget().equals(attacked) && attacked != null) {
+						if (gameData.getbanished() == null || !gameData.getbanished().equals(gameData.getGuard().getAgent())) {
+							isGuarded = true;
+						}
+					}
 				}
-			}
-			else{
-				if(gameLogger != null){
-					gameLogger.log(String.format("%d,attack,-1,false", gameData.getDay()));
+				if (!isGuarded && attacked != null) {
+					gameData.addLastDeadAgent(attacked);
+
+					if (gameLogger != null) {
+						gameLogger.log(String.format("%d,attack,%d,true", gameData.getDay(), attacked.getAgentIdx()));
+					}
+				} else if (attacked != null) {
+					if (gameLogger != null) {
+						gameLogger.log(String.format("%d,attack,%d,false", gameData.getDay(), attacked.getAgentIdx()));
+					}
+				} else {
+					if (gameLogger != null) {
+						gameLogger.log(String.format("%d,attack,-1,false", gameData.getDay()));
+					}
 				}
-				
 			}
 		}
 
@@ -549,9 +548,6 @@ public class AIWolfGame {
 	protected void talk() {
 
 		Set<Agent> overSet = new HashSet<Agent>();
-		if(gameData.getDay() == 0){
-			whisper();
-		}
 		for(int i = 0; i < gameSetting.getMaxTalk(); i++){
 			boolean continueTalk = false;
 
@@ -585,8 +581,6 @@ public class AIWolfGame {
 					}
 				}
 			}
-			//TODO Whisperは無くなる
-			whisper();
 
 			if(!continueTalk){
 				break;
