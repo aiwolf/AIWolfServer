@@ -79,7 +79,7 @@ public class GameData {
 	/**
 	 * agents who killed by villegers
 	 */
-	protected Agent executed;
+	protected Agent banished;
 	
 	/**
 	 * <div lang="ja">昨夜人狼が襲ったエージェント（成否は問わない）</div>
@@ -175,9 +175,9 @@ public class GameData {
 		GameData yesterday = today.getDayBefore();
 
 		if (yesterday != null) {
-			Agent executed = yesterday.getExecuted();
-			if(executed != null){
-				gi.setExecutedAgent(executed.getAgentIdx());
+			Agent banished = yesterday.getbanished();
+			if(banished != null){
+				gi.setBanishedAgent(banished.getAgentIdx());
 			}
 			
 			ArrayList<Integer> lastDeadAgentList = new ArrayList<>();
@@ -194,9 +194,9 @@ public class GameData {
 				gi.setVoteList(voteList);
 			}
 			
-			if (agent != null && (today.getRole(agent).equals(Role.MEDIUM) && executed != null)) {
-				Species result = yesterday.getRole(executed).getSpecies();
-				gi.setMediumResult(new JudgeToSend(new Judge(day, agent, executed, result)));
+			if (agent != null && (today.getRole(agent).equals(Role.MEDIUM) && banished != null)) {
+				Species result = yesterday.getRole(banished).getSpecies();
+				gi.setMediumResult(new JudgeToSend(new Judge(day, agent, banished, result)));
 			}
 
 			if (agent == null || today.getRole(agent).equals(Role.SEER)) {
@@ -376,11 +376,12 @@ public class GameData {
 	}
 
 	/**
-	 * set executed 
+	 * set banished
+	 * 
 	 * @param target
 	 */
-	public void setExecuteTarget(Agent target) {
-		this.executed = target;
+	public void setBanishedTarget(Agent target) {
+		this.banished = target;
 	}
 
 	/**
@@ -436,10 +437,10 @@ public class GameData {
 	}
 
 	/**
-	 * @return executed
+	 * @return banished
 	 */
-	public Agent getExecuted() {
-		return executed;
+	public Agent getbanished() {
+		return banished;
 	}
 
 	/**
@@ -494,8 +495,8 @@ public class GameData {
 		
 		gameData.day = this.day+1;
 		gameData.agentStatusMap = new HashMap<Agent, Status>(agentStatusMap);
-		if(executed != null){
-			gameData.agentStatusMap.put(executed, Status.DEAD);
+		if(banished != null){
+			gameData.agentStatusMap.put(banished, Status.DEAD);
 		}
 
 		for (Agent a : lastDeadAgentList) {
