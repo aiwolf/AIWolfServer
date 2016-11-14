@@ -175,7 +175,7 @@ public class GameData {
 		GameData yesterday = today.getDayBefore();
 
 		if (yesterday != null) {
-			Agent banished = yesterday.getbanished();
+			Agent banished = yesterday.getBanished();
 			if(banished != null){
 				gi.setBanishedAgent(banished.getAgentIdx());
 			}
@@ -439,7 +439,7 @@ public class GameData {
 	/**
 	 * @return banished
 	 */
-	public Agent getbanished() {
+	public Agent getBanished() {
 		return banished;
 	}
 

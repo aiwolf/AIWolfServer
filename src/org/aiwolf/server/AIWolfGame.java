@@ -316,7 +316,7 @@ public class AIWolfGame {
 			}
 
 			Judge divine = yesterday.getDivine();
-			System.out.printf("%s banished\n", yesterday.getbanished());
+			System.out.printf("%s banished\n", yesterday.getBanished());
 			if(divine != null){
 				System.out.printf("%s divine %s. Result is %s\n", divine.getAgent(), divine.getTarget(), divine.getResult());
 			}
@@ -342,7 +342,7 @@ public class AIWolfGame {
 		for(Agent agent:agentList){
 			System.out.printf("%s\t%s\t%s\t%s", agent, agentNameMap.get(agent), gameData.getStatus(agent), gameData.getRole(agent));
 			if(yesterday != null){
-				if(yesterday.getbanished() == agent){
+				if(yesterday.getBanished() == agent){
 					System.out.print("\tbanished");
 				}
 
@@ -408,7 +408,7 @@ public class AIWolfGame {
 			whisper();
 			attack();
 			guard();
-			if (!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getbanished()) == Role.WEREWOLF)) {
+			if (!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getBanished()) == Role.WEREWOLF)) {
 				List<Vote> attackCandidateList = gameData.getAttackVoteList();
 				Iterator<Vote> it = attackCandidateList.iterator();
 				while (it.hasNext()) {
@@ -427,7 +427,7 @@ public class AIWolfGame {
 				boolean isGuarded = false;
 				if (gameData.getGuard() != null) {
 					if (gameData.getGuard().getTarget().equals(attacked) && attacked != null) {
-						if (gameData.getbanished() == null || !gameData.getbanished().equals(gameData.getGuard().getAgent())) {
+						if (gameData.getBanished() == null || !gameData.getBanished().equals(gameData.getGuard().getAgent())) {
 							isGuarded = true;
 						}
 					}
@@ -680,7 +680,7 @@ public class AIWolfGame {
 		List<Agent> agentList = getAliveAgentList();
 		for(Agent agent:getAliveAgentList()){
 			if(gameData.getRole(agent) == Role.BODYGUARD){
-				if(agent == gameData.getbanished()){
+				if(agent == gameData.getBanished()){
 					continue;
 				}
 				Agent target = gameServer.requestGuardTarget(agent);
