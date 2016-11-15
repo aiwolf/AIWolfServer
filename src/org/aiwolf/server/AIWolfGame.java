@@ -372,8 +372,11 @@ public class AIWolfGame {
 		dayStart();
 		if (gameData.getDay() == 0) {
 			whisper();
+			if (gameSetting.isTalkOnFirstDay()) {
+				talk();
+			}
 		}
-		if (gameData.getDay() != 0) { // TODO 初日にtalkがあるかどうかはGameSettingで制御
+		else {
 			talk();
 		}
 	}
