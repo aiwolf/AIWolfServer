@@ -373,7 +373,7 @@ public class AIWolfGame {
 		if (gameData.getDay() == 0) {
 			whisper();
 		}
-		if (gameData.getDay() != 0) { // TODO 初日にtalkがあるかどうかはGameSettingで制御
+		else {
 			talk();
 		}
 	}
@@ -391,8 +391,12 @@ public class AIWolfGame {
 		Agent banished = null;
 		if (gameData.getDay() != 0) {
 			vote();
-			List<Vote> voteList = gameData.getVoteList();
-			banished = getVotedAgent(voteList);
+			List<Agent> candidates = getVotedCandidates(gameData.getVoteList());
+			if (candidates.size() > 0) {
+				Collections.shuffle(candidates, rand);
+				banished = candidates.get(0);
+				// TODO 複数の場合再投票
+			}
 			if (banished != null && gameData.getStatus(banished) == Status.ALIVE) {
 				gameData.setBanishedTarget(banished);
 				if (gameLogger != null) {
@@ -462,7 +466,7 @@ public class AIWolfGame {
 	 * @param voteList
 	 * @return
 	 */
-	protected Agent getVotedAgent(List<Vote> voteList) {
+	protected List<Agent> getVotedCandidates(List<Vote> voteList) {
 		Counter<Agent> counter = new Counter<Agent>();
 		for(Vote vote:voteList){
 			if(gameData.getStatus(vote.getTarget()) == Status.ALIVE){
@@ -477,15 +481,7 @@ public class AIWolfGame {
 				candidateList.add(agent);
 			}
 		}
-
-		if(candidateList.isEmpty()){
-			return null;
-		}
-		else{
-			Collections.shuffle(candidateList, rand);
-
-			return candidateList.get(0);
-		}
+		return candidateList;
 	}
 
 
@@ -645,6 +641,36 @@ public class AIWolfGame {
 
 			if(gameLogger != null){
 				gameLogger.log(String.format("%d,vote,%d,%d", gameData.getDay(), vote.getAgent().getAgentIdx(), vote.getTarget().getAgentIdx()));
+			}
+		}
+	}
+
+	/**
+	 * <div lang="ja">再投票</div>
+	 * 
+	 * <div lang="en">Revote</div>
+	 * 
+	 * @param candidates
+	 *            - <div lang="ja">候補者．投票権はない</div> <div lang="en">candidates having no right to vote</div>
+	 */
+	protected void revote(List<Agent> candidates) {
+		gameData.getVoteList().clear();
+		ArrayList<Agent> aliveCandidates = new ArrayList<>();
+		for (Agent a : candidates) {
+			if (gameData.getStatus(a) == Status.ALIVE) {
+				aliveCandidates.add(a);
+			}
+		}
+		List<Agent> voters = getAliveAgentList();
+		voters.removeAll(candidates);
+		for (Agent agent : voters) {
+			Agent target = gameServer.requestVote(agent);
+			if (target != null && aliveCandidates.contains(target)) { // valid vote
+				Vote vote = new Vote(gameData.getDay(), agent, target);
+				gameData.addVote(vote);
+				if (gameLogger != null) {
+					gameLogger.log(String.format("%d,vote,%d,%d", gameData.getDay(), vote.getAgent().getAgentIdx(), vote.getTarget().getAgentIdx()));
+				}
 			}
 		}
 	}
