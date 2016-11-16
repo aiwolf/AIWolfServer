@@ -88,6 +88,7 @@ public class AIWolfGame {
 		rand = new Random();
 		this.gameSetting = gameSetting;
 		this.gameServer = gameServer;
+
 //		gameLogger = AiWolfLoggerFactory.getSimpleLogger(this.getClass().getSimpleName());
 	}
 
@@ -184,7 +185,7 @@ public class AIWolfGame {
 				}
 			}
 		}
-
+		
 		gameDataMap.put(gameData.getDay(), gameData);
 
 		gameServer.setGameData(gameData);

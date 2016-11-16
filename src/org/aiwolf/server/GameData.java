@@ -2,9 +2,12 @@ package org.aiwolf.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.aiwolf.common.data.Agent;
 import org.aiwolf.common.data.Guard;
@@ -242,6 +245,12 @@ public class GameData {
 		LinkedHashMap<Integer, String> roleMap = new LinkedHashMap<Integer, String>();
 		Role role = agentRoleMap.get(agent);
 
+		Set<String> existingRoleSet = new TreeSet<>();
+		for(Role r:agentRoleMap.values()){
+			existingRoleSet.add(r.toString());
+		}
+		gi.setExistingRoleList(new ArrayList<>(existingRoleSet));
+		
 		if(Role.WEREWOLF.equals(role) || agent == null){
 			List<TalkToSend> whisperList = new ArrayList<TalkToSend>();
 			for(Talk talk:today.getWhisperList()){
