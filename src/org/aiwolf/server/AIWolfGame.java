@@ -372,8 +372,8 @@ public class AIWolfGame {
 	protected void day() {
 		dayStart();
 		if (gameData.getDay() == 0) {
-			whisper();
 			if (gameSetting.isTalkOnFirstDay()) {
+				whisper();
 				talk();
 			}
 		}
@@ -426,8 +426,9 @@ public class AIWolfGame {
 
 		if (gameData.getDay() != 0) {
 			whisper();
-			attack();
 			guard();
+
+			attack();
 			if (!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getBanished()) == Role.WEREWOLF)) {
 				List<Vote> attackCandidateList = gameData.getAttackVoteList();
 				Iterator<Vote> it = attackCandidateList.iterator();
