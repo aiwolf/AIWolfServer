@@ -598,7 +598,7 @@ public class AIWolfGame {
 				gameData.addTalk(talk.getAgent(), talk);
 				if(gameLogger != null){
 					//TODO Talkの仕様変更に従って，ログを変更する
-					gameLogger.log(String.format("%d,talk,%d,%d,%d,%s", gameData.getDay(), talk.getIdx(), talk.getTurn(), talk.getAgent().getAgentIdx(), talk.getContent()));
+					gameLogger.log(String.format("%d,talk,%d,%d,%d,%s", gameData.getDay(), talk.getIdx(), talk.getTurn(), talk.getAgent().getAgentIdx(), talk.getText()));
 				}
 				if(!talk.isOver()){
 					continueTalk = true;
@@ -642,7 +642,7 @@ public class AIWolfGame {
 						}
 
 						if(gameLogger != null){
-							gameLogger.log(String.format("%d,whisper,%d,%d,%s", gameData.getDay(), whisper.getIdx(),agent.getAgentIdx(), whisper.getContent()));
+							gameLogger.log(String.format("%d,whisper,%d,%d,%s", gameData.getDay(), whisper.getIdx(),agent.getAgentIdx(), whisper.getText()));
 						}
 					}
 				}
