@@ -559,41 +559,49 @@ public class AIWolfGame {
 	 */
 	protected void talk() {
 
+		for(Agent agent:getAliveAgentList()){
+			gameData.remainTalkMap.put(agent, gameSetting.getMaxTalk());
+		}
 		Set<Agent> overSet = new HashSet<Agent>();
-		for(int i = 0; i < gameSetting.getMaxTalk(); i++){
-			boolean continueTalk = false;
-
+		for(int time = 0; time < gameSetting.getMaxTalkTurn(); time++){
 			List<Agent> aliveList = getAliveAgentList();
 			Collections.shuffle(aliveList);
-			aliveList.removeAll(overSet);
-			aliveList.addAll(overSet);
+
+			List<Talk> talkList = new ArrayList<>();
+			Set<Agent> skipAgentSet = new HashSet<>();
+			Set<Agent> overAgentSet = new HashSet<>();
 			for(Agent agent:aliveList){
-				if(overSet.contains(agent)){
-					continue;
+				String talkContent = Talk.OVER;
+				if(gameData.getRemainTalkMap().get(agent) > 0){
+					talkContent = gameServer.requestTalk(agent);
 				}
-				String talkContent = gameServer.requestTalk(agent);
+//				String talkContent = gameServer.requestTalk(agent);
 				if(talkContent == null || talkContent.isEmpty()){
 					talkContent = Talk.SKIP;
 				}
-				if(talkContent != null){
-					if(!talkContent.isEmpty()){
-						Talk sentence = new Talk(gameData.nextTalkIdx(), gameData.getDay(), agent, talkContent);
-						gameData.addTalk(agent, sentence);
-						if(!talkContent.equals(Talk.OVER)){
-							continueTalk = true;
-							overSet.clear();
-						}
-						else{
-							overSet.add(agent);
-						}
-						if(gameLogger != null){
-							//TODO Talkの仕様変更に従って，ログを変更する
-							gameLogger.log(String.format("%d,talk,%d,%d,%s", gameData.getDay(), sentence.getIdx(),agent.getAgentIdx(), sentence.getContent()));
-						}
-					}
+				Talk talk = new Talk(gameData.nextTalkIdx(), gameData.getDay(), time, agent, talkContent);
+				if(talk.isSkip()){
+					skipAgentSet.add(agent);
 				}
+				else if(talk.isOver()){
+					overAgentSet.add(agent);
+				}
+				talkList.add(talk);
 			}
 
+			Collections.shuffle(talkList);
+			boolean continueTalk = false;
+			for(Talk talk:talkList){
+				gameData.addTalk(talk.getAgent(), talk);
+				if(gameLogger != null){
+					//TODO Talkの仕様変更に従って，ログを変更する
+					gameLogger.log(String.format("%d,talk,%d,%d,%d,%s", gameData.getDay(), talk.getIdx(), talk.getTurn(), talk.getAgent().getAgentIdx(), talk.getContent()));
+				}
+				if(!talk.isOver()){
+					continueTalk = true;
+				}
+			}
+			
 			if(!continueTalk){
 				break;
 			}
@@ -604,7 +612,7 @@ public class AIWolfGame {
 	protected void whisper() {
 		//Whisper by werewolf
 		Set<Agent> overSet = new HashSet<Agent>();
-		for(int j = 0; j < gameSetting.getMaxTalk(); j++){
+		for(int time = 0; time < gameSetting.getMaxTalk(); time++){
 			List<Agent> aliveList = getAliveAgentList();
 			boolean continueWhisper = false;
 			Collections.shuffle(aliveList);
@@ -620,7 +628,7 @@ public class AIWolfGame {
 						whisperContent = Talk.SKIP;
 					}
 					if(whisperContent != null && !whisperContent.isEmpty()){
-						Talk whisper = new Talk(gameData.nextWhisperIdx(), gameData.getDay(), agent, whisperContent);
+						Talk whisper = new Talk(gameData.nextWhisperIdx(), gameData.getDay(), time, agent, whisperContent);
 						gameData.addWisper(agent, whisper);
 						if(!whisperContent.equals(Talk.OVER)){
 							continueWhisper = true;

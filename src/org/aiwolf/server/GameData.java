@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.aiwolf.common.AIWolfRuntimeException;
 import org.aiwolf.common.data.Agent;
 import org.aiwolf.common.data.Guard;
 import org.aiwolf.common.data.Judge;
@@ -68,6 +69,10 @@ public class GameData {
 	 */
 	protected List<Vote> attackCandidateList;
 	
+	/**
+	 * 
+	 */
+	protected Map<Agent, Integer> remainTalkMap;
 	
 	/**
 	 * Result divine
@@ -123,6 +128,7 @@ public class GameData {
 	protected GameData(GameSetting gameSetting){
 		agentStatusMap = new LinkedHashMap<Agent, Status>();
 		agentRoleMap = new HashMap<Agent, Role>();
+		remainTalkMap = new HashMap<Agent, Integer>();
 		talkList = new ArrayList<Talk>();
 		wisperList = new ArrayList<Talk>();
 		voteList = new ArrayList<Vote>();
@@ -251,6 +257,12 @@ public class GameData {
 		}
 		gi.setExistingRoleList(new ArrayList<>(existingRoleSet));
 		
+		Map<Integer, Integer> remainTalkMap = new HashMap<>();
+		for(Agent a:this.remainTalkMap.keySet()){
+			remainTalkMap.put(agent.getAgentIdx(), this.remainTalkMap.get(a));
+		}
+		gi.setRemainTalkMap(remainTalkMap);
+		
 		if(Role.WEREWOLF.equals(role) || agent == null){
 			List<TalkToSend> whisperList = new ArrayList<TalkToSend>();
 			for(Talk talk:today.getWhisperList()){
@@ -284,6 +296,7 @@ public class GameData {
 			}
 		}
 		gi.setRoleMap(roleMap);
+		gi.setRemainTalkMap(remainTalkMap);
 		gi.setDay(day);
 
 		return gi;
@@ -347,7 +360,14 @@ public class GameData {
 	 * @param talk
 	 */
 	public void addTalk(Agent agent, Talk talk) {
+		int remainTalk = remainTalkMap.get(agent);
+		if(remainTalk == 0){
+			throw new AIWolfRuntimeException("No remain talk but try to talk. #Contact to AIWolf Platform Developer");
+		}
 		talkList.add(talk);
+		if(!talk.isOver() && !talk.isSkip()){
+			remainTalkMap.put(agent, remainTalk-1);
+		}
 	}
 	
 	public void addWisper(Agent agent, Talk wisper) {
@@ -493,6 +513,13 @@ public class GameData {
 	 */
 	public List<Agent> getSuddendeathList() {
 		return suddendeathList;
+	}
+
+	/**
+	 * @return remainTalkMap
+	 */
+	public Map<Agent, Integer> getRemainTalkMap() {
+		return remainTalkMap;
 	}
 
 	/**
