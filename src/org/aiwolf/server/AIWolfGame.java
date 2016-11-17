@@ -559,37 +559,37 @@ public class AIWolfGame {
 	 */
 	protected void talk() {
 
-		for(Agent agent:getAliveAgentList()){
+		List<Agent> aliveList = getAliveAgentList();
+		for(Agent agent:aliveList){
 			gameData.remainTalkMap.put(agent, gameSetting.getMaxTalk());
 		}
 
 		Counter<Agent> skipCounter = new Counter<>();
 		for(int time = 0; time < gameSetting.getMaxTalkTurn(); time++){
-			List<Agent> aliveList = getAliveAgentList();
 			Collections.shuffle(aliveList);
 
 			List<Talk> talkList = new ArrayList<>();
 			for(Agent agent:aliveList){
-				String talkContent = Talk.OVER;
+				String talkText = Talk.OVER;
 				if(gameData.getRemainTalkMap().get(agent) > 0){
-					talkContent = gameServer.requestTalk(agent);
+					talkText = gameServer.requestTalk(agent);
 				}
 //				String talkContent = gameServer.requestTalk(agent);
-				if(talkContent == null || talkContent.isEmpty()){
-					talkContent = Talk.SKIP;
+				if(talkText == null || talkText.isEmpty()){
+					talkText = Talk.SKIP;
 				}
-				Talk talk = new Talk(gameData.nextTalkIdx(), gameData.getDay(), time, agent, talkContent);
-				if(talk.isSkip()){
+				if(talkText == Talk.SKIP){
 					skipCounter.add(agent);
 					if(skipCounter.get(agent) > gameSetting.getMaxSkip()){
-						talkContent = Talk.OVER;
-						talk = new Talk(gameData.nextTalkIdx(), gameData.getDay(), time, agent, talkContent);
+						talkText = Talk.OVER;
 					}
 				}
+				Talk talk = new Talk(gameData.nextTalkIdx(), gameData.getDay(), time, agent, talkText);
+				talkList.add(talk);
+
 				if(!talk.isOver() && !talk.isSkip()){
 					skipCounter.put(agent, 0);
 				}
-				talkList.add(talk);
 			}
 
 //			Collections.shuffle(talkList);
@@ -614,37 +614,52 @@ public class AIWolfGame {
 
 	protected void whisper() {
 		//Whisper by werewolf
-		Set<Agent> overSet = new HashSet<Agent>();
-		for(int time = 0; time < gameSetting.getMaxTalk(); time++){
-			List<Agent> aliveList = getAliveAgentList();
-			boolean continueWhisper = false;
-			Collections.shuffle(aliveList);
-			aliveList.removeAll(overSet);
-			aliveList.addAll(overSet);
-			for(Agent agent:aliveList){
-				if(gameData.getRole(agent) == Role.WEREWOLF){
-					if(overSet.contains(agent)){
-						continue;
-					}
-					String whisperContent = gameServer.requestWhisper(agent);
-					if(whisperContent == null || whisperContent.isEmpty()){
-						whisperContent = Talk.SKIP;
-					}
-					if(whisperContent != null && !whisperContent.isEmpty()){
-						Talk whisper = new Talk(gameData.nextWhisperIdx(), gameData.getDay(), time, agent, whisperContent);
-						gameData.addWisper(agent, whisper);
-						if(!whisperContent.equals(Talk.OVER)){
-							continueWhisper = true;
-							overSet.clear();
-						}
-						else{
-							overSet.add(agent);
-						}
+		List<Agent> aliveWolfList = gameData.getFilteredAgentList(getAliveAgentList(), Role.WEREWOLF);
+		if(aliveWolfList.size() == 1){
+//			return;
+		}
+		for(Agent agent:aliveWolfList){
+			gameData.remainWhisperMap.put(agent, gameSetting.getMaxWhisper());
+		}
 
-						if(gameLogger != null){
-							gameLogger.log(String.format("%d,whisper,%d,%d,%s", gameData.getDay(), whisper.getIdx(),agent.getAgentIdx(), whisper.getText()));
-						}
+		
+		Counter<Agent> skipCounter = new Counter<>();
+		for(int turn = 0; turn < gameSetting.getMaxWhisper(); turn++){
+			Collections.shuffle(aliveWolfList);
+
+			List<Talk> whisperList = new ArrayList<>();
+			for(Agent agent:aliveWolfList){
+				String whisperText = Talk.OVER;
+				if(gameData.getRemainWhisperMap().get(agent) != 0){
+					whisperText = gameServer.requestWhisper(agent);
+				}
+				if(whisperText == null || whisperText.isEmpty()){
+					whisperText = Talk.SKIP;
+				}
+				if(whisperText == Talk.SKIP){
+					skipCounter.add(agent);
+					if(skipCounter.get(agent) > gameSetting.getMaxSkip()){
+						whisperText = Talk.OVER;
 					}
+				}
+				Talk whisper = new Talk(gameData.nextWhisperIdx(), gameData.getDay(), turn, agent, whisperText);
+				if(!whisper.isOver() && !whisper.isSkip()){
+					skipCounter.put(agent, 0);
+				}
+				whisperList.add(whisper);
+
+				if(gameLogger != null){
+					gameLogger.log(String.format("%d,whisper,%d,%d,%s", gameData.getDay(), whisper.getIdx(),agent.getAgentIdx(), whisper.getText()));
+				}
+			}
+			boolean continueWhisper = false;
+			for(Talk whisper:whisperList){
+				gameData.addWhisper(whisper.getAgent(), whisper);
+				if(gameLogger != null){
+					gameLogger.log(String.format("%d,whisper,%d,%d,%d,%s", gameData.getDay(), whisper.getIdx(), whisper.getTurn(), whisper.getAgent().getAgentIdx(), whisper.getText()));
+				}
+				if(!whisper.isOver()){
+					continueWhisper = true;
 				}
 			}
 			if(!continueWhisper){

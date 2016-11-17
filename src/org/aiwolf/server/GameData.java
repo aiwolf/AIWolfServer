@@ -57,7 +57,7 @@ public class GameData {
 	/**
 	 * 
 	 */
-	protected List<Talk> wisperList;
+	protected List<Talk> whisperList;
 
 	/**
 	 * 
@@ -73,6 +73,11 @@ public class GameData {
 	 * 
 	 */
 	protected Map<Agent, Integer> remainTalkMap;
+	
+	/**
+	 * 
+	 */
+	protected Map<Agent, Integer> remainWhisperMap;
 	
 	/**
 	 * Result divine
@@ -129,8 +134,9 @@ public class GameData {
 		agentStatusMap = new LinkedHashMap<Agent, Status>();
 		agentRoleMap = new HashMap<Agent, Role>();
 		remainTalkMap = new HashMap<Agent, Integer>();
+		remainWhisperMap = new HashMap<Agent, Integer>();
 		talkList = new ArrayList<Talk>();
-		wisperList = new ArrayList<Talk>();
+		whisperList = new ArrayList<Talk>();
 		voteList = new ArrayList<Vote>();
 		attackCandidateList = new ArrayList<Vote>();
 		lastDeadAgentList = new ArrayList<Agent>();
@@ -257,11 +263,19 @@ public class GameData {
 		}
 		gi.setExistingRoleList(new ArrayList<>(existingRoleSet));
 		
-		Map<Integer, Integer> remainTalkMap = new HashMap<>();
+		LinkedHashMap<Integer, Integer> remainTalkMap = new LinkedHashMap<Integer, Integer>();
 		for(Agent a:this.remainTalkMap.keySet()){
-			remainTalkMap.put(agent.getAgentIdx(), this.remainTalkMap.get(a));
+			remainTalkMap.put(a.getAgentIdx(), this.remainTalkMap.get(a));
 		}
 		gi.setRemainTalkMap(remainTalkMap);
+
+		LinkedHashMap<Integer, Integer> remainWhisperMap = new LinkedHashMap<Integer, Integer>();
+		if(role == Role.WEREWOLF){
+			for(Agent a:this.remainWhisperMap.keySet()){
+				remainWhisperMap.put(a.getAgentIdx(), this.remainWhisperMap.get(a));
+			}
+		}
+		gi.setRemainWhisperMap(remainWhisperMap);
 		
 		if(Role.WEREWOLF.equals(role) || agent == null){
 			List<TalkToSend> whisperList = new ArrayList<TalkToSend>();
@@ -370,8 +384,15 @@ public class GameData {
 		talkList.add(talk);
 	}
 	
-	public void addWisper(Agent agent, Talk wisper) {
-		wisperList.add(wisper);
+	public void addWhisper(Agent agent, Talk whisper) {
+		int remainWhisper = remainWhisperMap.get(agent);
+		if(!whisper.isOver() && !whisper.isSkip()){
+			if(remainWhisper == 0){
+				throw new AIWolfRuntimeException("No remain whisper but try to whisper. #Contact to AIWolf Platform Developer");
+			}
+			remainWhisperMap.put(agent, remainWhisper-1);
+		}
+		whisperList.add(whisper);
 	}
 
 	/**
@@ -455,7 +476,7 @@ public class GameData {
 	 * @return wisperList
 	 */
 	public List<Talk> getWhisperList() {
-		return wisperList;
+		return whisperList;
 	}
 
 	/**
@@ -520,6 +541,13 @@ public class GameData {
 	 */
 	public Map<Agent, Integer> getRemainTalkMap() {
 		return remainTalkMap;
+	}
+
+	/**
+	 * @return remainTalkMap
+	 */
+	public Map<Agent, Integer> getRemainWhisperMap() {
+		return remainWhisperMap;
 	}
 
 	/**
