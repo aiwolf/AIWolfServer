@@ -390,6 +390,10 @@ public class AIWolfGame {
 		for(Agent agent:gameData.getAgentList()){
 			gameServer.dayFinish(agent);
 		}
+		
+		if(!gameSetting.isTalkOnFirstDay()){
+			whisper();
+		}
 
 		// Vote and banish except day 0
 		Agent banished = null;
