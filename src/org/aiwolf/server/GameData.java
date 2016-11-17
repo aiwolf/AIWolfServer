@@ -361,13 +361,13 @@ public class GameData {
 	 */
 	public void addTalk(Agent agent, Talk talk) {
 		int remainTalk = remainTalkMap.get(agent);
-		if(remainTalk == 0){
-			throw new AIWolfRuntimeException("No remain talk but try to talk. #Contact to AIWolf Platform Developer");
-		}
-		talkList.add(talk);
 		if(!talk.isOver() && !talk.isSkip()){
+			if(remainTalk == 0){
+				throw new AIWolfRuntimeException("No remain talk but try to talk. #Contact to AIWolf Platform Developer");
+			}
 			remainTalkMap.put(agent, remainTalk-1);
 		}
+		talkList.add(talk);
 	}
 	
 	public void addWisper(Agent agent, Talk wisper) {

@@ -562,14 +562,13 @@ public class AIWolfGame {
 		for(Agent agent:getAliveAgentList()){
 			gameData.remainTalkMap.put(agent, gameSetting.getMaxTalk());
 		}
-		Set<Agent> overSet = new HashSet<Agent>();
+
+		Counter<Agent> skipCounter = new Counter<>();
 		for(int time = 0; time < gameSetting.getMaxTalkTurn(); time++){
 			List<Agent> aliveList = getAliveAgentList();
 			Collections.shuffle(aliveList);
 
 			List<Talk> talkList = new ArrayList<>();
-			Set<Agent> skipAgentSet = new HashSet<>();
-			Set<Agent> overAgentSet = new HashSet<>();
 			for(Agent agent:aliveList){
 				String talkContent = Talk.OVER;
 				if(gameData.getRemainTalkMap().get(agent) > 0){
@@ -581,15 +580,19 @@ public class AIWolfGame {
 				}
 				Talk talk = new Talk(gameData.nextTalkIdx(), gameData.getDay(), time, agent, talkContent);
 				if(talk.isSkip()){
-					skipAgentSet.add(agent);
+					skipCounter.add(agent);
+					if(skipCounter.get(agent) > gameSetting.getMaxSkip()){
+						talkContent = Talk.OVER;
+						talk = new Talk(gameData.nextTalkIdx(), gameData.getDay(), time, agent, talkContent);
+					}
 				}
-				else if(talk.isOver()){
-					overAgentSet.add(agent);
+				if(!talk.isOver() && !talk.isSkip()){
+					skipCounter.put(agent, 0);
 				}
 				talkList.add(talk);
 			}
 
-			Collections.shuffle(talkList);
+//			Collections.shuffle(talkList);
 			boolean continueTalk = false;
 			for(Talk talk:talkList){
 				gameData.addTalk(talk.getAgent(), talk);
