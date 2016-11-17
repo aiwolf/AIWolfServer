@@ -391,7 +391,7 @@ public class AIWolfGame {
 			gameServer.dayFinish(agent);
 		}
 		
-		if(!gameSetting.isTalkOnFirstDay()){
+		if(!gameSetting.isTalkOnFirstDay() && gameData.getDay() == 0){
 			whisper();
 		}
 
