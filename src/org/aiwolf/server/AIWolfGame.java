@@ -208,7 +208,7 @@ public class AIWolfGame {
 		
 		//		System.out.printf("%d-%d\n", getAliveHumanList().size(), getAliveWolfList().size());
 			while(!isGameFinished()){
-				log();
+				consoleLog();
 		
 				day();
 				night();
@@ -216,7 +216,7 @@ public class AIWolfGame {
 					gameLogger.flush();
 				}
 			}
-			log();
+			consoleLog();
 			finish();
 		
 			if(isShowConsoleLog){
@@ -286,7 +286,7 @@ public class AIWolfGame {
 
 	}
 
-	private void log() {
+	private void consoleLog() {
 
 		if(!isShowConsoleLog){
 			return;
