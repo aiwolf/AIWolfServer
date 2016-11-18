@@ -323,10 +323,14 @@ public class TcpipServer implements GameServer {
 			if (request == Request.NAME || request == Request.ROLE) {
 				return line;
 			} else if (request == Request.TALK || request == Request.WHISPER) {
-				if (Content.validate(line)) {
-					return line;
+				if (gameSetting.isValidateUtterance()) {
+					if (Content.validate(line)) {
+						return line;
+					} else {
+						return null;
+					}
 				} else {
-					return null;
+					return line;
 				}
 			} else if (request == Request.ATTACK || request == Request.DIVINE || request == Request.GUARD
 					|| request == Request.VOTE) {
