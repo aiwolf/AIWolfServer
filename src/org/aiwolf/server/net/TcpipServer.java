@@ -26,6 +26,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.aiwolf.client.lib.Content;
+
 //import net.arnx.jsonic.JSON;
 
 import org.aiwolf.common.data.Agent;
@@ -318,10 +320,16 @@ public class TcpipServer implements GameServer {
 			if(line != null && line.isEmpty()){
 				line = null;
 			}
-	        if(request == Request.TALK || request == Request.WHISPER || request == Request.NAME || request == Request.ROLE){
-	        	return line;
-	        }
-	        else if(request == Request.ATTACK || request == Request.DIVINE || request == Request.GUARD || request == Request.VOTE){
+			if (request == Request.NAME || request == Request.ROLE) {
+				return line;
+			} else if (request == Request.TALK || request == Request.WHISPER) {
+				if (Content.validate(line)) {
+					return line;
+				} else {
+					return null;
+				}
+			} else if (request == Request.ATTACK || request == Request.DIVINE || request == Request.GUARD
+					|| request == Request.VOTE) {
 	        	return DataConverter.getInstance().toAgent(line);
 	        }
 	        else{
