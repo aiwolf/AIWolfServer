@@ -398,26 +398,24 @@ public class AIWolfGame {
 		// Vote and banish except day 0
 		Agent banished = null;
 		if (gameData.getDay() != 0) {
-			vote(null); // normal vote
-			List<Agent> candidates = getVotedCandidates(gameData.getVoteList());
-			if (candidates.size() == 1) {
-				banished = candidates.get(0);
-			} else {
-				int nRevote = 0;
-				while (nRevote++ < gameSetting.getMaxRevote()) {
-					vote(candidates); // revote
-					candidates = getVotedCandidates(gameData.getVoteList());
-					if (candidates.size() == 1) {
-						banished = candidates.get(0);
-						break;
-					}
-				}
-				if (banished == null && !gameSetting.isEnableNoBanish()) {
-					Collections.shuffle(candidates, rand);
+
+			int nRevote = 0;
+			while (nRevote++ < gameSetting.getMaxRevote() + 1) {
+				vote();
+				List<Agent> candidates = getVotedCandidates(gameData.getVoteList());
+				if (candidates.size() == 1) {
 					banished = candidates.get(0);
+					break;
 				}
 			}
-			if (banished != null && gameData.getStatus(banished) == Status.ALIVE) {
+
+			if (banished == null && !gameSetting.isEnableNoBanish()) {
+				List<Agent> candidates = getAliveAgentList();
+				Collections.shuffle(candidates, rand);
+				banished = candidates.get(0);
+			}
+
+			if (banished != null) {
 				gameData.setBanishedTarget(banished);
 				if (gameLogger != null) {
 					gameLogger.log(String.format("%d,banish,%d,%s", gameData.getDay(), banished.getAgentIdx(), gameData.getRole(banished)));
@@ -678,43 +676,20 @@ public class AIWolfGame {
 	 * 
 	 * <div lang="en">Vote</div>
 	 * 
-	 * @param candidates
-	 *            - <div lang="ja">nullの場合通常投票．nullでない場合再投票で候補者に投票権はない</div> <div lang="en">null means normal vote, otherwise revote where candidates have no right to vote</div>
 	 */
-	protected void vote(List<Agent> candidates) {
+	protected void vote() {
 		gameData.getVoteList().clear();
-		if (candidates == null) { // normal vote
-			List<Agent> voters = getAliveAgentList();
-			List<Agent> aliveCandidates = voters;
-			for (Agent agent : voters) {
-				Agent target = gameServer.requestVote(agent);
-				if (gameData.getStatus(target) == Status.DEAD || target == null || agent.equals(target)) { // invalid vote
-					target = getRandomAgent(aliveCandidates, agent);
-				}
-				Vote vote = new Vote(gameData.getDay(), agent, target);
-				gameData.addVote(vote);
-				if (gameLogger != null) {
-					gameLogger.log(String.format("%d,vote,%d,%d", gameData.getDay(), vote.getAgent().getAgentIdx(), vote.getTarget().getAgentIdx()));
-				}
+		List<Agent> voters = getAliveAgentList();
+		List<Agent> aliveCandidates = voters;
+		for (Agent agent : voters) {
+			Agent target = gameServer.requestVote(agent);
+			if (gameData.getStatus(target) == Status.DEAD || target == null || agent.equals(target)) {
+				target = getRandomAgent(aliveCandidates, agent);
 			}
-		} else { // revote
-			List<Agent> voters = getAliveAgentList();
-			voters.removeAll(candidates);
-			ArrayList<Agent> aliveCandidates = new ArrayList<>();
-			for (Agent a : candidates) {
-				if (gameData.getStatus(a) == Status.ALIVE) {
-					aliveCandidates.add(a);
-				}
-			}
-			for (Agent agent : voters) {
-				Agent target = gameServer.requestVote(agent);
-				if (target != null && aliveCandidates.contains(target)) { // valid vote
-					Vote vote = new Vote(gameData.getDay(), agent, target);
-					gameData.addVote(vote);
-					if (gameLogger != null) {
-						gameLogger.log(String.format("%d,vote,%d,%d", gameData.getDay(), vote.getAgent().getAgentIdx(), vote.getTarget().getAgentIdx()));
-					}
-				}
+			Vote vote = new Vote(gameData.getDay(), agent, target);
+			gameData.addVote(vote);
+			if (gameLogger != null) {
+				gameLogger.log(String.format("%d,vote,%d,%d", gameData.getDay(), vote.getAgent().getAgentIdx(), vote.getTarget().getAgentIdx()));
 			}
 		}
 	}
