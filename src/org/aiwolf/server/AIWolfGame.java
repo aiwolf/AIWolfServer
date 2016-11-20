@@ -407,6 +407,9 @@ public class AIWolfGame {
 					banished = candidates.get(0);
 					break;
 				}
+				if (gameSetting.isWhisperBeforeRevote()) {
+					whisper();
+				}
 			}
 
 			if (banished == null && !gameSetting.isEnableNoBanish()) {
