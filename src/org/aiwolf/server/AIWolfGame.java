@@ -430,27 +430,43 @@ public class AIWolfGame {
 			whisper();
 			guard();
 
-			attack();
+			// attackVote and attack except day 0
+			Agent attacked = null;
 			if (!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getBanished()) == Role.WEREWOLF)) {
-				List<Vote> attackCandidateList = gameData.getAttackVoteList();
-				Iterator<Vote> it = attackCandidateList.iterator();
-				while (it.hasNext()) {
-					Vote vote = it.next();
-					if (vote.getAgent() == banished) {
-						it.remove();
+				int nRevote = 0;
+				while (nRevote++ < gameSetting.getMaxAttackRevote() + 1) {
+					attack();
+					if (!(getAliveWolfList().size() == 1
+							&& gameData.getRole(gameData.getBanished()) == Role.WEREWOLF)) {
+						List<Vote> attackCandidateList = gameData.getAttackVoteList();
+						Iterator<Vote> it = attackCandidateList.iterator();
+						while (it.hasNext()) {
+							Vote vote = it.next();
+							if (vote.getAgent() == banished) {
+								it.remove();
+							}
+						}
+						List<Agent> candidates = getAttackVotedCandidates(attackCandidateList);
+						if (candidates.size() == 1) {
+							attacked = candidates.get(0);
+							break;
+						}
 					}
 				}
 
-				Agent attacked = getAttackVotedAgent(attackCandidateList);
-				if (attacked == banished) {
-					attacked = null;
+				if (attacked == null && !gameSetting.isEnableNoAttack()) {
+					List<Agent> candidates = getAliveHumanList();
+					Collections.shuffle(candidates, rand);
+					attacked = candidates.get(0);
 				}
+
 				gameData.setAttackedTarget(attacked);
 
 				boolean isGuarded = false;
 				if (gameData.getGuard() != null) {
 					if (gameData.getGuard().getTarget().equals(attacked) && attacked != null) {
-						if (gameData.getBanished() == null || !gameData.getBanished().equals(gameData.getGuard().getAgent())) {
+						if (gameData.getBanished() == null
+								|| !gameData.getBanished().equals(gameData.getGuard().getAgent())) {
 							isGuarded = true;
 						}
 					}
@@ -503,42 +519,35 @@ public class AIWolfGame {
 		return candidateList;
 	}
 
-
 	/**
 	 *
 	 * @param voteList
 	 * @return
 	 */
-	protected Agent getAttackVotedAgent(List<Vote> voteList) {
+	protected List<Agent> getAttackVotedCandidates(List<Vote> voteList) {
 		Counter<Agent> counter = new Counter<Agent>();
-		for(Vote vote:voteList){
-			if(gameData.getStatus(vote.getTarget()) == Status.ALIVE && gameData.getRole(vote.getTarget()) != Role.WEREWOLF){
+		for (Vote vote : voteList) {
+			if (gameData.getStatus(vote.getTarget()) == Status.ALIVE
+					&& gameData.getRole(vote.getTarget()) != Role.WEREWOLF) {
 				counter.add(vote.getTarget());
 			}
 		}
-		if(!gameSetting.isEnableNoAttack()){
-			for(Agent agent:getAliveHumanList()){
+		if (!gameSetting.isEnableNoAttack()) {
+			for (Agent agent : getAliveHumanList()) {
 				counter.add(agent);
 			}
 		}
 
 		int max = counter.get(counter.getLargest());
 		List<Agent> candidateList = new ArrayList<Agent>();
-		for(Agent agent:counter){
-			if(counter.get(agent) == max){
+		for (Agent agent : counter) {
+			if (counter.get(agent) == max) {
 				candidateList.add(agent);
 			}
 		}
-
-		if(candidateList.isEmpty()){
-			return null;
-		}
-		else{
-			Collections.shuffle(candidateList, rand);
-
-			return candidateList.get(0);
-		}
+		return candidateList;
 	}
+
 	/**
 	 *
 	 */
@@ -744,35 +753,27 @@ public class AIWolfGame {
 		}
 	}
 
-
 	protected void attack() {
-		List<Agent> randomTargetCandidateList = getAliveAgentList();
-		Iterator<Agent> it = randomTargetCandidateList.iterator();
-		while(it.hasNext()){
-			Agent agent = it.next();
-			if(gameData.getRole(agent) == Role.WEREWOLF){
-				it.remove();
+		gameData.getAttackVoteList().clear();
+		List<Agent> voters = getAliveWolfList();
+		List<Agent> candidates = getAliveHumanList();
+		for (Agent agent : voters) {
+			Agent target = gameServer.requestAttackTarget(agent);
+			if (gameData.getStatus(target) == Status.DEAD || gameData.getRole(target) == Role.WEREWOLF
+					|| target == null) {
+				// target = getRandomAgent(candidateList, agent);
 			}
-		}
+			else {
+				Vote attackVote = new Vote(gameData.getDay(), agent, target);
+				gameData.addAttack(attackVote);
 
-		for(Agent agent:getAliveAgentList()){
-			if(gameData.getRole(agent) == Role.WEREWOLF){
-				Agent target = gameServer.requestAttackTarget(agent);
-				if(gameData.getStatus(target) == Status.DEAD || gameData.getRole(target) == Role.WEREWOLF || target == null){
-//					target = getRandomAgent(randomTargetCandidateList, agent);
-				}
-				else{
-					Vote attackVote = new Vote(gameData.getDay(), agent, target);
-					gameData.addAttack(attackVote);
-	
-					if(gameLogger != null){
-						gameLogger.log(String.format("%d,attackVote,%d,%d", gameData.getDay(), attackVote.getAgent().getAgentIdx(), attackVote.getTarget().getAgentIdx()));
-					}
+				if (gameLogger != null) {
+					gameLogger.log(String.format("%d,attackVote,%d,%d", gameData.getDay(),
+							attackVote.getAgent().getAgentIdx(), attackVote.getTarget().getAgentIdx()));
 				}
 			}
 		}
 	}
-
 
 	/**
 	 * ランダムなエージェントを獲得する．ただし，withoutを除く．
