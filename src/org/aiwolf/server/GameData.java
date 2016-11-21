@@ -80,17 +80,17 @@ public class GameData {
 	protected Map<Agent, Integer> remainWhisperMap;
 	
 	/**
-	 * Result divine
+	 * Result of divination
 	 */
 	protected Judge divine;
 	
 	/**
-	 * Result divine
+	 * Guard
 	 */
 	protected Guard guard;
 
 	/**
-	 * agents who killed by villegers
+	 * banished agent
 	 */
 	protected Agent banished;
 	
