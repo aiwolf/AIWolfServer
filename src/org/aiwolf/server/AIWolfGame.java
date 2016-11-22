@@ -1,3 +1,8 @@
+/**
+ * AIWolfGame.java
+ * 
+ * Copyright (c) 2016 人狼知能プロジェクト
+ */
 package org.aiwolf.server;
 
 import java.io.File;
@@ -398,17 +403,12 @@ public class AIWolfGame {
 		// Vote and banish except day 0
 		Agent banished = null;
 		if (gameData.getDay() != 0) {
-
-			int nRevote = 0;
-			while (nRevote++ < gameSetting.getMaxRevote() + 1) {
+			for (int i = 0; i <= gameSetting.getMaxRevote(); i++) {
 				vote();
 				List<Agent> candidates = getVotedCandidates(gameData.getVoteList());
 				if (candidates.size() == 1) {
 					banished = candidates.get(0);
 					break;
-				}
-				if (gameSetting.isWhisperBeforeRevote()) {
-					whisper();
 				}
 			}
 
@@ -436,24 +436,23 @@ public class AIWolfGame {
 			// attackVote and attack except day 0
 			Agent attacked = null;
 			if (!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getBanished()) == Role.WEREWOLF)) {
-				int nRevote = 0;
-				while (nRevote++ < gameSetting.getMaxAttackRevote() + 1) {
+				for (int i = 0; i <= gameSetting.getMaxAttackRevote(); i++) {
 					attack();
-					if (!(getAliveWolfList().size() == 1
-							&& gameData.getRole(gameData.getBanished()) == Role.WEREWOLF)) {
-						List<Vote> attackCandidateList = gameData.getAttackVoteList();
-						Iterator<Vote> it = attackCandidateList.iterator();
-						while (it.hasNext()) {
-							Vote vote = it.next();
-							if (vote.getAgent() == banished) {
-								it.remove();
-							}
+					List<Vote> attackCandidateList = gameData.getAttackVoteList();
+					Iterator<Vote> it = attackCandidateList.iterator();
+					while (it.hasNext()) {
+						Vote vote = it.next();
+						if (vote.getAgent() == banished) {
+							it.remove();
 						}
-						List<Agent> candidates = getAttackVotedCandidates(attackCandidateList);
-						if (candidates.size() == 1) {
-							attacked = candidates.get(0);
-							break;
-						}
+					}
+					List<Agent> candidates = getAttackVotedCandidates(attackCandidateList);
+					if (candidates.size() == 1) {
+						attacked = candidates.get(0);
+						break;
+					}
+					if (gameSetting.isWhisperBeforeRevote()) {
+						whisper();
 					}
 				}
 
