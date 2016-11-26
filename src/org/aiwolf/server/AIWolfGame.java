@@ -268,9 +268,14 @@ public class AIWolfGame {
 	public Team getWinner(){
 		int humanSide = 0;
 		int wolfSide = 0;
+		int otherSide = 0;
 		for(Agent agent:gameData.getAgentList()){
+			
 			if(gameData.getStatus(agent) == Status.DEAD){
 				continue;
+			}
+			if(gameData.getRole(agent).getTeam() == Team.OTHERS){
+				otherSide++;
 			}
 			if(gameData.getRole(agent).getSpecies() == Species.HUMAN){
 				humanSide++;
@@ -280,9 +285,15 @@ public class AIWolfGame {
 			}
 		}
 		if(wolfSide == 0){
+			if(otherSide > 0){
+				return Team.OTHERS;
+			}
 			return Team.VILLAGER;
 		}
 		else if(humanSide <= wolfSide){
+			if(otherSide > 0){
+				return Team.OTHERS;
+			}
 			return Team.WEREWOLF;
 		}
 		else{
