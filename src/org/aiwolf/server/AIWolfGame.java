@@ -449,7 +449,7 @@ public class AIWolfGame {
 			Agent attacked = null;
 			if (!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getBanished()) == Role.WEREWOLF)) {
 				for (int i = 0; i <= gameSetting.getMaxAttackRevote(); i++) {
-					attack();
+					attackVote();
 					List<Vote> attackCandidateList = gameData.getAttackVoteList();
 					Iterator<Vote> it = attackCandidateList.iterator();
 					while (it.hasNext()) {
@@ -772,7 +772,7 @@ public class AIWolfGame {
 		}
 	}
 
-	protected void attack() {
+	protected void attackVote() {
 		gameData.getAttackVoteList().clear();
 		List<Agent> voters = getAliveWolfList();
 		List<Agent> candidates = getAliveHumanList();
