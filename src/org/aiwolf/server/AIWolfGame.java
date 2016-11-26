@@ -270,10 +270,11 @@ public class AIWolfGame {
 		int wolfSide = 0;
 		int otherSide = 0;
 		for(Agent agent:gameData.getAgentList()){
-			
 			if(gameData.getStatus(agent) == Status.DEAD){
 				continue;
 			}
+			
+			
 			if(gameData.getRole(agent).getTeam() == Team.OTHERS){
 				otherSide++;
 			}
@@ -484,7 +485,7 @@ public class AIWolfGame {
 						}
 					}
 				}
-				if (!isGuarded && attacked != null) {
+				if (!isGuarded && attacked != null && gameData.getRole(attacked) != Role.FOX) {
 					gameData.addLastDeadAgent(attacked);
 
 					if (gameLogger != null) {
@@ -732,6 +733,11 @@ public class AIWolfGame {
 					Judge divine = new Judge(gameData.getDay(), agent, target, targetRole.getSpecies());
 					gameData.addDivine(divine);
 	
+					//FOX
+					if(gameData.getRole(target) == Role.FOX){
+						gameData.addLastDeadAgent(target);
+					}
+					
 					if(gameLogger != null){
 						gameLogger.log(String.format("%d,divine,%d,%d,%s", gameData.getDay(), divine.getAgent().getAgentIdx(), divine.getTarget().getAgentIdx(), divine.getResult()));
 					}
