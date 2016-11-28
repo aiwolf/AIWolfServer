@@ -95,19 +95,24 @@ public class GameData {
 	protected Agent executed;
 	
 	/**
+	 * <div lang="ja">昨夜人狼に襲われ死亡したエージェント</div>
+	 * 
+	 * <div lang="en">the agent who died last night because of the attack by werewolf.</div>
+	 */
+	protected Agent attackedDead;
+
+	/**
 	 * <div lang="ja">昨夜人狼が襲ったエージェント（成否は問わない）</div>
 	 * 
-	 * <div lang="en">the agent werewolves attacked last night (no matter
-	 * whether or not the attack succeeded)</div>
+	 * <div lang="en">the agent werewolves attacked last night (no matter whether or not the attack succeeded)</div>
 	 */
 	protected Agent attacked;
 
 	/**
 	 * <div lang="ja">昨夜死亡したエージェントのリスト</div>
 	 * 
-	 * <div lang="en">the list of agents died last night</div>
+	 * <div lang="en">the list of agents who died last night</div>
 	 */
-	// 妖狐導入されるまでは，実質的に襲撃死エージェントが入る
 	protected List<Agent> lastDeadAgentList;
 
 	/**
@@ -510,11 +515,12 @@ public class GameData {
 	/**
 	 * <div lang="ja">昨夜死亡したエージェントを追加する
 	 * 
-	 * </div> <div lang="en">Adds the agent died last night.</div>
+	 * </div> <div lang="en">Adds the agent who died last night.</div>
 	 * 
 	 * @param agent
-	 *            - <div lang="ja">追加するエージェント</div><div lang="en">the agent to
-	 *            be added</div>
+	 *            <div lang="ja">追加するエージェント</div>
+	 * 
+	 *            <div lang="en">the agent to be added</div>
 	 */
 	public void addLastDeadAgent(Agent agent) {
 		if (!lastDeadAgentList.contains(agent)) {
@@ -523,7 +529,9 @@ public class GameData {
 	}
 
 	/**
-	 * @return <div lang="ja">昨夜死亡したエージェントのリスト</div> <div lang="en">the list of agents died last night</div>
+	 * @return <div lang="ja">昨夜死亡したエージェントのリスト</div>
+	 * 
+	 *         <div lang="en">the list of agents who died last night</div>
 	 */
 	public List<Agent> getLastDeadAgentList() {
 		return lastDeadAgentList;
@@ -656,5 +664,27 @@ public class GameData {
 		return wisperIdx++;
 	}
 
+	/**
+	 * <div lang="ja">昨夜人狼に襲われ死亡したエージェントを返す．</div>
+	 * 
+	 * <div lang="en">Returns the agent who died last night because of the attack by werewolf.</div>
+	 * 
+	 * @return the attackedDead
+	 */
+	public Agent getAttackedDead() {
+		return attackedDead;
+	}
+
+	/**
+	 * <div lang="ja">昨夜人狼に襲われ死亡したエージェントをセットする．</div>
+	 * 
+	 * <div lang="en">Sets the agent who died last night because of the attack by werewolf.</div>
+	 * 
+	 * @param attackedDead
+	 *            the attackedDead to set
+	 */
+	public void setAttackedDead(Agent attackedDead) {
+		this.attackedDead = attackedDead;
+	}
 
 }

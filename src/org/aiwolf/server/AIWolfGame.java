@@ -343,9 +343,8 @@ public class AIWolfGame {
 				System.out.printf("%s guarded\n", guard);
 			}
 
-			// TODO 妖狐導入の際は要変更
-			if (!yesterday.getLastDeadAgentList().isEmpty()) {
-				System.out.printf("%s attacked\n", yesterday.getLastDeadAgentList().get(0));
+			if (yesterday.getAttackedDead() != null) {
+				System.out.printf("%s attacked\n", yesterday.getAttackedDead());
 			}
 
 		}
@@ -364,8 +363,7 @@ public class AIWolfGame {
 					System.out.print("\texecuted");
 				}
 
-				// TODO 妖狐導入の際は要変更
-				if (yesterday.getLastDeadAgentList().contains(agent)) {
+				if (agent == yesterday.getAttackedDead()) {
 					System.out.print("\tattacked");
 				}
 
@@ -485,6 +483,7 @@ public class AIWolfGame {
 					}
 				}
 				if (!isGuarded && attacked != null && gameData.getRole(attacked) != Role.FOX) {
+					gameData.setAttackedDead(attacked);
 					gameData.addLastDeadAgent(attacked);
 
 					if (gameLogger != null) {
