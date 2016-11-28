@@ -334,7 +334,7 @@ public class AIWolfGame {
 			}
 
 			Judge divine = yesterday.getDivine();
-			System.out.printf("%s banished\n", yesterday.getBanished());
+			System.out.printf("%s executed\n", yesterday.getExecuted());
 			if(divine != null){
 				System.out.printf("%s divine %s. Result is %s\n", divine.getAgent(), divine.getTarget(), divine.getResult());
 			}
@@ -360,8 +360,8 @@ public class AIWolfGame {
 		for(Agent agent:agentList){
 			System.out.printf("%s\t%s\t%s\t%s", agent, agentNameMap.get(agent), gameData.getStatus(agent), gameData.getRole(agent));
 			if(yesterday != null){
-				if(yesterday.getBanished() == agent){
-					System.out.print("\tbanished");
+				if (yesterday.getExecuted() == agent) {
+					System.out.print("\texecuted");
 				}
 
 				// TODO 妖狐導入の際は要変更
@@ -412,28 +412,28 @@ public class AIWolfGame {
 			whisper();
 		}
 
-		// Vote and banish except day 0
-		Agent banished = null;
+		// Vote and execute except day 0
+		Agent executed = null;
 		if (gameData.getDay() != 0) {
 			for (int i = 0; i <= gameSetting.getMaxRevote(); i++) {
 				vote();
 				List<Agent> candidates = getVotedCandidates(gameData.getVoteList());
 				if (candidates.size() == 1) {
-					banished = candidates.get(0);
+					executed = candidates.get(0);
 					break;
 				}
 			}
 
-			if (banished == null && !gameSetting.isEnableNoBanish()) {
+			if (executed == null && !gameSetting.isEnableNoExecution()) {
 				List<Agent> candidates = getAliveAgentList();
 				Collections.shuffle(candidates, rand);
-				banished = candidates.get(0);
+				executed = candidates.get(0);
 			}
 
-			if (banished != null) {
-				gameData.setBanishedTarget(banished);
+			if (executed != null) {
+				gameData.setExecutedTarget(executed);
 				if (gameLogger != null) {
-					gameLogger.log(String.format("%d,banish,%d,%s", gameData.getDay(), banished.getAgentIdx(), gameData.getRole(banished)));
+					gameLogger.log(String.format("%d,execute,%d,%s", gameData.getDay(), executed.getAgentIdx(), gameData.getRole(executed)));
 				}
 			}
 		}
@@ -447,14 +447,14 @@ public class AIWolfGame {
 
 			// attackVote and attack except day 0
 			Agent attacked = null;
-			if (!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getBanished()) == Role.WEREWOLF)) {
+			if (!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getExecuted()) == Role.WEREWOLF)) {
 				for (int i = 0; i <= gameSetting.getMaxAttackRevote(); i++) {
 					attackVote();
 					List<Vote> attackCandidateList = gameData.getAttackVoteList();
 					Iterator<Vote> it = attackCandidateList.iterator();
 					while (it.hasNext()) {
 						Vote vote = it.next();
-						if (vote.getAgent() == banished) {
+						if (vote.getAgent() == executed) {
 							it.remove();
 						}
 					}
@@ -479,8 +479,7 @@ public class AIWolfGame {
 				boolean isGuarded = false;
 				if (gameData.getGuard() != null) {
 					if (gameData.getGuard().getTarget().equals(attacked) && attacked != null) {
-						if (gameData.getBanished() == null
-								|| !gameData.getBanished().equals(gameData.getGuard().getAgent())) {
+						if (gameData.getExecuted() == null || !gameData.getExecuted().equals(gameData.getGuard().getAgent())) {
 							isGuarded = true;
 						}
 					}
@@ -753,7 +752,7 @@ public class AIWolfGame {
 		List<Agent> agentList = getAliveAgentList();
 		for(Agent agent:getAliveAgentList()){
 			if(gameData.getRole(agent) == Role.BODYGUARD){
-				if(agent == gameData.getBanished()){
+				if (agent == gameData.getExecuted()) {
 					continue;
 				}
 				Agent target = gameServer.requestGuardTarget(agent);
