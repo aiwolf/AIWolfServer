@@ -115,7 +115,9 @@ public class TcpipServer implements GameServer {
 		this.gameSetting = gameSetting;
 		this.port = port;
 		this.limit = limit;
-		timeLimit = gameSetting.getTimeLimit();
+		if (gameSetting.getTimeLimit() != -1) {
+			timeLimit = gameSetting.getTimeLimit();
+		}
 		
 		socketAgentMap = new BidiMap<Socket, Agent>();
 		String loggerName = this.getClass().getSimpleName();
