@@ -384,6 +384,9 @@ public class AIWolfGame {
 			System.out.println();
 		}
 		System.out.printf("Human:%d\nWerewolf:%d\n", getAliveHumanList().size(), getAliveWolfList().size());
+		if (gameSetting.getRoleNum(Role.FOX) != 0) {
+			System.out.printf("Others:%d\n", gameData.getFilteredAgentList(getAliveAgentList(), Team.OTHERS).size());
+		}
 
 		System.out.println("=============================================");
 	}
