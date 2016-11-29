@@ -648,7 +648,7 @@ public class AIWolfGame {
 		//Whisper by werewolf
 		List<Agent> aliveWolfList = gameData.getFilteredAgentList(getAliveAgentList(), Role.WEREWOLF);
 		if(aliveWolfList.size() == 1){
-//			return;
+			return;
 		}
 		for(Agent agent:aliveWolfList){
 			gameData.remainWhisperMap.put(agent, gameSetting.getMaxWhisper());
@@ -679,10 +679,6 @@ public class AIWolfGame {
 					skipCounter.put(agent, 0);
 				}
 				whisperList.add(whisper);
-
-				if(gameLogger != null){
-					gameLogger.log(String.format("%d,whisper,%d,%d,%s", gameData.getDay(), whisper.getIdx(),agent.getAgentIdx(), whisper.getText()));
-				}
 			}
 			boolean continueWhisper = false;
 			for(Talk whisper:whisperList){
