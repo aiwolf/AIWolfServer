@@ -648,7 +648,7 @@ public class AIWolfGame {
 		//Whisper by werewolf
 		List<Agent> aliveWolfList = gameData.getFilteredAgentList(getAliveAgentList(), Role.WEREWOLF);
 		if(aliveWolfList.size() == 1){
-//			return;
+			return;
 		}
 		for(Agent agent:aliveWolfList){
 			gameData.remainWhisperMap.put(agent, gameSetting.getMaxWhisper());
