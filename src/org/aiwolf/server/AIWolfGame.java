@@ -11,12 +11,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -347,6 +345,9 @@ public class AIWolfGame {
 				System.out.printf("%s attacked\n", yesterday.getAttackedDead());
 			}
 
+			if (yesterday.getCursedFox() != null) {
+				System.out.printf("%s cursed\n", yesterday.getCursedFox());
+			}
 		}
 		System.out.println("======");
 		List<Agent> agentList = gameData.getAgentList();
@@ -375,10 +376,17 @@ public class AIWolfGame {
 				if(guard != null && guard.getTarget() == agent){
 					System.out.print("\tguarded");
 				}
+
+				if (agent == yesterday.getCursedFox()) {
+					System.out.print("\tcursed");
+				}
 			}
 			System.out.println();
 		}
 		System.out.printf("Human:%d\nWerewolf:%d\n", getAliveHumanList().size(), getAliveWolfList().size());
+		if (gameSetting.getRoleNum(Role.FOX) != 0) {
+			System.out.printf("Others:%d\n", gameData.getFilteredAgentList(getAliveAgentList(), Team.OTHERS).size());
+		}
 
 		System.out.println("=============================================");
 	}
@@ -640,7 +648,7 @@ public class AIWolfGame {
 		//Whisper by werewolf
 		List<Agent> aliveWolfList = gameData.getFilteredAgentList(getAliveAgentList(), Role.WEREWOLF);
 		if(aliveWolfList.size() == 1){
-//			return;
+			return;
 		}
 		for(Agent agent:aliveWolfList){
 			gameData.remainWhisperMap.put(agent, gameSetting.getMaxWhisper());
@@ -671,10 +679,6 @@ public class AIWolfGame {
 					skipCounter.put(agent, 0);
 				}
 				whisperList.add(whisper);
-
-				if(gameLogger != null){
-					gameLogger.log(String.format("%d,whisper,%d,%d,%s", gameData.getDay(), whisper.getIdx(),agent.getAgentIdx(), whisper.getText()));
-				}
 			}
 			boolean continueWhisper = false;
 			for(Talk whisper:whisperList){
@@ -734,6 +738,7 @@ public class AIWolfGame {
 					//FOX
 					if(gameData.getRole(target) == Role.FOX){
 						gameData.addLastDeadAgent(target);
+						gameData.setCursedFox(target);
 					}
 					
 					if(gameLogger != null){

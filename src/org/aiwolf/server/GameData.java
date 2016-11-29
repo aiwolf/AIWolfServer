@@ -109,6 +109,13 @@ public class GameData {
 	protected Agent attacked;
 
 	/**
+	 * <div lang="ja">呪殺された妖狐</div>
+	 * 
+	 * <div lang="en">the fox killed by curse</div>
+	 */
+	protected Agent cursedFox;
+
+	/**
 	 * <div lang="ja">昨夜死亡したエージェントのリスト</div>
 	 * 
 	 * <div lang="en">the list of agents who died last night</div>
@@ -244,7 +251,10 @@ public class GameData {
 				if(guard != null){
 					gi.setGuardedAgent(guard.getTarget().getAgentIdx());
 				}
-				
+			}
+			if (agent == null) {
+				gi.setAttackedDead(attackedDead.getAgentIdx());
+				gi.setCursedFox(cursedFox.getAgentIdx());
 			}
 		}
 		List<TalkToSend> talkList = new ArrayList<TalkToSend>();
@@ -685,6 +695,33 @@ public class GameData {
 	 */
 	public void setAttackedDead(Agent attackedDead) {
 		this.attackedDead = attackedDead;
+	}
+
+	/**
+	 * <div lang="ja">呪殺された妖狐を返す．</div>
+	 * 
+	 * <div lang="en">Returns the fox killed by curse.</div>
+	 * 
+	 * @return <div lang="ja">呪殺された妖狐</div>
+	 * 
+	 *         <div lang="en">the fox killed by curse</div>
+	 */
+	public Agent getCursedFox() {
+		return cursedFox;
+	}
+
+	/**
+	 * <div lang="ja">呪殺された妖狐をセットする．</div>
+	 * 
+	 * <div lang="en">Sets the fox killed by curse.</div>
+	 * 
+	 * @param cursedFox
+	 *            <div lang="ja">呪殺された妖狐</div>
+	 * 
+	 *            <div lang="en">the fox killed by curse</div>
+	 */
+	public void setCursedFox(Agent cursedFox) {
+		this.cursedFox = cursedFox;
 	}
 
 }
