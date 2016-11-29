@@ -679,10 +679,6 @@ public class AIWolfGame {
 					skipCounter.put(agent, 0);
 				}
 				whisperList.add(whisper);
-
-				if(gameLogger != null){
-					gameLogger.log(String.format("%d,whisper,%d,%d,%s", gameData.getDay(), whisper.getIdx(),agent.getAgentIdx(), whisper.getText()));
-				}
 			}
 			boolean continueWhisper = false;
 			for(Talk whisper:whisperList){
