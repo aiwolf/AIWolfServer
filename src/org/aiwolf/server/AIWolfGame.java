@@ -11,12 +11,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -347,6 +345,9 @@ public class AIWolfGame {
 				System.out.printf("%s attacked\n", yesterday.getAttackedDead());
 			}
 
+			if (yesterday.getCursedFox() != null) {
+				System.out.printf("%s cursed\n", yesterday.getCursedFox());
+			}
 		}
 		System.out.println("======");
 		List<Agent> agentList = gameData.getAgentList();
@@ -374,6 +375,10 @@ public class AIWolfGame {
 				Guard guard = yesterday.getGuard();
 				if(guard != null && guard.getTarget() == agent){
 					System.out.print("\tguarded");
+				}
+
+				if (agent == yesterday.getCursedFox()) {
+					System.out.print("\tcursed");
 				}
 			}
 			System.out.println();
@@ -734,6 +739,7 @@ public class AIWolfGame {
 					//FOX
 					if(gameData.getRole(target) == Role.FOX){
 						gameData.addLastDeadAgent(target);
+						gameData.setCursedFox(target);
 					}
 					
 					if(gameLogger != null){
