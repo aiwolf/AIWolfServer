@@ -420,10 +420,11 @@ public class AIWolfGame {
 
 		// Vote and execute except day 0
 		Agent executed = null;
+		List<Agent> candidates = null;
 		if (gameData.getDay() != 0) {
 			for (int i = 0; i <= gameSetting.getMaxRevote(); i++) {
 				vote();
-				List<Agent> candidates = getVotedCandidates(gameData.getVoteList());
+				candidates = getVotedCandidates(gameData.getVoteList());
 				if (candidates.size() == 1) {
 					executed = candidates.get(0);
 					break;
@@ -431,7 +432,6 @@ public class AIWolfGame {
 			}
 
 			if (executed == null && !gameSetting.isEnableNoExecution()) {
-				List<Agent> candidates = getAliveAgentList();
 				Collections.shuffle(candidates, rand);
 				executed = candidates.get(0);
 			}
@@ -464,7 +464,7 @@ public class AIWolfGame {
 							it.remove();
 						}
 					}
-					List<Agent> candidates = getAttackVotedCandidates(attackCandidateList);
+					candidates = getAttackVotedCandidates(attackCandidateList);
 					if (candidates.size() == 1) {
 						attacked = candidates.get(0);
 						break;
@@ -475,7 +475,6 @@ public class AIWolfGame {
 				}
 
 				if (attacked == null && !gameSetting.isEnableNoAttack()) {
-					List<Agent> candidates = getAliveHumanList();
 					Collections.shuffle(candidates, rand);
 					attacked = candidates.get(0);
 				}
