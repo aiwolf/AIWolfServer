@@ -2,7 +2,6 @@ package org.aiwolf.server.net;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -12,7 +11,6 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +21,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.aiwolf.client.lib.Content;
@@ -37,7 +34,6 @@ import org.aiwolf.common.net.DataConverter;
 import org.aiwolf.common.net.GameSetting;
 import org.aiwolf.common.net.Packet;
 import org.aiwolf.common.net.TalkToSend;
-import org.aiwolf.common.util.AiWolfLoggerFactory;
 import org.aiwolf.common.util.BidiMap;
 import org.aiwolf.server.GameData;
 import org.aiwolf.server.IllegalPlayerNumException;
@@ -248,11 +244,17 @@ public class TcpipServer implements GameServer {
 				
 				talkList = minimize(agent, talkList, lastTalkIdxMap);
 				whisperList = minimize(agent, whisperList, lastWhisperIdxMap);
-				
-				Packet packet = new Packet(request, talkList, whisperList);
-				message = DataConverter.getInstance().convert(packet);
+
+				if (request == Request.DIVINE || request == Request.WHISPER || request == Request.GUARD || request == Request.ATTACK) {
+					int executed = gameData.getExecuted() == null ? -1 : gameData.getExecuted().getAgentIdx();
+					Packet packet = new Packet(request, executed, talkList, whisperList);
+					message = DataConverter.getInstance().convert(packet);
+				} else { // VOTE, TALK, DAILY_FINISH
+					Packet packet = new Packet(request, talkList, whisperList);
+					message = DataConverter.getInstance().convert(packet);
+				}
 			}
-			else{
+			else { // FINISH
 				Packet packet = new Packet(request, gameData.getFinalGameInfoToSend(agent));
 				message = DataConverter.getInstance().convert(packet);
 			}
