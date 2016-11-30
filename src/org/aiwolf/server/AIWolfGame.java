@@ -438,6 +438,7 @@ public class AIWolfGame {
 
 			if (executed != null) {
 				gameData.setExecutedTarget(executed);
+				gameServer.setGameData(gameData);
 				if (gameLogger != null) {
 					gameLogger.log(String.format("%d,execute,%d,%s", gameData.getDay(), executed.getAgentIdx(), gameData.getRole(executed)));
 				}
