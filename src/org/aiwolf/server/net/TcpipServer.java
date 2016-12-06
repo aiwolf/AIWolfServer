@@ -240,19 +240,25 @@ public class TcpipServer implements GameServer {
 				Packet packet = new Packet(request);
 				message = DataConverter.getInstance().convert(packet);
 			}
-			else if(request != Request.FINISH){
-//				Packet packet = new Packet(request, gameData.getGameInfoToSend(agent), gameSetting);
-//				message = DataConverter.getInstance().convert(packet);
-				List<TalkToSend> talkList = gameData.getGameInfoToSend(agent).getTalkList();
-				List<TalkToSend> whisperList = gameData.getGameInfoToSend(agent).getWhisperList();
-				
-				talkList = minimize(agent, talkList, lastTalkIdxMap);
-				whisperList = minimize(agent, whisperList, lastWhisperIdxMap);
-				
-				Packet packet = new Packet(request, talkList, whisperList);
-				message = DataConverter.getInstance().convert(packet);
-			}
-			else{
+			else if (request != Request.FINISH) {
+				// Packet packet = new Packet(request, gameData.getGameInfoToSend(agent), gameSetting);
+				// message = DataConverter.getInstance().convert(packet);
+				if (gameData.getExecuted() != null // after execution
+						&& (request == Request.DIVINE || request == Request.GUARD || request == Request.WHISPER)) {
+					Packet packet = new Packet(request, gameData.getGameInfoToSend(agent));
+					packet.getGameInfo().setExecutedAgent(gameData.getExecuted().getAgentIdx());
+					message = DataConverter.getInstance().convert(packet);
+				} else {
+					List<TalkToSend> talkList = gameData.getGameInfoToSend(agent).getTalkList();
+					List<TalkToSend> whisperList = gameData.getGameInfoToSend(agent).getWhisperList();
+
+					talkList = minimize(agent, talkList, lastTalkIdxMap);
+					whisperList = minimize(agent, whisperList, lastWhisperIdxMap);
+
+					Packet packet = new Packet(request, talkList, whisperList);
+					message = DataConverter.getInstance().convert(packet);
+				}
+			} else {
 				Packet packet = new Packet(request, gameData.getFinalGameInfoToSend(agent));
 				message = DataConverter.getInstance().convert(packet);
 			}
