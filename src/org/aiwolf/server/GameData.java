@@ -252,14 +252,6 @@ public class GameData {
 					gi.setGuardedAgent(guard.getTarget().getAgentIdx());
 				}
 			}
-			if (agent == null) {
-				if (attackedDead != null) {
-					gi.setAttackedDead(attackedDead.getAgentIdx());
-				}
-				if (cursedFox != null) {
-					gi.setCursedFox(cursedFox.getAgentIdx());
-				}
-			}
 		}
 		List<TalkToSend> talkList = new ArrayList<TalkToSend>();
 		for(Talk talk:today.getTalkList()){
