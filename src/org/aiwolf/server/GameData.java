@@ -65,6 +65,13 @@ public class GameData {
 	protected List<Vote> voteList;
 
 	/**
+	 * <div lang="ja">直近の投票リスト</div>
+	 *
+	 * <div lang="en">The latest list of votes.</div>
+	 */
+	protected List<Vote> latestVoteList;
+
+	/**
 	 * 
 	 */
 	protected List<Vote> attackCandidateList;
@@ -143,16 +150,17 @@ public class GameData {
 	protected GameSetting gameSetting;
 	
 	protected GameData(GameSetting gameSetting){
-		agentStatusMap = new LinkedHashMap<Agent, Status>();
-		agentRoleMap = new HashMap<Agent, Role>();
-		remainTalkMap = new HashMap<Agent, Integer>();
-		remainWhisperMap = new HashMap<Agent, Integer>();
-		talkList = new ArrayList<Talk>();
-		whisperList = new ArrayList<Talk>();
-		voteList = new ArrayList<Vote>();
-		attackCandidateList = new ArrayList<Vote>();
-		lastDeadAgentList = new ArrayList<Agent>();
-		suddendeathList = new ArrayList<Agent>();
+		agentStatusMap = new LinkedHashMap<>();
+		agentRoleMap = new HashMap<>();
+		remainTalkMap = new HashMap<>();
+		remainWhisperMap = new HashMap<>();
+		talkList = new ArrayList<>();
+		whisperList = new ArrayList<>();
+		voteList = new ArrayList<>();
+		latestVoteList = new ArrayList<>();
+		attackCandidateList = new ArrayList<>();
+		lastDeadAgentList = new ArrayList<>();
+		suddendeathList = new ArrayList<>();
 		
 		this.gameSetting = gameSetting;
 	}
@@ -198,6 +206,16 @@ public class GameData {
 		if(agent != null){
 			gi.setAgent(agent.getAgentIdx());
 		}
+		if (gameSetting.isVoteVisible()) {
+			List<VoteToSend> latestVoteList = new ArrayList<>();
+			for (Vote vote : getLatestVoteList()) {
+				latestVoteList.add(new VoteToSend(vote));
+			}
+			gi.setLatestVoteList(latestVoteList);
+		}
+		if (getExecuted() != null) {
+			gi.setLatestExecutedAgent(getExecuted().getAgentIdx());
+		}
 		
 		GameData yesterday = today.getDayBefore();
 
@@ -214,7 +232,7 @@ public class GameData {
 			gi.setLastDeadAgentList(lastDeadAgentList);
 
 			if(gameSetting.isVoteVisible()){
-				List<VoteToSend> voteList = new ArrayList<VoteToSend>();
+				List<VoteToSend> voteList = new ArrayList<>();
 				for(Vote vote:yesterday.getVoteList()){
 					voteList.add(new VoteToSend(vote));
 				}
@@ -718,6 +736,34 @@ public class GameData {
 	 */
 	public void setCursedFox(Agent cursedFox) {
 		this.cursedFox = cursedFox;
+	}
+
+	/**
+	 * <div lang="ja">直近の投票リストを返す</div>
+	 *
+	 * <div lang="en">Returns the latest list of votes.</div>
+	 * 
+	 * @return <div lang="ja">投票リストを表す{@code List<Vote>}</div>
+	 *
+	 *         <div lang="en">{@code List<Vote>} representing the list of votes.</div>
+	 */
+	public List<Vote> getLatestVoteList() {
+		return latestVoteList;
+	}
+
+	/**
+	 * <div lang="ja">直近の投票リストをセットする</div>
+	 *
+	 * <div lang="en">Sets the latest list of votes.</div>
+	 * 
+	 * @param latestVoteList
+	 *            <div lang="ja">投票リストを表す{@code List<Vote>}</div>
+	 *
+	 *            <div lang="en">{@code List<Vote>} representing the list of votes.</div>
+	 * 
+	 */
+	public void setLatestVoteList(List<Vote> latestVoteList) {
+		this.latestVoteList = latestVoteList;
 	}
 
 }
