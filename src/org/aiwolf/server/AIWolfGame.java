@@ -799,6 +799,12 @@ public class AIWolfGame {
 				}
 			}
 		}
+		List<Vote> latestAttackVoteList = new ArrayList<>();
+		for (Vote v : gameData.getAttackVoteList()) {
+			latestAttackVoteList.add(v);
+		}
+		gameData.setLatestAttackVoteList(latestAttackVoteList);
+
 	}
 
 	/**
