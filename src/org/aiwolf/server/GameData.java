@@ -77,6 +77,13 @@ public class GameData {
 	protected List<Vote> attackCandidateList;
 	
 	/**
+	 * <div lang="ja">直近の襲撃投票リスト</div>
+	 *
+	 * <div lang="en">The latest list of votes for attack.</div>
+	 */
+	protected List<Vote> latestAttackVoteList;
+
+	/**
 	 * 
 	 */
 	protected Map<Agent, Integer> remainTalkMap;
@@ -159,6 +166,7 @@ public class GameData {
 		voteList = new ArrayList<>();
 		latestVoteList = new ArrayList<>();
 		attackCandidateList = new ArrayList<>();
+		latestAttackVoteList = new ArrayList<>();
 		lastDeadAgentList = new ArrayList<>();
 		suddendeathList = new ArrayList<>();
 		
@@ -215,6 +223,13 @@ public class GameData {
 		}
 		if (getExecuted() != null) {
 			gi.setLatestExecutedAgent(getExecuted().getAgentIdx());
+		}
+		if (agent == null || getRole(agent).equals(Role.WEREWOLF)) {
+			List<VoteToSend> latestAttackVoteList = new ArrayList<>();
+			for (Vote vote : getLatestAttackVoteList()) {
+				latestAttackVoteList.add(new VoteToSend(vote));
+			}
+			gi.setLatestAttackVoteList(latestAttackVoteList);
 		}
 		
 		GameData yesterday = today.getDayBefore();
@@ -307,7 +322,7 @@ public class GameData {
 		gi.setRemainWhisperMap(remainWhisperMap);
 		
 		if(Role.WEREWOLF.equals(role) || agent == null){
-			List<TalkToSend> whisperList = new ArrayList<TalkToSend>();
+			List<TalkToSend> whisperList = new ArrayList<>();
 			for(Talk talk:today.getWhisperList()){
 				whisperList.add(new TalkToSend(talk));
 			}
@@ -359,7 +374,7 @@ public class GameData {
 
 	
 	/**
-	 * Add new agent with thier role
+	 * Add new agent with their role
 	 * 
 	 * @param agent
 	 * @param status
@@ -764,6 +779,34 @@ public class GameData {
 	 */
 	public void setLatestVoteList(List<Vote> latestVoteList) {
 		this.latestVoteList = latestVoteList;
+	}
+
+	/**
+	 * <div lang="ja">直近の襲撃投票リストを返す</div>
+	 *
+	 * <div lang="en">Returns the latest list of votes for attack.</div>
+	 * 
+	 * @return <div lang="ja">投票リストを表す{@code List<Vote>}</div>
+	 *
+	 *         <div lang="en">{@code List<Vote>} representing the list of votes.</div>
+	 */
+	public List<Vote> getLatestAttackVoteList() {
+		return latestAttackVoteList;
+	}
+
+	/**
+	 * <div lang="ja">直近の襲撃投票リストをセットする</div>
+	 *
+	 * <div lang="en">Sets the latest list of votes for attack.</div>
+	 * 
+	 * @param latestAttackVoteList
+	 *            <div lang="ja">投票リストを表す{@code List<Vote>}</div>
+	 *
+	 *            <div lang="en">{@code List<Vote>} representing the list of votes.</div>
+	 * 
+	 */
+	public void setLatestAttackVoteList(List<Vote> latestAttackVoteList) {
+		this.latestAttackVoteList = latestAttackVoteList;
 	}
 
 }
