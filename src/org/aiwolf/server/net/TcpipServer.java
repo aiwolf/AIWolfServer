@@ -243,10 +243,14 @@ public class TcpipServer implements GameServer {
 			else if (request != Request.FINISH) {
 				// Packet packet = new Packet(request, gameData.getGameInfoToSend(agent), gameSetting);
 				// message = DataConverter.getInstance().convert(packet);
-				if (gameData.getExecuted() != null // after execution
-						&& (request == Request.DIVINE || request == Request.GUARD || request == Request.WHISPER)) {
+				if (request == Request.VOTE && !gameData.getLatestVoteList().isEmpty()) {
+					// 再投票の場合，latestVoteListで直前の投票状況を知らせるためGameInfo入りのパケットにする
 					Packet packet = new Packet(request, gameData.getGameInfoToSend(agent));
-					packet.getGameInfo().setExecutedAgent(gameData.getExecuted().getAgentIdx());
+					message = DataConverter.getInstance().convert(packet);
+				} else if (gameData.getExecuted() != null
+						&& (request == Request.DIVINE || request == Request.GUARD || request == Request.WHISPER || request == Request.ATTACK)) {
+					// 追放後の各リクエストではlatestExecutedAgentで追放者を知らせるためGameInfo入りのパケットにする
+					Packet packet = new Packet(request, gameData.getGameInfoToSend(agent));
 					message = DataConverter.getInstance().convert(packet);
 				} else {
 					List<TalkToSend> talkList = gameData.getGameInfoToSend(agent).getTalkList();

@@ -28,6 +28,7 @@ import org.aiwolf.common.data.Talk;
 import org.aiwolf.common.data.Team;
 import org.aiwolf.common.data.Vote;
 import org.aiwolf.common.net.GameSetting;
+import org.aiwolf.common.net.VoteToSend;
 import org.aiwolf.common.util.Counter;
 import org.aiwolf.server.net.GameServer;
 import org.aiwolf.server.util.FileGameLogger;
@@ -191,7 +192,6 @@ public class AIWolfGame {
 		
 		gameDataMap.put(gameData.getDay(), gameData);
 
-		gameServer.setGameData(gameData);
 		gameServer.setGameSetting(gameSetting);
 		for(Agent agent:agentList){
 			gameServer.init(agent);
@@ -438,7 +438,6 @@ public class AIWolfGame {
 
 			if (executed != null) {
 				gameData.setExecutedTarget(executed);
-				gameServer.setGameData(gameData);
 				if (gameLogger != null) {
 					gameLogger.log(String.format("%d,execute,%d,%s", gameData.getDay(), executed.getAgentIdx(), gameData.getRole(executed)));
 				}
@@ -717,6 +716,11 @@ public class AIWolfGame {
 				gameLogger.log(String.format("%d,vote,%d,%d", gameData.getDay(), vote.getAgent().getAgentIdx(), vote.getTarget().getAgentIdx()));
 			}
 		}
+		List<Vote> latestVoteList = new ArrayList<>();
+		for (Vote v : gameData.getVoteList()) {
+			latestVoteList.add(v);
+		}
+		gameData.setLatestVoteList(latestVoteList);
 	}
 
 	/**
