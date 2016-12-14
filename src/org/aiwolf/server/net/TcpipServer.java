@@ -244,7 +244,11 @@ public class TcpipServer implements GameServer {
 				// Packet packet = new Packet(request, gameData.getGameInfoToSend(agent), gameSetting);
 				// message = DataConverter.getInstance().convert(packet);
 				if (request == Request.VOTE && !gameData.getLatestVoteList().isEmpty()) {
-					// 再投票の場合，latestVoteListで直前の投票状況を知らせるためGameInfo入りのパケットにする
+					// 追放再投票の場合，latestVoteListで直前の投票状況を知らせるためGameInfo入りのパケットにする
+					Packet packet = new Packet(request, gameData.getGameInfoToSend(agent));
+					message = DataConverter.getInstance().convert(packet);
+				} else if (request == Request.ATTACK && !gameData.getLatestAttackVoteList().isEmpty()) {
+					// 襲撃再投票の場合，latestAttackVoteListで直前の投票状況を知らせるためGameInfo入りのパケットにする
 					Packet packet = new Packet(request, gameData.getGameInfoToSend(agent));
 					message = DataConverter.getInstance().convert(packet);
 				} else if (gameData.getExecuted() != null
