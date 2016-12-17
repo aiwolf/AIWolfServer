@@ -156,7 +156,7 @@ public class GameData {
 	 */
 	protected GameSetting gameSetting;
 	
-	protected GameData(GameSetting gameSetting){
+	public GameData(GameSetting gameSetting){
 		agentStatusMap = new LinkedHashMap<>();
 		agentRoleMap = new HashMap<>();
 		remainTalkMap = new HashMap<>();
@@ -610,7 +610,7 @@ public class GameData {
 	 * Create GameData of next day
 	 * @return
 	 */
-	protected GameData nextDay(){
+	public GameData nextDay(){
 		GameData gameData = new GameData(gameSetting);
 		
 		gameData.day = this.day+1;
