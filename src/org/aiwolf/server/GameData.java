@@ -388,6 +388,10 @@ public class GameData {
 	public void addAgent(Agent agent, Status status, Role role){
 		agentRoleMap.put(agent, role);
 		agentStatusMap.put(agent, status);
+		remainTalkMap.put(agent, gameSetting.getMaxTalk());
+		if(getRole(agent) == Role.WEREWOLF){
+			remainTalkMap.put(agent, gameSetting.getMaxWhisper());
+		}
 	}
 
 	/**
@@ -619,6 +623,15 @@ public class GameData {
 			gameData.agentStatusMap.put(a, Status.DEAD);
 		}
 		gameData.agentRoleMap = new HashMap<Agent, Role>(agentRoleMap);
+		
+		for(Agent a:gameData.getAgentList()){
+			if(gameData.getStatus(a) == Status.ALIVE){
+				gameData.remainTalkMap.put(a, gameSetting.getMaxTalk());
+				if(gameData.getRole(a) == Role.WEREWOLF){
+					gameData.remainTalkMap.put(a, gameSetting.getMaxWhisper());
+				}
+			}
+		}
 		
 		gameData.dayBefore = this;
 		
