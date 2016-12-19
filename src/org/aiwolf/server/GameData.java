@@ -224,7 +224,7 @@ public class GameData {
 		if (getExecuted() != null) {
 			gi.setLatestExecutedAgent(getExecuted().getAgentIdx());
 		}
-		if (agent == null || getRole(agent).equals(Role.WEREWOLF)) {
+		if (agent == null || getRole(agent) == Role.WEREWOLF) {
 			List<VoteToSend> latestAttackVoteList = new ArrayList<>();
 			for (Vote vote : getLatestAttackVoteList()) {
 				latestAttackVoteList.add(new VoteToSend(vote));
@@ -254,12 +254,12 @@ public class GameData {
 				gi.setVoteList(voteList);
 			}
 			
-			if (agent != null && (today.getRole(agent).equals(Role.MEDIUM) && executed != null)) {
+			if (agent != null && today.getRole(agent) == Role.MEDIUM && executed != null) {
 				Species result = yesterday.getRole(executed).getSpecies();
 				gi.setMediumResult(new JudgeToSend(new Judge(day, agent, executed, result)));
 			}
 
-			if (agent == null || today.getRole(agent).equals(Role.SEER)) {
+			if (agent == null || today.getRole(agent) == Role.SEER) {
 				Judge divine = yesterday.getDivine();
 				if (divine != null && divine.getTarget() != null) {
 					Species result = yesterday.getRole(divine.getTarget()).getSpecies();
@@ -267,7 +267,7 @@ public class GameData {
 				}
 			}
 
-			if (agent == null || today.getRole(agent).equals(Role.WEREWOLF)) {
+			if (agent == null || today.getRole(agent) == Role.WEREWOLF) {
 				Agent attacked = yesterday.getAttacked();
 				if (attacked != null) {
 					gi.setAttackedAgent(attacked.getAgentIdx());
@@ -279,7 +279,7 @@ public class GameData {
 				}
 				gi.setAttackVoteList(attackVoteList);
 			}
-			if(agent == null || today.getRole(agent).equals(Role.BODYGUARD)){
+			if (agent == null || today.getRole(agent) == Role.BODYGUARD) {
 				Guard guard = yesterday.getGuard();
 				if(guard != null){
 					gi.setGuardedAgent(guard.getTarget().getAgentIdx());
@@ -326,7 +326,7 @@ public class GameData {
 		}
 		gi.setRemainWhisperMap(remainWhisperMap);
 		
-		if(Role.WEREWOLF.equals(role) || agent == null){
+		if (role == Role.WEREWOLF || agent == null) {
 			List<TalkToSend> whisperList = new ArrayList<>();
 			for(Talk talk:today.getWhisperList()){
 				whisperList.add(new TalkToSend(talk));
@@ -336,7 +336,7 @@ public class GameData {
 		
 		if(role != null){
 			roleMap.put(agent.getAgentIdx(), role.toString());
-			if (today.getRole(agent).equals(Role.WEREWOLF)) {
+			if (today.getRole(agent) == Role.WEREWOLF) {
 //				List<TalkToSend> whisperList = new ArrayList<TalkToSend>();
 //				for(Talk talk:today.getWhisperList()){
 //					whisperList.add(new TalkToSend(talk));
@@ -350,7 +350,7 @@ public class GameData {
 					}
 				}
 			}
-			if (today.getRole(agent).equals(Role.FREEMASON)) {
+			if (today.getRole(agent) == Role.FREEMASON) {
 				for (Agent target : today.getAgentList()) {
 					if (today.getRole(target) == Role.FREEMASON) {
 						roleMap.put(target.getAgentIdx(), Role.FREEMASON.toString());
