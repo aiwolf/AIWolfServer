@@ -483,8 +483,8 @@ public class AIWolfGame {
 
 				boolean isGuarded = false;
 				if (gameData.getGuard() != null) {
-					if (gameData.getGuard().getTarget().equals(attacked) && attacked != null) {
-						if (gameData.getExecuted() == null || !gameData.getExecuted().equals(gameData.getGuard().getAgent())) {
+					if (gameData.getGuard().getTarget() == attacked && attacked != null) {
+						if (gameData.getExecuted() == null || !(gameData.getExecuted() == gameData.getGuard().getAgent())) {
 							isGuarded = true;
 						}
 					}
@@ -707,7 +707,7 @@ public class AIWolfGame {
 		List<Agent> aliveCandidates = voters;
 		for (Agent agent : voters) {
 			Agent target = gameServer.requestVote(agent);
-			if (gameData.getStatus(target) == Status.DEAD || target == null || agent.equals(target)) {
+			if (gameData.getStatus(target) == Status.DEAD || target == null || agent == target) {
 				target = getRandomAgent(aliveCandidates, agent);
 			}
 			Vote vote = new Vote(gameData.getDay(), agent, target);
@@ -764,7 +764,7 @@ public class AIWolfGame {
 					continue;
 				}
 				Agent target = gameServer.requestGuardTarget(agent);
-				if(target == null || agent.equals(target)){
+				if (target == null || agent == target) {
 //					target = getRandomAgent(agentList, agent);
 				}
 				else{
