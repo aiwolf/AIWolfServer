@@ -609,7 +609,7 @@ public class AIWolfGame {
 				if(talkText == null || talkText.isEmpty()){
 					talkText = Talk.SKIP;
 				}
-				if(talkText == Talk.SKIP){
+				if (talkText.equals(Talk.SKIP)) {
 					skipCounter.add(agent);
 					if(skipCounter.get(agent) > gameSetting.getMaxSkip()){
 						talkText = Talk.OVER;
@@ -667,7 +667,7 @@ public class AIWolfGame {
 				if(whisperText == null || whisperText.isEmpty()){
 					whisperText = Talk.SKIP;
 				}
-				if(whisperText == Talk.SKIP){
+				if (whisperText.equals(Talk.SKIP)) {
 					skipCounter.add(agent);
 					if(skipCounter.get(agent) > gameSetting.getMaxSkip()){
 						whisperText = Talk.OVER;
