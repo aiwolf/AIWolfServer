@@ -483,8 +483,8 @@ public class AIWolfGame {
 
 				boolean isGuarded = false;
 				if (gameData.getGuard() != null) {
-					if (gameData.getGuard().getTarget().equals(attacked) && attacked != null) {
-						if (gameData.getExecuted() == null || !gameData.getExecuted().equals(gameData.getGuard().getAgent())) {
+					if (gameData.getGuard().getTarget() == attacked && attacked != null) {
+						if (gameData.getExecuted() == null || !(gameData.getExecuted() == gameData.getGuard().getAgent())) {
 							isGuarded = true;
 						}
 					}
@@ -609,7 +609,7 @@ public class AIWolfGame {
 				if(talkText == null || talkText.isEmpty()){
 					talkText = Talk.SKIP;
 				}
-				if(talkText == Talk.SKIP){
+				if (talkText.equals(Talk.SKIP)) {
 					skipCounter.add(agent);
 					if(skipCounter.get(agent) > gameSetting.getMaxSkip()){
 						talkText = Talk.OVER;
@@ -667,7 +667,7 @@ public class AIWolfGame {
 				if(whisperText == null || whisperText.isEmpty()){
 					whisperText = Talk.SKIP;
 				}
-				if(whisperText == Talk.SKIP){
+				if (whisperText.equals(Talk.SKIP)) {
 					skipCounter.add(agent);
 					if(skipCounter.get(agent) > gameSetting.getMaxSkip()){
 						whisperText = Talk.OVER;
@@ -707,7 +707,7 @@ public class AIWolfGame {
 		List<Agent> aliveCandidates = voters;
 		for (Agent agent : voters) {
 			Agent target = gameServer.requestVote(agent);
-			if (gameData.getStatus(target) == Status.DEAD || target == null || agent.equals(target)) {
+			if (gameData.getStatus(target) == Status.DEAD || target == null || agent == target) {
 				target = getRandomAgent(aliveCandidates, agent);
 			}
 			Vote vote = new Vote(gameData.getDay(), agent, target);
@@ -764,7 +764,7 @@ public class AIWolfGame {
 					continue;
 				}
 				Agent target = gameServer.requestGuardTarget(agent);
-				if(target == null || agent.equals(target)){
+				if (target == null || agent == target) {
 //					target = getRandomAgent(agentList, agent);
 				}
 				else{
