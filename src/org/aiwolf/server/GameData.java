@@ -390,7 +390,7 @@ public class GameData {
 		agentStatusMap.put(agent, status);
 		remainTalkMap.put(agent, gameSetting.getMaxTalk());
 		if(getRole(agent) == Role.WEREWOLF){
-			remainTalkMap.put(agent, gameSetting.getMaxWhisper());
+			remainWhisperMap.put(agent, gameSetting.getMaxWhisper());
 		}
 	}
 
@@ -628,7 +628,7 @@ public class GameData {
 			if(gameData.getStatus(a) == Status.ALIVE){
 				gameData.remainTalkMap.put(a, gameSetting.getMaxTalk());
 				if(gameData.getRole(a) == Role.WEREWOLF){
-					gameData.remainTalkMap.put(a, gameSetting.getMaxWhisper());
+					gameData.remainWhisperMap.put(a, gameSetting.getMaxWhisper());
 				}
 			}
 		}
