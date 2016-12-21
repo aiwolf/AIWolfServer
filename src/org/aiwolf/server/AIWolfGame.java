@@ -611,7 +611,7 @@ public class AIWolfGame {
 				}
 				if (talkText.equals(Talk.SKIP)) {
 					skipCounter.add(agent);
-					if(skipCounter.get(agent) > gameSetting.getMaxSkip()){
+					if(skipCounter.get(agent) >= gameSetting.getMaxSkip()){
 						talkText = Talk.OVER;
 					}
 				}
