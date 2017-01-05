@@ -705,6 +705,7 @@ public class AIWolfGame {
 		gameData.getVoteList().clear();
 		List<Agent> voters = getAliveAgentList();
 		List<Agent> aliveCandidates = voters;
+		List<Vote> latestVoteList = new ArrayList<>();
 		for (Agent agent : voters) {
 			Agent target = gameServer.requestVote(agent);
 			if (gameData.getStatus(target) == Status.DEAD || target == null || agent == target) {
@@ -712,15 +713,15 @@ public class AIWolfGame {
 			}
 			Vote vote = new Vote(gameData.getDay(), agent, target);
 			gameData.addVote(vote);
+			latestVoteList.add(vote);
+		}
+		gameData.setLatestVoteList(latestVoteList);
+
+		for (Vote vote : latestVoteList) {
 			if (gameLogger != null) {
 				gameLogger.log(String.format("%d,vote,%d,%d", gameData.getDay(), vote.getAgent().getAgentIdx(), vote.getTarget().getAgentIdx()));
 			}
 		}
-		List<Vote> latestVoteList = new ArrayList<>();
-		for (Vote v : gameData.getVoteList()) {
-			latestVoteList.add(v);
-		}
-		gameData.setLatestVoteList(latestVoteList);
 	}
 
 	/**
