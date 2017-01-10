@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.aiwolf.common.data.Agent;
 import org.aiwolf.common.data.Guard;
@@ -28,7 +30,6 @@ import org.aiwolf.common.data.Talk;
 import org.aiwolf.common.data.Team;
 import org.aiwolf.common.data.Vote;
 import org.aiwolf.common.net.GameSetting;
-import org.aiwolf.common.net.VoteToSend;
 import org.aiwolf.common.util.Counter;
 import org.aiwolf.server.net.GameServer;
 import org.aiwolf.server.util.FileGameLogger;
@@ -608,6 +609,8 @@ public class AIWolfGame {
 //				String talkContent = gameServer.requestTalk(agent);
 				if(talkText == null || talkText.isEmpty()){
 					talkText = Talk.SKIP;
+				} else {
+					talkText = stripText(talkText); // Strip text off its subject.
 				}
 				if (talkText.equals(Talk.SKIP)) {
 					skipCounter.add(agent);
@@ -652,7 +655,6 @@ public class AIWolfGame {
 		for(Agent agent:aliveWolfList){
 			gameData.remainWhisperMap.put(agent, gameSetting.getMaxWhisper());
 		}
-
 		
 		Counter<Agent> skipCounter = new Counter<>();
 		for(int turn = 0; turn < gameSetting.getMaxWhisper(); turn++){
@@ -666,6 +668,8 @@ public class AIWolfGame {
 				}
 				if(whisperText == null || whisperText.isEmpty()){
 					whisperText = Talk.SKIP;
+				} else {
+					whisperText = stripText(whisperText);
 				}
 				if (whisperText.equals(Talk.SKIP)) {
 					skipCounter.add(agent);
@@ -898,5 +902,28 @@ public class AIWolfGame {
 		return agentNameMap.get(agent);
 	}
 
+	private static final Pattern stripPattern = Pattern.compile("Agent\\[.+?\\] (.+)");
+
+	/**
+	 * <div lang="ja">テキストから主語を取り除く</div>
+	 *
+	 * <div lang="en">Strip text of its subject.</div>
+	 * 
+	 * @param text
+	 *            <div lang="ja">発話内容テキストを表す{@code String}</div>
+	 *
+	 *            <div lang="en">{@code String} representing the text of content.</div>
+	 * 
+	 * @return <div lang="ja">主語を取り除かれたテキストを表す{@code String}</div>
+	 *
+	 *         <div lang="en">{@code String} representing the text stripped of its subject.</div>
+	 */
+	private static String stripText(String text) {
+		Matcher m = stripPattern.matcher(text);
+		if (m.find()) {
+			return m.group(1);
+		}
+		return null;
+	}
 
 }
