@@ -902,7 +902,7 @@ public class AIWolfGame {
 		return agentNameMap.get(agent);
 	}
 
-	private static final Pattern stripPattern = Pattern.compile("Agent\\[.+?\\] (.+)");
+	private static final Pattern stripPattern = Pattern.compile("^Agent\\[.+?\\] (.+)");
 
 	/**
 	 * <div lang="ja">テキストから主語を取り除く</div>
@@ -923,7 +923,7 @@ public class AIWolfGame {
 		if (m.find()) {
 			return m.group(1);
 		}
-		return null;
+		return text;
 	}
 
 }
