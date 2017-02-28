@@ -456,6 +456,9 @@ public class AIWolfGame {
 			Agent attacked = null;
 			if (!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getExecuted()) == Role.WEREWOLF)) {
 				for (int i = 0; i <= gameSetting.getMaxAttackRevote(); i++) {
+					if(i > 0 && gameSetting.isWhisperBeforeRevote()){
+						whisper();
+					}
 					attackVote();
 					List<Vote> attackCandidateList = gameData.getAttackVoteList();
 					Iterator<Vote> it = attackCandidateList.iterator();
@@ -469,9 +472,6 @@ public class AIWolfGame {
 					if (candidates.size() == 1) {
 						attacked = candidates.get(0);
 						break;
-					}
-					if (gameSetting.isWhisperBeforeRevote()) {
-						whisper();
 					}
 				}
 
