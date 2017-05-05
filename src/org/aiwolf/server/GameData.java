@@ -74,7 +74,7 @@ public class GameData {
 	/**
 	 * 
 	 */
-	protected List<Vote> attackCandidateList;
+	protected List<Vote> attackVoteList;
 	
 	/**
 	 * <div lang="ja">直近の襲撃投票リスト</div>
@@ -165,7 +165,7 @@ public class GameData {
 		whisperList = new ArrayList<>();
 		voteList = new ArrayList<>();
 		latestVoteList = new ArrayList<>();
-		attackCandidateList = new ArrayList<>();
+		attackVoteList = new ArrayList<>();
 		latestAttackVoteList = new ArrayList<>();
 		lastDeadAgentList = new ArrayList<>();
 		suddendeathList = new ArrayList<>();
@@ -471,7 +471,7 @@ public class GameData {
 	}
 
 	public void addAttack(Vote attack) {
-		attackCandidateList.add(attack);
+		attackVoteList.add(attack);
 	}
 
 	public List<Vote> getVoteList() {
@@ -483,8 +483,11 @@ public class GameData {
 	 * 
 	 * @param target
 	 */
-	public void setExecutedTarget(Agent target) {
-		this.executed = target;
+	public void setExecutedTarget(Agent executed) {
+		this.executed = executed;
+		if (executed != null) {
+			agentStatusMap.put(executed, Status.DEAD);
+		}
 	}
 
 	/**
@@ -500,7 +503,7 @@ public class GameData {
 	 * @return
 	 */
 	public List<Vote> getAttackVoteList() {
-		return attackCandidateList;
+		return attackVoteList;
 	}
 
 	/**
@@ -615,9 +618,6 @@ public class GameData {
 		
 		gameData.day = this.day+1;
 		gameData.agentStatusMap = new HashMap<Agent, Status>(agentStatusMap);
-		if(executed != null){
-			gameData.agentStatusMap.put(executed, Status.DEAD);
-		}
 
 		for (Agent a : lastDeadAgentList) {
 			gameData.agentStatusMap.put(a, Status.DEAD);
