@@ -657,7 +657,7 @@ public class AIWolfGame {
 		}
 		
 		Counter<Agent> skipCounter = new Counter<>();
-		for(int turn = 0; turn < gameSetting.getMaxWhisper(); turn++){
+		for (int turn = 0; turn < gameSetting.getMaxWhisperTurn(); turn++) {
 			Collections.shuffle(aliveWolfList);
 
 			List<Talk> whisperList = new ArrayList<>();
