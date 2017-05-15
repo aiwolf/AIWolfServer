@@ -286,8 +286,8 @@ public class GameData {
 				}
 			}
 			if (agent == null) {
-				if (cursedFox != null) {
-					gi.setCursedFox(cursedFox.getAgentIdx());
+				if (yesterday.cursedFox != null) {
+					gi.setCursedFox(yesterday.cursedFox.getAgentIdx());
 				}
 			}
 		}
