@@ -454,7 +454,7 @@ public class AIWolfGame {
 
 			// attackVote and attack except day 0
 			Agent attacked = null;
-			if (!(getAliveWolfList().size() == 1 && gameData.getRole(gameData.getExecuted()) == Role.WEREWOLF)) {
+			if (getAliveWolfList().size() > 0) {
 				for (int i = 0; i <= gameSetting.getMaxAttackRevote(); i++) {
 					if(i > 0 && gameSetting.isWhisperBeforeRevote()){
 						whisper();
