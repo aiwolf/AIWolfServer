@@ -44,70 +44,70 @@ import org.aiwolf.server.IllegalPlayerNumException;
 import org.aiwolf.server.LostClientException;
 
 /**
- * 
+ *
  * @author tori
  *
  */
 public class TcpipServer implements GameServer {
 
-	
+
 
 
 	/**
 	 * Server Port
 	 */
 	int port;
-	
+
 	/**
 	 * connection limit
 	 */
 	int limit;
-	
+
 	/**
-	 * 
+	 *
 	 */
 	boolean isWaitForClient;
-	
+
 	/**
-	 * 
+	 *
 	 */
 	BidiMap<Socket, Agent> socketAgentMap;
-	
-	
+
+
 	/**
 	 * Current game data
 	 */
 	GameData gameData;
-	
+
 	/**
 	 * Game Setting
 	 */
 	GameSetting gameSetting;
-	
+
 	/**
-	 * 
+	 *
 	 */
 //	Logger serverLogger;
 
 	/**
-	 * 
+	 *
 	 */
 	Map<Agent, String> nameMap;
-	
+
 	Set<ServerListener> serverListenerSet;
-	
+
 	Map<Agent, Integer> lastTalkIdxMap;
 	Map<Agent, Integer> lastWhisperIdxMap;
 
 	private ServerSocket serverSocket;
-	
+
 	/**
 	 * Time limit for waiting request
 	 */
 	int timeLimit = 1000;
 
 	/**
-	 * 
+	 *
 	 * @param port
 	 * @param limit
 	 */
@@ -118,7 +118,7 @@ public class TcpipServer implements GameServer {
 		if (gameSetting.getTimeLimit() != -1) {
 			timeLimit = gameSetting.getTimeLimit();
 		}
-		
+
 		socketAgentMap = new BidiMap<Socket, Agent>();
 		String loggerName = this.getClass().getSimpleName();
 //		serverLogger = Logger.getLogger(loggerName);
@@ -133,20 +133,20 @@ public class TcpipServer implements GameServer {
 //			e.printStackTrace();
 //			serverLogger = AiWolfLoggerFactory.getLogger(loggerName);
 //		}
-		
+
 		lastTalkIdxMap = new HashMap<Agent, Integer>();
 		lastWhisperIdxMap = new HashMap<Agent, Integer>();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @throws IOException
 	 * @throws SocketTimeoutException
 	 */
 	public void waitForConnection() throws IOException, SocketTimeoutException{
 //	    int timeout_msec = 1000*60*10; // time out in 10 miniutes
 //		serverLogger.info(String.format("Start Server@port %d\n", port));
-		
+
 	    for(Socket sock:socketAgentMap.keySet()){
 	    	if(sock != null && sock.isConnected()){
 	    		sock.close();
@@ -158,14 +158,14 @@ public class TcpipServer implements GameServer {
 
 //		serverLogger.info(String.format("Waiting for connection...\n"));
 	    System.out.println("Waiting for connection...\n");
-	    
+
 	    serverSocket = new ServerSocket(port);
 
 	    isWaitForClient = true;
 
 	    while(socketAgentMap.size() < limit && isWaitForClient){
 	        Socket socket = serverSocket.accept();
-	        
+
 	        synchronized (socketAgentMap) {
 		        Agent agent = null;
 				for (int i = 1; i <= limit; i++) {
@@ -185,14 +185,14 @@ public class TcpipServer implements GameServer {
 					listener.connected(socket, agent, name);
 				}
 	        }
-	        
+
 	    }
 	    isWaitForClient = false;
 	    serverSocket.close();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public void stopWaitingForConnection() {
 		isWaitForClient = false;
@@ -214,7 +214,7 @@ public class TcpipServer implements GameServer {
 	}
 
 
-	
+
 	@Override
 	public List<Agent> getConnectedAgentList() {
 		synchronized (socketAgentMap) {
@@ -309,7 +309,7 @@ public class TcpipServer implements GameServer {
 			Socket sock = socketAgentMap.getKey(agent);
 			final BufferedReader br = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 			send(agent, request);
-			
+
 			String line = null;
 			ExecutorService pool = Executors.newSingleThreadExecutor();
 			RequestReadCallable task = new RequestReadCallable(br);
@@ -326,7 +326,7 @@ public class TcpipServer implements GameServer {
 			} finally {
 				pool.shutdownNow();
 			}
-			
+
 //	        String line = br.readLine();
 			if(!task.isSuccess()){
 				throw task.getIOException();
@@ -355,15 +355,15 @@ public class TcpipServer implements GameServer {
 	        else{
 	        	return null;
 	        }
-	        		
-			
+
+
 		}catch(InterruptedException | ExecutionException | IOException e){
 			throw new LostClientException("Lost connection with "+agent+"\t"+getName(agent), e, agent);
 		}catch(TimeoutException e){
 			throw new LostClientException(String.format("Timeout %s(%s) %s", agent, getName(agent), request), e, agent);
 		}
 	}
-	
+
 	@Override
 	public void init(Agent agent) {
 		send(agent, Request.INITIALIZE);
@@ -390,7 +390,7 @@ public class TcpipServer implements GameServer {
 			return name;
 		}
 	}
-	
+
 
 	@Override
 	public Role requestRequestRole(Agent agent) {
@@ -401,8 +401,8 @@ public class TcpipServer implements GameServer {
 			return null;
 		}
 	}
-	
-	
+
+
 	@Override
 	public String requestTalk(Agent agent) {
 		return (String)request(agent, Request.TALK);
@@ -436,19 +436,19 @@ public class TcpipServer implements GameServer {
 		return (Agent)request(agent, Request.ATTACK);
 //		return JSON.decode(result);
 	}
-	
+
 
 	@Override
 	public void finish(Agent agent) {
 		send(agent, Request.FINISH);
-		send(agent, Request.FINISH);
+//		send(agent, Request.FINISH);
 	}
 
 	@Override
 	public void setGameData(GameData gameData) {
 		this.gameData = gameData;
 	}
-	
+
 
 	@Override
 	public void setGameSetting(GameSetting gameSetting) {
@@ -541,7 +541,7 @@ public class TcpipServer implements GameServer {
 		this.timeLimit = timeLimit;
 	}
 
-	
+
 }
 
 
@@ -562,11 +562,11 @@ class RequestReadCallable implements Callable<String> {
 			return null;
 		}
 	}
-	
+
 	public boolean isSuccess(){
 		return ioException == null;
 	}
-	
+
 	public IOException getIOException(){
 		return ioException;
 	}
