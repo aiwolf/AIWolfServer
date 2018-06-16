@@ -350,7 +350,13 @@ public class TcpipServer implements GameServer {
 				}
 			} else if (request == Request.ATTACK || request == Request.DIVINE || request == Request.GUARD
 					|| request == Request.VOTE) {
-	        	return DataConverter.getInstance().toAgent(line);
+				Agent target = DataConverter.getInstance().toAgent(line);
+				if(gameData.contains(target)) {
+					return target;
+				}
+				else {
+					return null;
+				}
 	        }
 	        else{
 	        	return null;
