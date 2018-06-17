@@ -1,6 +1,6 @@
 /**
  * AIWolfGame.java
- * 
+ *
  * Copyright (c) 2016 人狼知能プロジェクト
  */
 package org.aiwolf.server;
@@ -130,7 +130,7 @@ public class AIWolfGame {
 		return this.gameLogger;
 	}
 
-	
+
 	/**
 	 * Set Random Class
 	 * @param rand
@@ -162,19 +162,24 @@ public class AIWolfGame {
 		}
 		List<Agent> noRequestAgentList = new ArrayList<Agent>();
 		for(Agent agent:agentList){
-			Role requestedRole = gameServer.requestRequestRole(agent);
-			if(requestedRole != null){
-				if(requestRoleMap.get(requestedRole).size() < gameSetting.getRoleNum(requestedRole)){
-					requestRoleMap.get(requestedRole).add(agent);
+			if(gameSetting.isEnableRoleRequest()) {
+				Role requestedRole = gameServer.requestRequestRole(agent);
+				if(requestedRole != null){
+					if(requestRoleMap.get(requestedRole).size() < gameSetting.getRoleNum(requestedRole)){
+						requestRoleMap.get(requestedRole).add(agent);
+					}
+					else{
+						noRequestAgentList.add(agent);
+					}
+	//				System.out.println(agent+" request "+requestedRole);
 				}
 				else{
 					noRequestAgentList.add(agent);
+	//				System.out.println(agent+" request no role");
 				}
-//				System.out.println(agent+" request "+requestedRole);
 			}
-			else{
+			else {
 				noRequestAgentList.add(agent);
-//				System.out.println(agent+" request no role");
 			}
 		}
 
@@ -190,7 +195,7 @@ public class AIWolfGame {
 				}
 			}
 		}
-		
+
 		gameDataMap.put(gameData.getDay(), gameData);
 
 		gameServer.setGameSetting(gameSetting);
@@ -209,11 +214,11 @@ public class AIWolfGame {
 	public void start(){
 		try{
 			init();
-		
+
 		//		System.out.printf("%d-%d\n", getAliveHumanList().size(), getAliveWolfList().size());
 			while(!isGameFinished()){
 				consoleLog();
-		
+
 				day();
 				night();
 				if(gameLogger != null){
@@ -222,7 +227,7 @@ public class AIWolfGame {
 			}
 			consoleLog();
 			finish();
-		
+
 			if(isShowConsoleLog){
 				System.out.println("Winner:"+getWinner());
 			}
@@ -272,8 +277,8 @@ public class AIWolfGame {
 			if(gameData.getStatus(agent) == Status.DEAD){
 				continue;
 			}
-			
-			
+
+
 			if(gameData.getRole(agent).getTeam() == Team.OTHERS){
 				otherSide++;
 			}
@@ -414,7 +419,7 @@ public class AIWolfGame {
 		for (Agent agent : getAliveAgentList()) {
 			gameServer.dayFinish(agent);
 		}
-		
+
 		if(!gameSetting.isTalkOnFirstDay() && gameData.getDay() == 0){
 			whisper();
 		}
@@ -638,7 +643,7 @@ public class AIWolfGame {
 					continueTalk = true;
 				}
 			}
-			
+
 			if(!continueTalk){
 				break;
 			}
@@ -655,7 +660,7 @@ public class AIWolfGame {
 		for(Agent agent:aliveWolfList){
 			gameData.remainWhisperMap.put(agent, gameSetting.getMaxWhisper());
 		}
-		
+
 		Counter<Agent> skipCounter = new Counter<>();
 		for (int turn = 0; turn < gameSetting.getMaxWhisperTurn(); turn++) {
 			Collections.shuffle(aliveWolfList);
@@ -701,9 +706,9 @@ public class AIWolfGame {
 
 	/**
 	 * <div lang="ja">投票</div>
-	 * 
+	 *
 	 * <div lang="en">Vote</div>
-	 * 
+	 *
 	 */
 	protected void vote() {
 		gameData.getVoteList().clear();
@@ -729,7 +734,7 @@ public class AIWolfGame {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	protected void divine() {
 		List<Agent> agentList = getAliveAgentList();
@@ -743,13 +748,13 @@ public class AIWolfGame {
 				else{
 					Judge divine = new Judge(gameData.getDay(), agent, target, targetRole.getSpecies());
 					gameData.addDivine(divine);
-	
+
 					//FOX
 					if(gameData.getRole(target) == Role.FOX){
 						gameData.addLastDeadAgent(target);
 						gameData.setCursedFox(target);
 					}
-					
+
 					if(gameLogger != null){
 						gameLogger.log(String.format("%d,divine,%d,%d,%s", gameData.getDay(), divine.getAgent().getAgentIdx(), divine.getTarget().getAgentIdx(), divine.getResult()));
 					}
@@ -759,7 +764,7 @@ public class AIWolfGame {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	protected void guard() {
 		List<Agent> agentList = getAliveAgentList();
@@ -876,8 +881,8 @@ public class AIWolfGame {
 	public GameSetting getGameSetting(){
 		return gameSetting;
 	}
-	
-	
+
+
 	/**
 	 * @return isShowConsoleLog
 	 */
@@ -894,7 +899,7 @@ public class AIWolfGame {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param agent
 	 * @return
 	 */
@@ -908,12 +913,12 @@ public class AIWolfGame {
 	 * <div lang="ja">テキストから主語を取り除く</div>
 	 *
 	 * <div lang="en">Strip text of its subject.</div>
-	 * 
+	 *
 	 * @param text
 	 *            <div lang="ja">発話内容テキストを表す{@code String}</div>
 	 *
 	 *            <div lang="en">{@code String} representing the text of content.</div>
-	 * 
+	 *
 	 * @return <div lang="ja">主語を取り除かれたテキストを表す{@code String}</div>
 	 *
 	 *         <div lang="en">{@code String} representing the text stripped of its subject.</div>
