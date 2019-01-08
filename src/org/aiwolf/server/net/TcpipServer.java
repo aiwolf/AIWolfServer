@@ -56,33 +56,33 @@ public class TcpipServer implements GameServer {
 	/**
 	 * Server Port
 	 */
-	int port;
+	protected int port;
 
 	/**
 	 * connection limit
 	 */
-	int limit;
+	protected int limit;
 
 	/**
 	 *
 	 */
-	boolean isWaitForClient;
+	protected boolean isWaitForClient;
 
 	/**
 	 *
 	 */
-	BidiMap<Socket, Agent> socketAgentMap;
+	protected BidiMap<Socket, Agent> socketAgentMap;
 
 
 	/**
 	 * Current game data
 	 */
-	GameData gameData;
+	protected GameData gameData;
 
 	/**
 	 * Game Setting
 	 */
-	GameSetting gameSetting;
+	protected GameSetting gameSetting;
 
 	/**
 	 *
@@ -92,19 +92,19 @@ public class TcpipServer implements GameServer {
 	/**
 	 *
 	 */
-	Map<Agent, String> nameMap;
+	protected Map<Agent, String> nameMap;
 
-	Set<ServerListener> serverListenerSet;
+	protected Set<ServerListener> serverListenerSet;
 
-	Map<Agent, Integer> lastTalkIdxMap;
-	Map<Agent, Integer> lastWhisperIdxMap;
+	protected Map<Agent, Integer> lastTalkIdxMap;
+	protected Map<Agent, Integer> lastWhisperIdxMap;
 
-	private ServerSocket serverSocket;
+	protected ServerSocket serverSocket;
 
 	/**
 	 * Time limit for waiting request
 	 */
-	int timeLimit = 1000;
+	protected int timeLimit = 1000;
 
 	/**
 	 *
@@ -290,7 +290,7 @@ public class TcpipServer implements GameServer {
 	 * @param lastIdxMap
 	 * @return
 	 */
-	private List<TalkToSend> minimize(Agent agent, List<TalkToSend> list, Map<Agent, Integer> lastIdxMap) {
+	protected List<TalkToSend> minimize(Agent agent, List<TalkToSend> list, Map<Agent, Integer> lastIdxMap) {
 		int lastIdx = list.size();
 		if(lastIdxMap.containsKey(agent) && list.size() >= lastIdxMap.get(agent)){
 			list = list.subList(lastIdxMap.get(agent), list.size());
