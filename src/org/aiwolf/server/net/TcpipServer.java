@@ -1,8 +1,12 @@
+/**
+ * TcpipServer.java
+ *
+ * Copyright (c) 2014 人狼知能プロジェクト
+ */
 package org.aiwolf.server.net;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -12,7 +16,6 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,10 +26,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.aiwolf.client.lib.Content;
 
 //import net.arnx.jsonic.JSON;
 
@@ -37,15 +37,15 @@ import org.aiwolf.common.net.DataConverter;
 import org.aiwolf.common.net.GameSetting;
 import org.aiwolf.common.net.Packet;
 import org.aiwolf.common.net.TalkToSend;
-import org.aiwolf.common.util.AiWolfLoggerFactory;
 import org.aiwolf.common.util.BidiMap;
 import org.aiwolf.server.GameData;
 import org.aiwolf.server.IllegalPlayerNumException;
 import org.aiwolf.server.LostClientException;
 
 /**
+ * Game server which communicates with clients via TCP/IP connections.
  *
- * @author tori
+ * @author tori and otsuki
  *
  */
 public class TcpipServer implements GameServer {
@@ -339,15 +339,7 @@ public class TcpipServer implements GameServer {
 			if (request == Request.NAME || request == Request.ROLE) {
 				return line;
 			} else if (request == Request.TALK || request == Request.WHISPER) {
-				if (gameSetting.isValidateUtterance()) {
-					if (Content.validate(line)) {
-						return line;
-					} else {
-						return null;
-					}
-				} else {
-					return line;
-				}
+				return line;
 			} else if (request == Request.ATTACK || request == Request.DIVINE || request == Request.GUARD
 					|| request == Request.VOTE) {
 				Agent target = DataConverter.getInstance().toAgent(line);
