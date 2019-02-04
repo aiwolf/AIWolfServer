@@ -1,7 +1,7 @@
 /**
  * AIWolfGame.java
  *
- * Copyright (c) 2016 人狼知能プロジェクト
+ * Copyright (c) 2014 人狼知能プロジェクト
  */
 package org.aiwolf.server;
 
@@ -20,6 +20,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.aiwolf.client.lib.Content;
 import org.aiwolf.common.data.Agent;
 import org.aiwolf.common.data.Guard;
 import org.aiwolf.common.data.Judge;
@@ -37,7 +38,7 @@ import org.aiwolf.server.util.GameLogger;
 
 /**
  * Game Class of AI Wolf Contest
- * @author tori
+ * @author tori and otsuki
  *
  */
 public class AIWolfGame {
@@ -611,11 +612,13 @@ public class AIWolfGame {
 				if(gameData.getRemainTalkMap().get(agent) > 0){
 					talkText = gameServer.requestTalk(agent);
 				}
-//				String talkContent = gameServer.requestTalk(agent);
 				if(talkText == null || talkText.isEmpty()){
 					talkText = Talk.SKIP;
-				} else {
-					talkText = stripText(talkText); // Strip text off its subject.
+				}
+				if (gameSetting.isValidateUtterance()) {
+					if (!Content.validate(talkText)) {
+						talkText = Talk.SKIP;
+					}
 				}
 				if (talkText.equals(Talk.SKIP)) {
 					skipCounter.add(agent);
@@ -631,12 +634,10 @@ public class AIWolfGame {
 				}
 			}
 
-//			Collections.shuffle(talkList);
 			boolean continueTalk = false;
 			for(Talk talk:talkList){
 				gameData.addTalk(talk.getAgent(), talk);
 				if(gameLogger != null){
-					//TODO Talkの仕様変更に従って，ログを変更する
 					gameLogger.log(String.format("%d,talk,%d,%d,%d,%s", gameData.getDay(), talk.getIdx(), talk.getTurn(), talk.getAgent().getAgentIdx(), talk.getText()));
 				}
 				if(!talk.isOver()){
@@ -652,7 +653,6 @@ public class AIWolfGame {
 	}
 
 	protected void whisper() {
-		//Whisper by werewolf
 		List<Agent> aliveWolfList = gameData.getFilteredAgentList(getAliveAgentList(), Role.WEREWOLF);
 		if(aliveWolfList.size() == 1){
 			return;
@@ -673,8 +673,11 @@ public class AIWolfGame {
 				}
 				if(whisperText == null || whisperText.isEmpty()){
 					whisperText = Talk.SKIP;
-				} else {
-					whisperText = stripText(whisperText);
+				}
+				if (gameSetting.isValidateUtterance()) {
+					if (!Content.validate(whisperText)) {
+						whisperText = Talk.SKIP;
+					}
 				}
 				if (whisperText.equals(Talk.SKIP)) {
 					skipCounter.add(agent);
@@ -905,30 +908,6 @@ public class AIWolfGame {
 	 */
 	public String getAgentName(Agent agent){
 		return agentNameMap.get(agent);
-	}
-
-	private static final Pattern stripPattern = Pattern.compile("^Agent\\[.+?\\] (.+)");
-
-	/**
-	 * <div lang="ja">テキストから主語を取り除く</div>
-	 *
-	 * <div lang="en">Strip text of its subject.</div>
-	 *
-	 * @param text
-	 *            <div lang="ja">発話内容テキストを表す{@code String}</div>
-	 *
-	 *            <div lang="en">{@code String} representing the text of content.</div>
-	 *
-	 * @return <div lang="ja">主語を取り除かれたテキストを表す{@code String}</div>
-	 *
-	 *         <div lang="en">{@code String} representing the text stripped of its subject.</div>
-	 */
-	private static String stripText(String text) {
-		Matcher m = stripPattern.matcher(text);
-		if (m.find()) {
-			return m.group(1);
-		}
-		return text;
 	}
 
 }
