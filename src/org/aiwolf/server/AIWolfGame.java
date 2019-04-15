@@ -417,7 +417,10 @@ public class AIWolfGame {
 	 */
 	protected void night() {
 
-		for (Agent agent : getAliveAgentList()) {
+//		for (Agent agent : getAliveAgentList()) {
+//			gameServer.dayFinish(agent);
+//		}
+		for (Agent agent : getGameData().getAgentList()) {
 			gameServer.dayFinish(agent);
 		}
 
