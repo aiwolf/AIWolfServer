@@ -27,7 +27,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-
 //import net.arnx.jsonic.JSON;
 
 import org.aiwolf.common.data.Agent;
@@ -230,10 +229,16 @@ public class TcpipServer implements GameServer {
 	protected void send(Agent agent, Request request){
 		try{
 			String message;
-			if(request == Request.DAILY_INITIALIZE || request == Request.INITIALIZE){
+			if(request == Request.INITIALIZE){
 				lastTalkIdxMap.clear();
 				lastWhisperIdxMap.clear();
 				Packet packet = new Packet(request, gameData.getGameInfoToSend(agent), gameSetting);
+				message = DataConverter.getInstance().convert(packet);
+			}
+			else if(request == Request.DAILY_INITIALIZE){
+				lastTalkIdxMap.clear();
+				lastWhisperIdxMap.clear();
+				Packet packet = new Packet(request, gameData.getGameInfoToSend(agent));
 				message = DataConverter.getInstance().convert(packet);
 			}
 			else if(request == Request.NAME || request == Request.ROLE){
