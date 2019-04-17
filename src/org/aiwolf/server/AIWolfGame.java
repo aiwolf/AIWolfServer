@@ -587,7 +587,7 @@ public class AIWolfGame {
 			}
 		}
 
-		for (Agent agent : getAliveAgentList()) {
+		for (Agent agent : gameData.getAgentList()) {
 			gameServer.dayStart(agent);
 		}
 
