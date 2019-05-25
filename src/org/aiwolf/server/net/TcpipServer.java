@@ -225,6 +225,7 @@ public class TcpipServer implements GameServer {
 	 * send data to client
 	 * @param agent
 	 * @param sendText
+	 * @TODO Whisperの際に毎回GameInfoを毎回送ってしまう問題の解決．必要が無ければGameInfoを送らなくする
 	 */
 	protected void send(Agent agent, Request request){
 		try{
