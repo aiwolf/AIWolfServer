@@ -594,9 +594,7 @@ public class AIWolfGame {
 	}
 
 	/**
-	 * First, all agents have chances to talk.
-	 * Next, wolves whispers.
-	 * Continue them until all agents finish talking
+	 * 
 	 */
 	protected void talk() {
 
@@ -609,7 +607,7 @@ public class AIWolfGame {
 		for(int time = 0; time < gameSetting.getMaxTalkTurn(); time++){
 			Collections.shuffle(aliveList);
 
-			List<Talk> talkList = new ArrayList<>();
+			boolean continueTalk = false;
 			for(Agent agent:aliveList){
 				String talkText = Talk.OVER;
 				if(gameData.getRemainTalkMap().get(agent) > 0){
@@ -630,18 +628,13 @@ public class AIWolfGame {
 					}
 				}
 				Talk talk = new Talk(gameData.nextTalkIdx(), gameData.getDay(), time, agent, talkText);
-				talkList.add(talk);
-
-				if(!talk.isOver() && !talk.isSkip()){
-					skipCounter.put(agent, 0);
-				}
-			}
-
-			boolean continueTalk = false;
-			for(Talk talk:talkList){
 				gameData.addTalk(talk.getAgent(), talk);
 				if(gameLogger != null){
 					gameLogger.log(String.format("%d,talk,%d,%d,%d,%s", gameData.getDay(), talk.getIdx(), talk.getTurn(), talk.getAgent().getAgentIdx(), talk.getText()));
+				}
+
+				if(!talk.isOver() && !talk.isSkip()){
+					skipCounter.put(agent, 0);
 				}
 				if(!talk.isOver()){
 					continueTalk = true;
