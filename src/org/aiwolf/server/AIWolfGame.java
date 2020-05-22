@@ -650,6 +650,7 @@ public class AIWolfGame {
 
 	protected void whisper() {
 		List<Agent> aliveWolfList = gameData.getFilteredAgentList(getAliveAgentList(), Role.WEREWOLF);
+		// No whisper in case of lonely wolf.
 		if(aliveWolfList.size() == 1){
 			return;
 		}
@@ -661,10 +662,10 @@ public class AIWolfGame {
 		for (int turn = 0; turn < gameSetting.getMaxWhisperTurn(); turn++) {
 			Collections.shuffle(aliveWolfList);
 
-			List<Talk> whisperList = new ArrayList<>();
+			boolean continueWhisper = false;
 			for(Agent agent:aliveWolfList){
 				String whisperText = Talk.OVER;
-				if(gameData.getRemainWhisperMap().get(agent) != 0){
+				if(gameData.getRemainWhisperMap().get(agent) > 0){
 					whisperText = gameServer.requestWhisper(agent);
 				}
 				if(whisperText == null || whisperText.isEmpty()){
@@ -682,21 +683,19 @@ public class AIWolfGame {
 					}
 				}
 				Talk whisper = new Talk(gameData.nextWhisperIdx(), gameData.getDay(), turn, agent, whisperText);
-				if(!whisper.isOver() && !whisper.isSkip()){
-					skipCounter.put(agent, 0);
-				}
-				whisperList.add(whisper);
-			}
-			boolean continueWhisper = false;
-			for(Talk whisper:whisperList){
 				gameData.addWhisper(whisper.getAgent(), whisper);
 				if(gameLogger != null){
 					gameLogger.log(String.format("%d,whisper,%d,%d,%d,%s", gameData.getDay(), whisper.getIdx(), whisper.getTurn(), whisper.getAgent().getAgentIdx(), whisper.getText()));
+				}
+				
+				if(!whisper.isOver() && !whisper.isSkip()){
+					skipCounter.put(agent, 0);
 				}
 				if(!whisper.isOver()){
 					continueWhisper = true;
 				}
 			}
+
 			if(!continueWhisper){
 				break;
 			}
