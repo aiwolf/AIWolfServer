@@ -14,6 +14,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -161,15 +162,21 @@ public class TcpipServer implements GameServer {
 	    serverSocket = new ServerSocket(port);
 
 	    isWaitForClient = true;
+	    
+	    List<Agent> shuffledAgentList = new ArrayList<>();
+	    for(int i = 1; i <= limit; i++) {
+	    	shuffledAgentList.add(Agent.getAgent(i));
+	    }
+	    Collections.shuffle(shuffledAgentList);
 
 	    while(socketAgentMap.size() < limit && isWaitForClient){
 	        Socket socket = serverSocket.accept();
 
 	        synchronized (socketAgentMap) {
 		        Agent agent = null;
-				for (int i = 1; i <= limit; i++) {
-		        	if(!socketAgentMap.containsValue(Agent.getAgent(i))){
-		        		agent = Agent.getAgent(i);
+				for (int i = 0; i < limit; i++) {
+		        	if(!socketAgentMap.containsValue(shuffledAgentList.get(i))){
+		        		agent = shuffledAgentList.get(i);
 		        		break;
 		        	}
 		        }
