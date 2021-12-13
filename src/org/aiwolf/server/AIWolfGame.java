@@ -715,7 +715,7 @@ public class AIWolfGame {
 		List<Vote> latestVoteList = new ArrayList<>();
 		for (Agent agent : voters) {
 			Agent target = gameServer.requestVote(agent);
-			if (gameData.getStatus(target) == Status.DEAD || target == null || agent == target) {
+			if (target == null || gameData.getStatus(target) == null || gameData.getStatus(target) == Status.DEAD || agent == target) {
 				target = getRandomAgent(aliveCandidates, agent);
 			}
 			Vote vote = new Vote(gameData.getDay(), agent, target);
@@ -772,7 +772,7 @@ public class AIWolfGame {
 					continue;
 				}
 				Agent target = gameServer.requestGuardTarget(agent);
-				if (target == null || agent == target) {
+				if (target == null || gameData.getStatus(target) == null || agent == target) {
 //					target = getRandomAgent(agentList, agent);
 				}
 				else{
@@ -793,8 +793,7 @@ public class AIWolfGame {
 		List<Agent> candidates = getAliveHumanList();
 		for (Agent agent : voters) {
 			Agent target = gameServer.requestAttackTarget(agent);
-			if (gameData.getStatus(target) == Status.DEAD || gameData.getRole(target) == Role.WEREWOLF
-					|| target == null) {
+			if (target == null || gameData.getStatus(target) == null || gameData.getStatus(target) == Status.DEAD || gameData.getRole(target) == Role.WEREWOLF) {
 				// target = getRandomAgent(candidateList, agent);
 			}
 			else {
